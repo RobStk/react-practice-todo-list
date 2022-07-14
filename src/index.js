@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+import { ToDoList } from './Components/ToDoList';
 
 const rootElement = document.querySelector("#root");
 const root = ReactDOM.createRoot(rootElement);
-root.render(<h1>Hello World!</h1>);
+root.render(<React.StrictMode><ToDoList /></React.StrictMode>);
