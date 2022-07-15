@@ -8,12 +8,18 @@ class TaskIndicator extends React.Component {
     constructor(props) {
         super(props);
         this.handleClick = this.handleClick.bind(this);
+        this.handleMouseEnter = this.handleMouseEnter.bind(this);
+        this.handleMouseLeave = this.handleMouseLeave.bind(this);
     }
 
     render() {
         const icon = this.setIcon(this.props.iconType);
         return (
-            <TaskIndicatorStyle onClick={this.handleClick}>
+            <TaskIndicatorStyle
+                onClick={this.handleClick}
+                onMouseEnter={this.handleMouseEnter}
+                onMouseLeave={this.handleMouseLeave}
+            >
                 {icon}
             </TaskIndicatorStyle>
         )
@@ -34,6 +40,14 @@ class TaskIndicator extends React.Component {
 
     handleClick() {
         this.props.onClick && this.props.onClick();
+    }
+
+    handleMouseEnter() {
+        this.props.onMouseEnter && this.props.onMouseEnter();
+    }
+
+    handleMouseLeave() {
+        this.props.onMouseLeave && this.props.onMouseLeave();
     }
 }
 

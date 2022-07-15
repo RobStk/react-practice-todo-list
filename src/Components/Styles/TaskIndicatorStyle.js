@@ -4,7 +4,7 @@ const TaskIndicatorStyle = styled.div`
     display: grid;
     align-items: center;
     font-size: x-large;
-    padding: 2px;
+    padding: 3px;
 `
 
 export default TaskIndicatorStyle;

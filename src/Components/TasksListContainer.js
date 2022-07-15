@@ -4,7 +4,8 @@ import Task from "./Task";
 
 class TasksListContainer extends React.Component {
     render() {
-        const tasksList = this.props.tasksArr.map((task) =>
+        const sortedTasks = [...this.props.tasksArr].sort((a, b) => a.done - b.done);
+        const tasksComponentsList = sortedTasks.map((task) =>
             task = (
                 <Task
                     title={task.title}
@@ -16,7 +17,7 @@ class TasksListContainer extends React.Component {
 
         return (
             <TasksRowsContainerStyle>
-                {tasksList}
+                {tasksComponentsList}
             </TasksRowsContainerStyle>
         );
     }

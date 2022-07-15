@@ -10,26 +10,42 @@ class Task extends React.Component {
         super(props);
         this.state = {
             done: this.props.done,
-            hover: false
+            hover: false,
+            taskIndicatorHover: false
         }
         this.handleClick = this.handleClick.bind(this);
         this.handleMouseEnter = this.handleMouseEnter.bind(this);
         this.handleMouseLeave = this.handleMouseLeave.bind(this);
+        this.handleTaskIndicatorMouseEnter = this.handleTaskIndicatorMouseEnter.bind(this);
+        this.handleTaskIndicatorMouseLeave = this.handleTaskIndicatorMouseLeave.bind(this);
     }
     render() {
-        const icon = this.state.done ? "done" : "undone";
+        let icon = this.state.done ? "done" : "undone";
+        if (this.state.taskIndicatorHover) icon = this.state.done ? "undone" : "done";
         const display = this.state.hover ? "block" : "none";
         const calendarIcon = <CalendarIcon />;
         return (
-            <TaskRowStyle onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}>
+            <TaskRowStyle
+                done={this.state.done}
+                onMouseEnter={this.handleMouseEnter}
+                onMouseLeave={this.handleMouseLeave}>
+
                 <TaskIndicator
                     iconType={icon}
                     onClick={this.handleClick}
+                    onMouseEnter={this.handleTaskIndicatorMouseEnter}
+                    onMouseLeave={this.handleTaskIndicatorMouseLeave}
                 />
+
                 <div>{this.props.title}</div>
+
                 <RowSectionStyle>
-                    <Button value="v" display={display} icon={calendarIcon} />
+                    <Button
+                        value="v"
+                        display={display}
+                        icon={calendarIcon} />
                 </RowSectionStyle>
+
             </TaskRowStyle>
         )
     }
@@ -47,6 +63,18 @@ class Task extends React.Component {
     handleMouseLeave() {
         this.setState({
             hover: false
+        });
+    }
+
+    handleTaskIndicatorMouseEnter() {
+        this.setState({
+            taskIndicatorHover: true
+        });
+    }
+
+    handleTaskIndicatorMouseLeave() {
+        this.setState({
+            taskIndicatorHover: false
         });
     }
 }

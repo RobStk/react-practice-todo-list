@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 const ButtonStyle = styled.div`
+    font-size: large;
     display: ${(props) => props.display || "none"};
     background: ${(props) => props.backgroundColor || "none"};
     line-height: 0;

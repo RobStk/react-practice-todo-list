@@ -13,7 +13,31 @@ class ToDoList extends React.Component {
         super(props);
         this.theme = darkTheme;
         this.handleTaskAdd = this.handleTaskAdd.bind(this);
-        this.tasks = [
+        this.state = {
+            tasks: this.getTasks()
+        }
+    }
+
+    render() {
+        return (
+            <>
+                <ThemeProvider theme={this.theme}>
+                    <GlobalStyle backgroundColor={this.theme.colors.background.primary} />
+                    <ToDoListStyle>
+                        <HeaderStyle data-style="HeaderStyle">
+                            <TasksAdder onTaskAdd={this.handleTaskAdd} />
+                            <Timer />
+                        </HeaderStyle>
+                        <TasksListContainer tasksArr={[...this.state.tasks]} />
+                    </ToDoListStyle>
+                </ThemeProvider>
+            </>
+        )
+    }
+
+    getTasks() {
+        //TODO json-server
+        return [
             {
                 id: "001",
                 title: "Awsome Task 1",
@@ -29,25 +53,15 @@ class ToDoList extends React.Component {
 
     handleTaskAdd(taskData) {
         console.log("Dodano nowe zadanie: ", taskData);
-    }
-
-    render() {
-        return (
-            <>
-                <ThemeProvider theme={this.theme}>
-                    <GlobalStyle backgroundColor={this.theme.colors.background.primary} />
-                    <ToDoListStyle>
-                        <div>
-                            <HeaderStyle data-style="HeaderStyle">
-                                <TasksAdder onTaskAdd={this.handleTaskAdd} />
-                                <Timer />
-                            </HeaderStyle>
-                            <TasksListContainer tasksArr={[...this.tasks]} />
-                        </div>
-                    </ToDoListStyle>
-                </ThemeProvider>
-            </>
-        )
+        const newTask = {
+            id: "003",
+            title: taskData,
+            done: false
+        }
+        let tasks = [...this.state.tasks, newTask];
+        this.setState({
+            tasks: tasks
+        })
     }
 }
 
