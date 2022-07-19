@@ -16,8 +16,12 @@ class ToDoList extends React.Component {
         this.deleteTask = this.deleteTask.bind(this);
         this.addTask = this.addTask.bind(this);
         this.state = {
-            tasks: this.getTasks()
+            tasks: []
         }
+    }
+
+    componentDidMount() {
+        this.getTasks();
     }
 
     render() {
@@ -41,20 +45,13 @@ class ToDoList extends React.Component {
         )
     }
 
-    getTasks() {
-        //TODO json-server
-        return [
-            {
-                id: "001",
-                title: "Awsome Task 1",
-                done: true
-            },
-            {
-                id: "002",
-                title: "Awsome Task 2",
-                done: false
-            }
-        ];
+    async getTasks() {
+        const response = await fetch("http://localhost:5000/tasks");
+        console.log([response]);
+        const tasks = await response.json();
+        this.setState({
+            tasks: tasks
+        });
     }
 
     setTasks(tasks) {
