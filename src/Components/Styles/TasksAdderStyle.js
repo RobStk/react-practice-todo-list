@@ -7,6 +7,7 @@ const TaskAdderStyle = styled.form`
     grid-template-columns: 1fr auto;
     padding-left: 0.2em;
     padding-right: 0.2em;
+    padding: 0.2em;
     border-radius: 5px;
     color: ${props => props.theme.colors.foreground.secondary};
 

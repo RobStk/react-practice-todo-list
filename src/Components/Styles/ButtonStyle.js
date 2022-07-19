@@ -7,8 +7,8 @@ const ButtonStyle = styled.div`
     line-height: 0;
     padding: 6px;
     border: none;
-    border-radius: 2px;
-    color: white;
+    border-radius: 4px;
+    color: ${({ color }) => color || "white"};
 
     &:hover{
         background-color: ${(props) => props.hoverBackgroundColor ? props.hoverBackgroundColor : props.theme.colors.background.stage3};

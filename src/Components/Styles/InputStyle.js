@@ -11,16 +11,15 @@ const InputStyle = styled.input`
     }
 
     &[type="text"] {
-        padding: .5em;
         border: none;
-        border-radius: 0.4em;
+        padding: 0;
     }
 
     &[type="text"]:hover{
         background-color: ${({ theme }) => theme.colors.background.stage2};
     }
+    
     &[type="text"]:focus{
-        background-color: ${({ theme }) => theme.colors.background.stage2};
         outline: none;
     }
 `

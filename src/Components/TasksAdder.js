@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "./Button";
+import Button from "./Button";
 import RowSectionStyle from "./Styles/RowSectionStyle";
 import TaskAdderStyle from "./Styles/TasksAdderStyle";
 import { Input } from "./Input";
