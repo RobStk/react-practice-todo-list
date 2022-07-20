@@ -11,5 +11,6 @@ const RowSectionStyle = styled.div`
         min-width: max-content;
     }
 `
+RowSectionStyle.displayName = "RowSectionStyle";
 
 export default RowSectionStyle;

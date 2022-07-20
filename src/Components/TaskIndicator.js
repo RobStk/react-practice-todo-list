@@ -25,6 +25,10 @@ class TaskIndicator extends React.Component {
         )
     }
 
+    /* ------------------------ */
+    /* Methods                  */
+    /* ------------------------ */
+
     setIcon(iconType) {
         switch (iconType) {
             case "add":
@@ -38,13 +42,19 @@ class TaskIndicator extends React.Component {
         }
     }
 
+    // ------------------------
+
     handleClick() {
         this.props.onClick && this.props.onClick();
     }
 
+    // ------------------------
+
     handleMouseEnter() {
         this.props.onMouseEnter && this.props.onMouseEnter();
     }
+
+    // ------------------------
 
     handleMouseLeave() {
         this.props.onMouseLeave && this.props.onMouseLeave();

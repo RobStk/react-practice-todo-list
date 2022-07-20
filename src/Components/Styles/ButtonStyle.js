@@ -15,5 +15,6 @@ const ButtonStyle = styled.div`
         cursor: default;
     }
 `
+ButtonStyle.displayName = "ButtonStyle";
 
 export default ButtonStyle;

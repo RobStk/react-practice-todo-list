@@ -36,6 +36,7 @@ class Task extends React.Component {
         this.handleInputKeyDown = this.handleInputKeyDown.bind(this);
         this.handleInputBlur = this.handleInputBlur.bind(this);
     }
+
     render() {
         let icon = this.props.done ? "done" : "undone";
         if (this.state.taskIndicatorHover) icon = this.props.done ? "undone" : "done";
@@ -97,10 +98,19 @@ class Task extends React.Component {
         )
     }
 
+    /* ------------------------ */
+    /* Methods                  */
+    /* ------------------------ */
+
     handleClick() {
         const status = !this.props.done
         this.updateStatus(status);
+        this.setState({
+            taskIndicatorHover: false
+        })
     }
+
+    // ------------------------
 
     handleMouseEnter() {
         this.setState({
@@ -108,11 +118,15 @@ class Task extends React.Component {
         });
     }
 
+    // ------------------------
+
     handleMouseLeave() {
         this.setState({
             hover: false
         });
     }
+
+    // ------------------------
 
     handleTaskIndicatorMouseEnter() {
         this.setState({
@@ -120,15 +134,21 @@ class Task extends React.Component {
         });
     }
 
+    // ------------------------
+
     handleTaskIndicatorMouseLeave() {
         this.setState({
             taskIndicatorHover: false
         });
     }
 
+    // ------------------------
+
     handleDelete() {
         this.props.onDelete(this.props.id);
     }
+
+    // ------------------------
 
     handleEdit() {
         this.setState({
@@ -136,11 +156,15 @@ class Task extends React.Component {
         })
     }
 
+    // ------------------------
+
     handleAccept() {
         this.setState({
             edit: false
         })
     }
+
+    // ------------------------
 
     handleInputKeyDown(event) {
         if (event.key === "Enter") {
@@ -156,6 +180,8 @@ class Task extends React.Component {
         }
     }
 
+    // ------------------------
+
     handleInputBlur(event) {
         console.log(event.target.value);
         this.updateTitle(event.target.value);
@@ -164,9 +190,13 @@ class Task extends React.Component {
         });
     }
 
+    // ------------------------
+
     openCalendar() {
         console.warn("Not implemented calendar feature.");
     }
+
+    // ------------------------
 
     updateTitle(title) {
         const task = {
@@ -175,6 +205,8 @@ class Task extends React.Component {
         }
         this.props.onTaskChange(task);
     }
+
+    // ------------------------
 
     updateStatus(status) {
         const task = {

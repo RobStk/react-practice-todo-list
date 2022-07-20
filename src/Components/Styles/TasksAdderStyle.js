@@ -23,5 +23,6 @@ const TaskAdderStyle = styled.form`
         background-color: ${({ theme }) => theme.colors.background.stage2};
     }
 `
+TaskAdderStyle.displayName = "TaskAdderStyle";
 
 export default TaskAdderStyle;

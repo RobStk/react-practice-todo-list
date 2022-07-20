@@ -6,5 +6,6 @@ const HeaderStyle = styled(RowSectionStyle)`
     margin-bottom: 0.7em;
     gap: 1em;
 `
+HeaderStyle.displayName = "HeaderStyle";
 
 export default HeaderStyle;

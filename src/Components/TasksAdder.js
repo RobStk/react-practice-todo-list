@@ -43,27 +43,41 @@ class TasksAdder extends React.Component {
         );
     }
 
+    /* ------------------------ */
+    /* Methods                  */
+    /* ------------------------ */
+
     activate() {
         this.setState({ isFocus: true });
     }
 
+    // ------------------------
+
     deactivate() {
         this.setState({ isFocus: false });
     }
+
+    // ------------------------
 
     handleMouseDown(event) {
         event.preventDefault();
         document.querySelector("#addTaskInput").focus();
     }
 
+    // ------------------------
+
     handleSubmit(event) {
         event.preventDefault();
         if (!this.state.inputValue) return;
-        this.props.onTaskAdd(this.state.inputValue);
+        this.props.onTaskAdd({
+            title: this.state.inputValue
+        });
         this.setState({
             inputValue: ""
         })
     }
+
+    // ------------------------
 
     handleChange(event) {
         this.setState({

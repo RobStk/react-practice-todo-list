@@ -23,5 +23,6 @@ const TaskRowStyle = styled.button`
         background-color: ${({ theme }) => theme.colors.background.stage2};
     }
 `
+TaskRowStyle.displayName = "TaskRowStyle";
 
 export default TaskRowStyle;

@@ -1,19 +1,24 @@
 {
   "tasks": [
     {
-      "id": "1",
-      "title": "Awsome Task 1",
-      "done": true
+      "title": "Nauczyć się Reacta",
+      "done": false,
+      "id": "1pbul7z"
     },
     {
-      "id": "2",
-      "title": "Awsome Task 2",
-      "done": false
+      "title": "Zrobić Listę Zdań",
+      "done": true,
+      "id": "JWx4fu5"
     },
     {
-      "id": "3",
-      "title": "Awsome Task 3",
-      "done": false
+      "title": "Polecieć na Marsa",
+      "done": false,
+      "id": "kHPDg1q"
+    },
+    {
+      "title": "Nowe fajne zdanie",
+      "done": true,
+      "id": "qsLIhEJ"
     }
   ]
 }

@@ -6,5 +6,6 @@ const TaskIndicatorStyle = styled.div`
     font-size: x-large;
     padding: 3px;
 `
+TaskIndicatorStyle.displayName = "TaskIndicatorStyle";
 
 export default TaskIndicatorStyle;

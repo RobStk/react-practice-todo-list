@@ -23,5 +23,6 @@ const InputStyle = styled.input`
         outline: none;
     }
 `
+InputStyle.displayName = "InputStyle";
 
 export default InputStyle;

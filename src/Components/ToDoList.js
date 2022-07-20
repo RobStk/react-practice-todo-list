@@ -7,10 +7,12 @@ import TasksListContainer from "./TasksListContainer";
 import HeaderStyle from "./Styles/HeaderStyle";
 import TasksAdder from "./TasksAdder";
 import Timer from "./Timer";
+import Connection from "../connection";
 
 class ToDoList extends React.Component {
     constructor(props) {
         super(props);
+        this.query = new Connection(props.dbPath);
         this.theme = darkTheme;
         this.updateTask = this.updateTask.bind(this);
         this.deleteTask = this.deleteTask.bind(this);
@@ -45,46 +47,64 @@ class ToDoList extends React.Component {
         )
     }
 
+    /* ------------------------ */
+    /* Methods                  */
+    /* ------------------------ */
+
     async getTasks() {
-        const response = await fetch("http://localhost:5000/tasks");
-        console.log([response]);
-        const tasks = await response.json();
+        const tasks = await this.query.get();
         this.setState({
             tasks: tasks
         });
     }
 
+    // ------------------------
+
     setTasks(tasks) {
-        //TODO json-server
         this.setState({
             tasks: tasks
-        })
+        });
     }
 
-    addTask(taskData) {
-        console.log("Dodano nowe zadanie: ", taskData);
-        const newTask = {
-            id: "003",
-            title: taskData,
-            done: false
-        }
-        let tasks = [...this.state.tasks, newTask];
+    // ------------------------
+
+    async addTask(taskData) {
+        const newTask = this.createTask();
+        newTask.title = taskData.title;
+        const data = await this.query.post(newTask);
+        let tasks = [...this.state.tasks, data];
         this.setTasks(tasks);
     }
 
-    updateTask(updatedTask) {
+    // ------------------------
+
+    async updateTask(updatedTask) {
         const id = updatedTask.id;
+
         let tasks = [...this.state.tasks];
         let task = tasks.find((task) => task.id === id);
         tasks = tasks.filter((task) => task.id !== id);
         task = { ...task, ...updatedTask };
         tasks.push(task);
         this.setTasks(tasks);
+        await this.query.put(task);
     }
 
-    deleteTask(id) {
+    // ------------------------
+
+    async deleteTask(id) {
         const tasks = this.state.tasks.filter((task) => (task.id !== id));
         this.setTasks(tasks);
+        await this.query.delete(id);
+    }
+
+    // ------------------------
+
+    createTask() {
+        return {
+            title: "",
+            done: false
+        };
     }
 }
 

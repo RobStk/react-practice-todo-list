@@ -8,7 +8,8 @@ const theme = {
         },
         foreground: {
             primary: "white",
-            secondary: "#569cd6"
+            secondary: "#569cd6",
+            green: "#90ee90"
         }
     }
 }

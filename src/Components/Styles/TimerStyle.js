@@ -6,5 +6,6 @@ const TimerStyle = styled.div`
     align-items: flex-end;
     font-size: 80%;
 `
+TimerStyle.displayName = "TimerStyle";
 
 export default TimerStyle;

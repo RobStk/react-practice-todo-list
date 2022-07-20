@@ -5,5 +5,6 @@ const TasksRowsContainerStyle = styled.ul`
     display: grid;
     gap: 3px;
 `
+TasksRowsContainerStyle.displayName = "TasksRowsContainerStyle";
 
 export default TasksRowsContainerStyle;

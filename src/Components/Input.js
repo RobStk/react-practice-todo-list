@@ -23,6 +23,10 @@ class Input extends React.Component {
         );
     }
 
+    /* ------------------------ */
+    /* Methods                  */
+    /* ------------------------ */
+
     handleFocus() {
         this.setState({
             placeholder: ""
@@ -30,12 +34,16 @@ class Input extends React.Component {
         this.props.onFocus();
     }
 
+    // ------------------------
+
     handleBlur() {
         this.setState({
             placeholder: this.props.placeholder
         });
         this.props.onBlur();
     }
+
+    // ------------------------
 
     handleChange(event) {
         this.props.onChange(event);

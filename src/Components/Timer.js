@@ -13,6 +13,19 @@ class Timer extends React.Component {
         setInterval(() => { this.updateTimer() }, 1000);
     }
 
+    render() {
+        return (
+            <TimerStyle>
+                <div>{this.state.date}</div>
+                <div>{this.state.time}</div>
+            </TimerStyle>
+        );
+    }
+
+    /* ------------------------ */
+    /* Methods                  */
+    /* ------------------------ */
+
     updateTimer() {
         const date = new Date();
         const year = date.getFullYear();
@@ -30,15 +43,6 @@ class Timer extends React.Component {
             date: year + "-" + month + "-" + day,
             time: hour + ":" + minutes + ":" + seconds
         });
-    }
-
-    render() {
-        return (
-            <TimerStyle>
-                <div>{this.state.date}</div>
-                <div>{this.state.time}</div>
-            </TimerStyle>
-        );
     }
 }
 
