@@ -71,8 +71,9 @@ class ToDoList extends React.Component {
     async addTask(taskData) {
         const newTask = this.createTask();
         newTask.title = taskData.title;
-        const data = await this.query.post(newTask);
-        let tasks = [...this.state.tasks, data];
+        this.query.post(newTask);
+        newTask.id = { ...newTask, id: "idPlaceholder" };
+        let tasks = [...this.state.tasks, newTask];
         this.setTasks(tasks);
     }
 
@@ -87,7 +88,7 @@ class ToDoList extends React.Component {
         task = { ...task, ...updatedTask };
         tasks.push(task);
         this.setTasks(tasks);
-        await this.query.put(task);
+        this.query.put(task);
     }
 
     // ------------------------
@@ -95,7 +96,7 @@ class ToDoList extends React.Component {
     async deleteTask(id) {
         const tasks = this.state.tasks.filter((task) => (task.id !== id));
         this.setTasks(tasks);
-        await this.query.delete(id);
+        this.query.delete(id);
     }
 
     // ------------------------

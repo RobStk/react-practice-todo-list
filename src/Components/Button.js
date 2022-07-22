@@ -9,6 +9,7 @@ class Button extends React.Component {
                 hoverBackgroundColor={this.props.hoverBackgroundColor}
                 display={display}
                 onClick={this.props.onClick}
+                onMouseDown={this.props.onMouseDown}
                 color={this.props.color}
             >
                 {this.props.icon}

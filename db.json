@@ -1,24 +1,14 @@
 {
   "tasks": [
     {
-      "title": "Nauczyć się Reacta",
+      "title": "Nowe zadanie",
       "done": false,
-      "id": "1pbul7z"
+      "id": 1
     },
     {
-      "title": "Zrobić Listę Zdań",
-      "done": true,
-      "id": "JWx4fu5"
-    },
-    {
-      "title": "Polecieć na Marsa",
+      "title": "Drugie zadanie",
       "done": false,
-      "id": "kHPDg1q"
-    },
-    {
-      "title": "Nowe fajne zdanie",
-      "done": true,
-      "id": "qsLIhEJ"
+      "id": 2
     }
   ]
 }

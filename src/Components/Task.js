@@ -8,6 +8,7 @@ import { BsCalendar3 as CalendarIcon } from "react-icons/bs";
 import { BsTrash as TrashIcon } from "react-icons/bs";
 import { BsPencil as EditIcon } from "react-icons/bs";
 import { BsCheckLg as AcceptIcon } from "react-icons/bs";
+import { BsXLg as CancelIcon } from "react-icons/bs";
 
 class Task extends React.Component {
     constructor(props) {
@@ -19,18 +20,25 @@ class Task extends React.Component {
             edit: false
         }
 
+        this.hasFocus = false;
+        this.hasMouseOver = false;
+
         this.calendarIcon = <CalendarIcon />;
         this.trashIcon = <TrashIcon />;
         this.editIcon = <EditIcon />;
         this.acceptIcon = <AcceptIcon />;
+        this.cancelIcon = <CancelIcon />;
 
-        this.handleClick = this.handleClick.bind(this);
+        this.handleIndicatorClick = this.handleIndicatorClick.bind(this);
+        this.handleFocus = this.handleFocus.bind(this);
+        this.handleBlur = this.handleBlur.bind(this);
         this.handleMouseEnter = this.handleMouseEnter.bind(this);
         this.handleMouseLeave = this.handleMouseLeave.bind(this);
         this.handleTaskIndicatorMouseEnter = this.handleTaskIndicatorMouseEnter.bind(this);
         this.handleTaskIndicatorMouseLeave = this.handleTaskIndicatorMouseLeave.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
         this.handleAccept = this.handleAccept.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
         this.openCalendar = this.openCalendar.bind(this);
         this.handleInputKeyDown = this.handleInputKeyDown.bind(this);
@@ -42,12 +50,6 @@ class Task extends React.Component {
         if (this.state.taskIndicatorHover) icon = this.props.done ? "undone" : "done";
         const display = this.state.hover ? "block" : "none";
         let content = <div>{this.props.title}</div>
-        let editButton =
-            <Button
-                display={display}
-                icon={this.editIcon}
-                onClick={this.handleEdit}
-            />;
         if (this.state.edit) {
             content =
                 <InputStyle
@@ -56,24 +58,20 @@ class Task extends React.Component {
                     defaultValue={this.props.title}
                     onKeyDown={this.handleInputKeyDown}
                     onBlur={this.handleInputBlur}
-                />
-            editButton =
-                <Button
-                    display={display}
-                    icon={this.acceptIcon}
-                    onClick={this.handleAccept}
-                    color="lightGreen"
-                />;
+            />
         }
         return (
             <TaskRowStyle
+                ref={(taskRowDOM) => { this.taskRowDOM = taskRowDOM; }}
                 done={this.props.done}
                 onMouseEnter={this.handleMouseEnter}
-                onMouseLeave={this.handleMouseLeave}>
+                onMouseLeave={this.handleMouseLeave}
+                onFocus={this.handleFocus}
+                onBlur={this.handleBlur}>
 
                 <TaskIndicator
                     iconType={icon}
-                    onClick={this.handleClick}
+                    onClick={this.handleIndicatorClick}
                     onMouseEnter={this.handleTaskIndicatorMouseEnter}
                     onMouseLeave={this.handleTaskIndicatorMouseLeave}
                 />
@@ -81,7 +79,23 @@ class Task extends React.Component {
                 {content}
 
                 <RowSectionStyle>
-                    {editButton}
+                    <Button
+                        display={this.state.edit ? display : "none"}
+                        icon={this.cancelIcon}
+                        onMouseDown={this.handleCancel}
+                        color="red"
+                    />
+                    <Button
+                        display={this.state.edit ? display : "none"}
+                        icon={this.acceptIcon}
+                        onClick={this.handleAccept}
+                        color="lightGreen"
+                    />
+                    <Button
+                        display={this.state.edit ? "none" : display}
+                        icon={this.editIcon}
+                        onClick={this.handleEdit}
+                    />
                     <Button
                         display={display}
                         icon={this.calendarIcon}
@@ -102,8 +116,9 @@ class Task extends React.Component {
     /* Methods                  */
     /* ------------------------ */
 
-    handleClick() {
-        const status = !this.props.done
+    handleIndicatorClick() {
+        const status = !this.props.done;
+        if (status === true) this.taskRowDOM.blur();
         this.updateStatus(status);
         this.setState({
             taskIndicatorHover: false
@@ -112,7 +127,8 @@ class Task extends React.Component {
 
     // ------------------------
 
-    handleMouseEnter() {
+    handleFocus() {
+        this.hasFocus = true;
         this.setState({
             hover: true
         });
@@ -120,10 +136,33 @@ class Task extends React.Component {
 
     // ------------------------
 
-    handleMouseLeave() {
+    handleBlur(event) {
+        this.hasFocus = false;
+        if (!this.hasMouseOver) {
+            this.setState({
+                hover: false
+            })
+        }
+    }
+
+    // ------------------------
+
+    handleMouseEnter() {
+        this.hasMouseOver = true;
         this.setState({
-            hover: false
+            hover: true
         });
+    }
+
+    // ------------------------
+
+    handleMouseLeave(event) {
+        this.hasMouseOver = false;
+        if (!this.hasFocus) {
+            this.setState({
+                hover: false
+            });
+        }        
     }
 
     // ------------------------
@@ -178,6 +217,15 @@ class Task extends React.Component {
                 edit: false
             });
         }
+    }
+
+    // ------------------------
+
+    handleCancel(event) {
+        event.preventDefault();
+        this.setState({
+            edit: false
+        })
     }
 
     // ------------------------

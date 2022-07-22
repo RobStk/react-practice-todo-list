@@ -20,7 +20,7 @@ class TasksListContainer extends React.Component {
 
         return (
             <TasksRowsContainerStyle>
-                {tasksComponentsList}
+                {tasksComponentsList.length > 0 ? tasksComponentsList : <div>Brak zadań do wykonania.</div>}
             </TasksRowsContainerStyle>
         );
     }

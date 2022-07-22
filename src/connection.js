@@ -30,22 +30,20 @@ class Connection {
     async put(newData) {
         const id = newData.id;
         const pathToUpdate = this.url + "/" + id;
-        const response = await fetch(pathToUpdate, {
+        fetch(pathToUpdate, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(newData)
         });
-        console.log(response);
     }
 
     // ------------------------
 
     async delete(id) {
         const pathToDelete = this.url + "/" + id;
-        const response = await fetch(pathToDelete, {
+        fetch(pathToDelete, {
             method: "DELETE"
         });
-        console.log(response);
     }
 }
 

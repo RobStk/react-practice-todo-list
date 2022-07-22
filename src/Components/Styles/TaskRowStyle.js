@@ -21,6 +21,7 @@ const TaskRowStyle = styled.button`
 
     &:focus{
         background-color: ${({ theme }) => theme.colors.background.stage2};
+        outline: none;
     }
 `
 TaskRowStyle.displayName = "TaskRowStyle";
