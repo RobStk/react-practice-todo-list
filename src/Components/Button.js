@@ -11,6 +11,7 @@ class Button extends React.Component {
                 onClick={this.props.onClick}
                 onMouseDown={this.props.onMouseDown}
                 color={this.props.color}
+                className={this.props.className}
             >
                 {this.props.icon}
             </ButtonStyle>

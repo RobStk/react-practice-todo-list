@@ -4,8 +4,11 @@ import Task from "./Task";
 
 class TasksListContainer extends React.Component {
     render() {
-        const sortedTasks = [...this.props.tasksArr].sort((a, b) => a.done - b.done);
-        const tasksComponentsList = sortedTasks.map((task) =>
+        let sortedTasks = [...this.props.tasksArr].sort((a, b) => a.creationDate - b.creationDate);
+        const todoTasks = sortedTasks.filter((task) => !task.done);
+        const doneTasks = sortedTasks.filter((task) => task.done);
+        const preperedTasks = todoTasks.concat(doneTasks);
+        const tasksComponentsList = preperedTasks.map((task) =>
             task = (
                 <Task
                     title={task.title}

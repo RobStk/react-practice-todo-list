@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const ButtonStyle = styled.div`
+const ButtonStyle = styled.button`
     font-size: large;
     display: ${(props) => props.display || "none"};
     background: ${(props) => props.backgroundColor || "none"};

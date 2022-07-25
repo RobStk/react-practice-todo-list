@@ -15,12 +15,12 @@ class Task extends React.Component {
         super(props);
 
         this.state = {
-            hover: false,
+            isActive: false,
+            isHoverd: false,
             taskIndicatorHover: false,
             edit: false
         }
 
-        this.hasFocus = false;
         this.hasMouseOver = false;
 
         this.calendarIcon = <CalendarIcon />;
@@ -36,19 +36,20 @@ class Task extends React.Component {
         this.handleMouseLeave = this.handleMouseLeave.bind(this);
         this.handleTaskIndicatorMouseEnter = this.handleTaskIndicatorMouseEnter.bind(this);
         this.handleTaskIndicatorMouseLeave = this.handleTaskIndicatorMouseLeave.bind(this);
-        this.handleEdit = this.handleEdit.bind(this);
+        this.editTask = this.editTask.bind(this);
         this.handleAccept = this.handleAccept.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
         this.openCalendar = this.openCalendar.bind(this);
         this.handleInputKeyDown = this.handleInputKeyDown.bind(this);
         this.handleInputBlur = this.handleInputBlur.bind(this);
+        this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
     render() {
         let icon = this.props.done ? "done" : "undone";
         if (this.state.taskIndicatorHover) icon = this.props.done ? "undone" : "done";
-        const display = this.state.hover ? "block" : "none";
+        const display = this.state.isActive || this.state.isHoverd ? "block" : "none";
         let content = <div>{this.props.title}</div>
         if (this.state.edit) {
             content =
@@ -62,12 +63,16 @@ class Task extends React.Component {
         }
         return (
             <TaskRowStyle
-                ref={(taskRowDOM) => { this.taskRowDOM = taskRowDOM; }}
+                ref={(taskRowDOM) => { this.taskRowDOM = taskRowDOM; }} //TODO Używane?
                 done={this.props.done}
                 onMouseEnter={this.handleMouseEnter}
                 onMouseLeave={this.handleMouseLeave}
                 onFocus={this.handleFocus}
-                onBlur={this.handleBlur}>
+                onBlur={this.handleBlur}
+                onKeyDown={this.handleKeyDown}
+                isActive={this.state.isActive}
+                tabIndex="0"
+            >
 
                 <TaskIndicator
                     iconType={icon}
@@ -83,28 +88,31 @@ class Task extends React.Component {
                         display={this.state.edit ? display : "none"}
                         icon={this.cancelIcon}
                         onMouseDown={this.handleCancel}
-                        color="red"
+                        color="#ad291a" //TODO Kolor z theme
                     />
                     <Button
                         display={this.state.edit ? display : "none"}
                         icon={this.acceptIcon}
                         onClick={this.handleAccept}
-                        color="lightGreen"
+                        color="lightGreen" //TODO Kolor z theme
                     />
                     <Button
                         display={this.state.edit ? "none" : display}
                         icon={this.editIcon}
-                        onClick={this.handleEdit}
+                        onClick={this.editTask}
+                        onFocus={this.handleFocus}
                     />
                     <Button
                         display={display}
                         icon={this.calendarIcon}
                         onClick={this.openCalendar}
+                        onFocus={this.handleFocus}
                     />
                     <Button
                         display={display}
                         icon={this.trashIcon}
                         onClick={this.handleDelete}
+                        className="trash"
                     />
                 </RowSectionStyle>
 
@@ -127,20 +135,18 @@ class Task extends React.Component {
 
     // ------------------------
 
-    handleFocus() {
-        this.hasFocus = true;
+    handleFocus(event) {
         this.setState({
-            hover: true
-        });
+            isActive: true
+        })
     }
 
     // ------------------------
 
-    handleBlur(event) {
-        this.hasFocus = false;
+    handleBlur(event) {        
         if (!this.hasMouseOver) {
             this.setState({
-                hover: false
+                isActive: false
             })
         }
     }
@@ -150,7 +156,7 @@ class Task extends React.Component {
     handleMouseEnter() {
         this.hasMouseOver = true;
         this.setState({
-            hover: true
+            isHoverd: true
         });
     }
 
@@ -158,9 +164,9 @@ class Task extends React.Component {
 
     handleMouseLeave(event) {
         this.hasMouseOver = false;
-        if (!this.hasFocus) {
+        if (!this.state.isActive) {
             this.setState({
-                hover: false
+                isHoverd: false
             });
         }        
     }
@@ -189,7 +195,7 @@ class Task extends React.Component {
 
     // ------------------------
 
-    handleEdit() {
+    editTask() {
         this.setState({
             edit: true
         })
@@ -197,7 +203,8 @@ class Task extends React.Component {
 
     // ------------------------
 
-    handleAccept() {
+    handleAccept(event) {
+        event.preventDefault();
         this.setState({
             edit: false
         })
@@ -222,7 +229,6 @@ class Task extends React.Component {
     // ------------------------
 
     handleCancel(event) {
-        event.preventDefault();
         this.setState({
             edit: false
         })
@@ -231,7 +237,6 @@ class Task extends React.Component {
     // ------------------------
 
     handleInputBlur(event) {
-        console.log(event.target.value);
         this.updateTitle(event.target.value);
         this.setState({
             edit: false
@@ -262,6 +267,15 @@ class Task extends React.Component {
             done: status,
         }
         this.props.onTaskChange(task);
+    }
+
+    handleKeyDown(event) {
+        if (event.code === "Tab" && !event.target.classList.contains("trash")) {
+            event.target.blur();
+            this.setState({
+                isActive: true
+            })
+        }
     }
 }
 

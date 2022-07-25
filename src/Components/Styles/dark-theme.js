@@ -9,7 +9,8 @@ const theme = {
         foreground: {
             primary: "white",
             secondary: "#569cd6",
-            green: "#90ee90"
+            green: "#90ee90",
+            red: "#ad291a"
         }
     }
 }
