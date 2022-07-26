@@ -88,13 +88,13 @@ class Task extends React.Component {
                         display={this.state.edit ? display : "none"}
                         icon={this.cancelIcon}
                         onMouseDown={this.handleCancel}
-                        color="#ad291a" //TODO Kolor z theme
+                        className="cancel"
                     />
                     <Button
                         display={this.state.edit ? display : "none"}
                         icon={this.acceptIcon}
                         onClick={this.handleAccept}
-                        color="lightGreen" //TODO Kolor z theme
+                        className="accept"
                     />
                     <Button
                         display={this.state.edit ? "none" : display}

@@ -9,6 +9,11 @@ const ButtonStyle = styled.button`
     border: none;
     border-radius: 4px;
     color: ${({ color }) => color || "white"};
+    color: ${(props) => {
+        if (props.className === "accept") return props.theme.colors.foreground.green;
+        if (props.className === "cancel") return props.theme.colors.foreground.red;
+        if (props.color) return props.color;
+    }};
 
     &:hover{
         background-color: ${(props) => props.hoverBackgroundColor ? props.hoverBackgroundColor : props.theme.colors.background.stage3};

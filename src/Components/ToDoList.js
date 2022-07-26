@@ -53,9 +53,7 @@ class ToDoList extends React.Component {
 
     async getTasks() {
         const tasks = await this.query.get();
-        this.setState({
-            tasks: tasks
-        });
+        this.setTasks(tasks);
     }
 
     // ------------------------
@@ -72,16 +70,13 @@ class ToDoList extends React.Component {
         const newTask = this.createTask();
         newTask.title = taskData.title;
         this.query.post(newTask);
-        newTask.id = { ...newTask, id: "idPlaceholder" };
-        let tasks = [...this.state.tasks, newTask];
-        this.setTasks(tasks);
+        await this.getTasks();
     }
 
     // ------------------------
 
     async updateTask(updatedTask) {
         const id = updatedTask.id;
-
         let tasks = [...this.state.tasks];
         let task = tasks.find((task) => task.id === id);
         tasks = tasks.filter((task) => task.id !== id);

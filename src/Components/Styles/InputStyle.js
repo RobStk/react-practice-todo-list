@@ -21,6 +21,7 @@ const InputStyle = styled.input`
     
     &[type="text"]:focus{
         outline: none;
+        font-family: inherit;
     }
 `
 InputStyle.displayName = "InputStyle";
