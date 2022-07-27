@@ -19,6 +19,7 @@ class TaskIndicator extends React.Component {
                 onClick={this.handleClick}
                 onMouseEnter={this.handleMouseEnter}
                 onMouseLeave={this.handleMouseLeave}
+                onKeyDown={this.props.onKeyDown}
                 tabIndex="0"
             >
                 {icon}

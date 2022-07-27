@@ -37,11 +37,11 @@ class Task extends React.Component {
         this.handleTaskIndicatorMouseEnter = this.handleTaskIndicatorMouseEnter.bind(this);
         this.handleTaskIndicatorMouseLeave = this.handleTaskIndicatorMouseLeave.bind(this);
         this.editTask = this.editTask.bind(this);
-        this.handleAccept = this.handleAccept.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
         this.openCalendar = this.openCalendar.bind(this);
         this.handleInputKeyDown = this.handleInputKeyDown.bind(this);
+        this.handleIndicatorKeyDown = this.handleIndicatorKeyDown.bind(this);
         this.handleInputBlur = this.handleInputBlur.bind(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
     }
@@ -63,7 +63,7 @@ class Task extends React.Component {
         }
         return (
             <TaskRowStyle
-                ref={(taskRowDOM) => { this.taskRowDOM = taskRowDOM; }} //TODO Używane?
+                ref={(taskRowDOM) => { this.taskRowDOM = taskRowDOM; }}
                 done={this.props.done}
                 onMouseEnter={this.handleMouseEnter}
                 onMouseLeave={this.handleMouseLeave}
@@ -79,6 +79,7 @@ class Task extends React.Component {
                     onClick={this.handleIndicatorClick}
                     onMouseEnter={this.handleTaskIndicatorMouseEnter}
                     onMouseLeave={this.handleTaskIndicatorMouseLeave}
+                    onKeyDown={this.handleIndicatorKeyDown}
                 />
 
                 {content}
@@ -93,7 +94,6 @@ class Task extends React.Component {
                     <Button
                         display={this.state.edit ? display : "none"}
                         icon={this.acceptIcon}
-                        onClick={this.handleAccept}
                         className="accept"
                     />
                     <Button
@@ -125,14 +125,13 @@ class Task extends React.Component {
     /* ------------------------ */
 
     handleIndicatorClick() {
-        const status = !this.props.done;
-        if (status === true) this.taskRowDOM.blur();
-        this.updateStatus(status);
+        this.changeStatus();
         this.setState({
             taskIndicatorHover: false,
             isActive: false
         })
     }
+
 
     // ------------------------
 
@@ -210,25 +209,28 @@ class Task extends React.Component {
 
     // ------------------------
 
-    handleAccept(event) {
-        this.setState({
-            edit: false
-        });
-    }
-
-    // ------------------------
-
     handleInputKeyDown(event) {
         if (event.key === "Enter") {
             this.updateTitle(event.target.value);
             this.setState({
                 edit: false
             });
+            this.taskRowDOM.focus();
         }
         if (event.key === "Escape") {
             this.setState({
                 edit: false
             });
+            this.taskRowDOM.focus();
+        }
+    }
+
+    // ------------------------
+
+    handleIndicatorKeyDown(event) {
+        if (event.key === "Enter") {
+            this.changeStatus();
+            this.taskRowDOM.focus();
         }
     }
 
@@ -268,7 +270,9 @@ class Task extends React.Component {
 
     // ------------------------
 
-    updateStatus(status) {
+    changeStatus() {
+        const status = !this.props.done;
+        if (status === true) this.taskRowDOM.blur();
         const task = {
             id: this.props.id,
             done: status,
