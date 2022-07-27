@@ -129,7 +129,8 @@ class Task extends React.Component {
         if (status === true) this.taskRowDOM.blur();
         this.updateStatus(status);
         this.setState({
-            taskIndicatorHover: false
+            taskIndicatorHover: false,
+            isActive: false
         })
     }
 
@@ -143,8 +144,14 @@ class Task extends React.Component {
 
     // ------------------------
 
-    handleBlur(event) {        
+    handleBlur(event) {
         if (!this.hasMouseOver) {
+            this.setState({
+                isActive: false,
+                isHoverd: false
+            })
+        }
+        if (this.hasMouseOver) {
             this.setState({
                 isActive: false
             })
@@ -236,6 +243,7 @@ class Task extends React.Component {
     // ------------------------
 
     handleInputBlur(event) {
+        this.taskRowDOM.focus();
         this.updateTitle(event.target.value);
         this.setState({
             edit: false
