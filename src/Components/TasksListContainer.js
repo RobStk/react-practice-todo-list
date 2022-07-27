@@ -13,7 +13,7 @@ class TasksListContainer extends React.Component {
                 <Task
                     title={task.title}
                     done={task.done}
-                    key={task.id}
+                    key={task.id || task.tempId}
                     id={task.id}
                     onDelete={this.props.onDelete}
                     onTaskChange={this.props.onTaskChange}

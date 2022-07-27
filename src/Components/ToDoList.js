@@ -14,6 +14,9 @@ class ToDoList extends React.Component {
         super(props);
         this.query = new Connection(props.dbPath);
         this.theme = darkTheme;
+
+        this.tempIdCnt = 0;
+
         this.updateTask = this.updateTask.bind(this);
         this.deleteTask = this.deleteTask.bind(this);
         this.addTask = this.addTask.bind(this);
@@ -53,6 +56,9 @@ class ToDoList extends React.Component {
 
     async getTasks() {
         const tasks = await this.query.get();
+        tasks.forEach(task => {
+            if (task.tempId) delete task.tempId;
+        });
         this.setTasks(tasks);
     }
 
@@ -69,8 +75,12 @@ class ToDoList extends React.Component {
     async addTask(taskData) {
         const newTask = this.createTask();
         newTask.title = taskData.title;
-        this.query.post(newTask);
-        await this.getTasks();
+        newTask.tempId = "tempId" + this.tempIdCnt;
+        this.tempIdCnt++;
+        const tasks = [...this.state.tasks, newTask];
+        this.setTasks(tasks);
+        await this.query.post(newTask);
+        this.getTasks();
     }
 
     // ------------------------

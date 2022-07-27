@@ -168,7 +168,7 @@ class Task extends React.Component {
             this.setState({
                 isHoverd: false
             });
-        }        
+        }
     }
 
     // ------------------------
@@ -204,10 +204,9 @@ class Task extends React.Component {
     // ------------------------
 
     handleAccept(event) {
-        event.preventDefault();
         this.setState({
             edit: false
-        })
+        });
     }
 
     // ------------------------
