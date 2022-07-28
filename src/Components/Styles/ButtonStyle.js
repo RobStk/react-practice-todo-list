@@ -1,13 +1,17 @@
 import styled from "styled-components";
 
 const ButtonStyle = styled.button`
-    font-size: large;
-    display: ${(props) => props.display || "none"};
+    font-size: ${(props) => props.fontSize || "large"};
+    font-family: ${(props) => props.fontFamily || "inherit"};
     background: ${(props) => props.backgroundColor || "none"};
     line-height: 0;
     padding: 6px;
     border: none;
     border-radius: 4px;
+    width: ${(props) => props.width || ""};
+    display: ${(props) => props.display || "none"};
+    align-items: center;
+    column-gap: 0.4em;
     color: ${({ color }) => color || "white"};
     color: ${(props) => {
         if (props.className === "accept") return props.theme.colors.foreground.green;

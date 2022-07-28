@@ -1,5 +1,4 @@
 import React from "react";
-import Button from "./Button";
 import RowSectionStyle from "./Styles/RowSectionStyle";
 import TaskAdderStyle from "./Styles/TasksAdderStyle";
 import { Input } from "./Input";
@@ -33,11 +32,6 @@ class TasksAdder extends React.Component {
                         onBlur={() => { this.deactivate() }}
                         onChange={this.handleChange.bind(this)}
                     />
-                </RowSectionStyle>
-
-                <RowSectionStyle>
-                    <Button value="v" />
-                    <Button value="+" />
                 </RowSectionStyle>
             </TaskAdderStyle>
         );

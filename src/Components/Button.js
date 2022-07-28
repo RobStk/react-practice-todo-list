@@ -3,17 +3,20 @@ import ButtonStyle from "./Styles/ButtonStyle";
 
 class Button extends React.Component {
     render() {
-        const display = this.props.display;
         return (
             <ButtonStyle
                 hoverBackgroundColor={this.props.hoverBackgroundColor}
-                display={display}
+                display={this.props.display || "flex"}
                 onClick={this.props.onClick}
                 onMouseDown={this.props.onMouseDown}
                 color={this.props.color}
                 className={this.props.className}
+                width={this.props.width}
+                font-family={this.props.fontFamily || "inherit"}
+                fontSize={this.props.fontSize || ""}
             >
                 {this.props.icon}
+                {this.props.txt}
             </ButtonStyle>
         )
     }
