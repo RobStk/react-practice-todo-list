@@ -17,7 +17,7 @@ class TasksAdder extends React.Component {
         return (
             <TaskAdderStyle
                 isFocus={this.state.isFocus}
-                onMouseDown={(event) => { this.handleMouseDown(event) }}
+                onClick={(event) => { this.handleClick(event) }}
                 onSubmit={(event) => { this.handleSubmit(event) }}>
 
                 <RowSectionStyle>
@@ -53,7 +53,7 @@ class TasksAdder extends React.Component {
 
     // ------------------------
 
-    handleMouseDown(event) {
+    handleClick(event) {
         event.preventDefault();
         document.querySelector("#addTaskInput").focus();
     }

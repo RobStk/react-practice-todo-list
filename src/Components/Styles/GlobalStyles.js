@@ -10,5 +10,9 @@ const GlobalStyle = createGlobalStyle`
         color: ${({ theme }) => theme.colors.foreground.primary};
         background-color: ${props => props.backgroundColor};
     }
+
+    svg {
+        pointer-events: none;
+    }
 `
 export default GlobalStyle;

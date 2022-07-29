@@ -5,6 +5,7 @@ const InputStyle = styled.input`
     color: white;
     width: 100%;
     font-size: 100%;
+    font-family: inherit;
     
     &::placeholder {
         color: ${({ theme }) => theme.colors.foreground.secondary};
