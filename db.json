@@ -1,10 +1,9 @@
 {
   "tasks": [
     {
-      "title": "Zadanie 1",
+      "title": "Zadanie 1 - najstarsze",
       "done": false,
       "creationDate": "20220730063826279",
-      "tempId": "tempId0",
       "id": 1
     },
     {
@@ -27,10 +26,9 @@
       "id": 4
     },
     {
-      "title": "Zadanie 5",
+      "title": "Zadanie 5 - najnowsze",
       "done": false,
       "creationDate": "20220730063839681",
-      "tempId": "tempId4",
       "id": 5
     }
   ]
