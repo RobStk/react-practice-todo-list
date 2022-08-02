@@ -49,7 +49,7 @@ class Task extends React.Component {
     render() {
         let icon = this.props.done ? "done" : "undone";
         if (this.state.taskIndicatorHover) icon = this.props.done ? "undone" : "done";
-        const display = this.state.isActive || this.state.isHoverd ? "block" : "none";
+        const display = this.state.isActive || this.state.isHoverd ? "flex" : "none";
         let content = <div>{this.props.title}</div>
         if (this.state.edit) {
             content =

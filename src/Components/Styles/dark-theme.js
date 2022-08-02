@@ -12,6 +12,10 @@ const theme = {
             green: "#90ee90",
             red: "#ad291a"
         }
+    },
+    padding: {
+        medium: "6px",
+        large: "12px"
     }
 }
 

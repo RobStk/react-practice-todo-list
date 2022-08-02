@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const RowSectionStyle = styled.div`
-    display: flex;
+    display: ${(props) => props.display || "flex"};
     flex-direction: row;
     align-items: center;
     width: 100%;

@@ -92,6 +92,8 @@ class ToDoList extends React.Component {
         let task = tasks.find((task) => task.id === id);
         tasks = tasks.filter((task) => task.id !== id);
         task = { ...task, ...updatedTask };
+        const timer = new Time();
+        task.modificationDate = timer.getFullTimeRaw();
         tasks.push(task);
         this.setTasks(tasks);
         this.query.put(task);
@@ -110,11 +112,13 @@ class ToDoList extends React.Component {
     createTask() {
         const timer = new Time();
         const creationDate = timer.getFullTimeRaw();
+        const modificationDate = creationDate;
 
         return {
             title: "",
             done: false,
-            creationDate: creationDate
+            creationDate: creationDate,
+            modificationDate: modificationDate
         };
     }
 }

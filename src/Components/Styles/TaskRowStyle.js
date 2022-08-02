@@ -7,6 +7,7 @@ const TaskRowStyle = styled.div`
     border-radius: 5px;
     display: grid;
     grid-template-columns: auto 1fr auto;
+    grid-template-rows: 1.9em;
     justify-items: left;
     align-items: center;
     gap: 10px;

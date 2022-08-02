@@ -6,47 +6,61 @@ import { BsChevronDown as ExpandIcon } from "react-icons/bs"
 import ExpandIconStyle from "./Styles/ExpandIconStyle";
 import RowSectionStyle from "./Styles/RowSectionStyle";
 import SortDirectionButton from "./SortDirectionButton";
+import SortByPanel from "./SortByPanel";
 
 class TasksListContainer extends React.Component {
     constructor(props) {
         super(props);
         this.handleExpansion = this.handleExpansion.bind(this);
         this.changeSorting = this.changeSorting.bind(this);
+        this.changeSortProp = this.changeSortProp.bind(this);
+
+        this.sortOptions = ["Nazwa", "Data utworzenia", "Ostatnia modyfikacja"];
 
         this.state = {
             doneVisibility: "collapsed",
-            isAscending: true
+            isAscending: true,
+            sortBy: this.sortOptions[1]
         }
     }
 
     render() {
-        let sortedTasks = this.sortTasks(this.props.tasksArr, "creationDate", this.state.isAscending);
+        let sortedTasks = this.sortTasks(this.props.tasksArr, this.state.sortBy, this.state.isAscending);
+        console.log("Posortowano po: ", this.state.sortBy)
         const todoTasks = sortedTasks.filter((task) => !task.done);
         const doneTasks = sortedTasks.filter((task) => task.done);
         const todoTasksComponents = this.prepareTasks(todoTasks);
         const doneTasksComponents = this.prepareTasks(doneTasks);
-        const doneSectionBtnVisibility = doneTasksComponents.length > 0 ? "" : "none";
-        const doneSectionVisibility = this.state.doneVisibility === "expanded" ? "" : "none";
+        const sortingDisplay = this.props.tasksArr.length > 1 ? "" : "none";
+        const doneSectionBtnDisplay = doneTasksComponents.length > 0 ? "" : "none";
+        const doneSectionDisplay = this.state.doneVisibility === "expanded" ? "" : "none";
         const expandIcon = <ExpandIconStyle className={this.state.doneVisibility}><ExpandIcon /></ExpandIconStyle>;
 
         return (
             <>
-                <RowSectionStyle>
-                    <SortDirectionButton onClick={this.changeSorting} isAscending={this.state.isAscending} />
-                    {/* {sortTypeButton} */}
+                <RowSectionStyle gap="0" display={sortingDisplay}>
+                    <SortDirectionButton
+                        onClick={this.changeSorting}
+                        isAscending={this.state.isAscending}
+                    />
+                    <SortByPanel
+                        sortOptions={this.sortOptions}
+                        sortingProp={this.state.sortBy}
+                        onOptionSelect={this.changeSortProp}
+                    />
                 </RowSectionStyle>
                 <TasksRowsContainerStyle>
                     {todoTasksComponents.length > 0 ? todoTasksComponents : <div>Brak zadań do wykonania.</div>}
                 </TasksRowsContainerStyle>
                 <Button
-                    display={doneSectionBtnVisibility}
+                    display={doneSectionBtnDisplay}
                     icon={expandIcon}
                     txt={"Wykonane " + doneTasksComponents.length}
                     width="max-content"
                     onClick={this.handleExpansion}
                     fontSize={"medium"}
                 />
-                <TasksRowsContainerStyle display={doneSectionVisibility}>
+                <TasksRowsContainerStyle display={doneSectionDisplay}>
                     {doneTasksComponents}
                 </TasksRowsContainerStyle>
             </>
@@ -89,12 +103,28 @@ class TasksListContainer extends React.Component {
 
     // ------------------------
 
+    changeSortProp(prop) {
+        this.setState({
+            sortBy: prop
+        })
+    }
+
+    // ------------------------
+
     sortTasks(tasksArr, sortBy, isAscending) {
+        let sortedTasks = [];
         switch (sortBy) {
-            case "creationDate":
-                let sortedTasks = [];
+            case "Nazwa":
+                if (isAscending) sortedTasks = [...tasksArr].sort((a, b) => a.title.localeCompare(b.title));
+                if (!isAscending) sortedTasks = [...tasksArr].sort((a, b) => b.title.localeCompare(a.title));
+                return sortedTasks;
+            case "Data utworzenia":
                 if (isAscending) sortedTasks = [...tasksArr].sort((a, b) => a.creationDate - b.creationDate);
                 if (!isAscending) sortedTasks = [...tasksArr].sort((a, b) => b.creationDate - a.creationDate);
+                return sortedTasks;
+            case "Ostatnia modyfikacja":
+                if (isAscending) sortedTasks = [...tasksArr].sort((a, b) => a.modificationDate - b.modificationDate);
+                if (!isAscending) sortedTasks = [...tasksArr].sort((a, b) => b.modificationDate - a.modificationDate);
                 return sortedTasks;
             default:
                 return tasksArr;

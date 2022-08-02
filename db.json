@@ -1,35 +1,3 @@
 {
-  "tasks": [
-    {
-      "title": "Zadanie 1 - najstarsze",
-      "done": false,
-      "creationDate": "20220730063826279",
-      "id": 1
-    },
-    {
-      "title": "Zadanie 2",
-      "done": false,
-      "creationDate": "20220730063830187",
-      "id": 2
-    },
-    {
-      "title": "Zadanie 3",
-      "done": false,
-      "creationDate": "20220730063832811",
-      "tempId": "tempId2",
-      "id": 3
-    },
-    {
-      "title": "Zadanie 4",
-      "done": false,
-      "creationDate": "20220730063836254",
-      "id": 4
-    },
-    {
-      "title": "Zadanie 5 - najnowsze",
-      "done": false,
-      "creationDate": "20220730063839681",
-      "id": 5
-    }
-  ]
+  "tasks": []
 }
