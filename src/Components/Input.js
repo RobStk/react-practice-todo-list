@@ -19,6 +19,7 @@ class Input extends React.Component {
                 onChange={(event) => { this.handleChange(event) }}
                 onFocus={() => { this.handleFocus() }}
                 onBlur={() => { this.handleBlur() }}
+                onKeyDown={this.props.onKeyDown}
             />
         );
     }

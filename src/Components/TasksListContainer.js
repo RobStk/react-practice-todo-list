@@ -14,6 +14,7 @@ class TasksListContainer extends React.Component {
         this.handleExpansion = this.handleExpansion.bind(this);
         this.changeSorting = this.changeSorting.bind(this);
         this.changeSortProp = this.changeSortProp.bind(this);
+        this.isFirstRender = true;
 
         this.sortOptions = ["Nazwa", "Data utworzenia", "Ostatnia modyfikacja"];
 
@@ -35,6 +36,11 @@ class TasksListContainer extends React.Component {
         const doneSectionDisplay = this.state.doneVisibility === "expanded" ? "" : "none";
         const expandIcon = <ExpandIconStyle className={this.state.doneVisibility}><ExpandIcon /></ExpandIconStyle>;
 
+        let toDisplay = todoTasksComponents
+        if (this.isFirstRender && todoTasksComponents.length === 0) toDisplay = <div>Ładowanie...</div>;
+        if (!this.isFirstRender && todoTasksComponents.length === 0) toDisplay = <div>Brak zadań do wykonania.</div>;
+        this.isFirstRender = false;
+
         return (
             <>
                 <RowSectionStyle gap="0" display={sortingDisplay}>
@@ -49,7 +55,7 @@ class TasksListContainer extends React.Component {
                     />
                 </RowSectionStyle>
                 <TasksRowsContainerStyle>
-                    {todoTasksComponents.length > 0 ? todoTasksComponents : <div>Brak zadań do wykonania.</div>}
+                    {toDisplay}
                 </TasksRowsContainerStyle>
                 <Button
                     display={doneSectionBtnDisplay}

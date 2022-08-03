@@ -7,6 +7,9 @@ import TaskIndicator from "./TaskIndicator";
 class TasksAdder extends React.Component {
     constructor(props) {
         super(props);
+
+        this.handleKeyDown = this.handleKeyDown.bind(this);
+
         this.state = {
             isFocus: false,
             inputValue: ""
@@ -31,6 +34,7 @@ class TasksAdder extends React.Component {
                         onFocus={() => { this.activate() }}
                         onBlur={() => { this.deactivate() }}
                         onChange={this.handleChange.bind(this)}
+                        onKeyDown={this.handleKeyDown}
                     />
                 </RowSectionStyle>
             </TaskAdderStyle>
@@ -77,6 +81,12 @@ class TasksAdder extends React.Component {
         this.setState({
             inputValue: event.target.value
         })
+    }
+
+    // ------------------------
+
+    handleKeyDown(event) {
+        if (event.code === "Escape") event.target.blur();
     }
 }
 
