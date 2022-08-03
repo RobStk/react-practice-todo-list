@@ -9,9 +9,19 @@ class SortByPanel extends React.Component {
         this.handleClick = this.handleClick.bind(this);
         this.selectOption = this.selectOption.bind(this);
 
+        this.handleDocumentClick = this.handleDocumentClick.bind(this);
+
         this.state = {
             isMenuExpanded: false
         }
+
+        this.sortByButtonDOM = React.createRef();
+        this.menuDOM = React.createRef();
+        this.DOM = React.createRef();
+    }
+
+    componentDidMount() {
+        document.addEventListener("click", this.handleDocumentClick);
     }
 
     render() {
@@ -21,6 +31,7 @@ class SortByPanel extends React.Component {
                 alignItems="left"
                 gap="0"
                 width="max-content"
+                ref={this.DOM}
             >
                 <Button
                     txt={this.props.sortingProp}
@@ -28,11 +39,13 @@ class SortByPanel extends React.Component {
                     onClick={this.handleClick}
                     display={this.props.display}
                     width="max-content"
+                    ref={this.sortByButtonDOM}
                 />
                 <DropDownOptions
                     display={menuDisplay}
                     options={this.props.sortOptions}
                     onClick={this.selectOption}
+                    ref={this.menuDOM}
                 />
             </ColumnSectionStyle>
         )
@@ -54,6 +67,10 @@ class SortByPanel extends React.Component {
             isMenuExpanded: false
         });
         this.props.onOptionSelect && this.props.onOptionSelect(option);
+    }
+
+    handleDocumentClick(event) {
+        !this.DOM.current.contains(event.target) && this.setState({ isMenuExpanded: false });
     }
 }
 

@@ -26,7 +26,6 @@ class TasksListContainer extends React.Component {
 
     render() {
         let sortedTasks = this.sortTasks(this.props.tasksArr, this.state.sortBy, this.state.isAscending);
-        console.log("Posortowano po: ", this.state.sortBy)
         const todoTasks = sortedTasks.filter((task) => !task.done);
         const doneTasks = sortedTasks.filter((task) => task.done);
         const todoTasksComponents = this.prepareTasks(todoTasks);
