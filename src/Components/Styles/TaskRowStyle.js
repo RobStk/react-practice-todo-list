@@ -7,11 +7,20 @@ const TaskRowStyle = styled.div`
     border-radius: 5px;
     display: grid;
     grid-template-columns: auto 1fr auto;
-    grid-template-rows: 1.9em;
+    /* grid-template-rows: ${(props) => props.isActive ? "auto" : "1.9em"}; */
     justify-items: left;
-    align-items: center;
+    align-items: ${(props) => props.isActive ? "flex-start" : "center"};
     gap: 10px;
     padding: 0.4em;
+
+    & :nth-child(2) {
+        width: 100%;
+        overflow: hidden;
+        white-space: ${(props) => props.isActive ? "" : "nowrap"};
+        text-overflow: ellipsis;
+        align-self: center;
+    }
+
     ${(props) => { if (props.done) return "opacity: 0.3; text-decoration: line-through;" }};
 
     &:hover {

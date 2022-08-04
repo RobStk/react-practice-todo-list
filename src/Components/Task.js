@@ -34,6 +34,8 @@ class Task extends React.Component {
         this.handleBlur = this.handleBlur.bind(this);
         this.handleMouseEnter = this.handleMouseEnter.bind(this);
         this.handleMouseLeave = this.handleMouseLeave.bind(this);
+        this.handleMouseDown = this.handleMouseDown.bind(this);
+        this.handleClick = this.handleClick.bind(this);
         this.handleTaskIndicatorMouseEnter = this.handleTaskIndicatorMouseEnter.bind(this);
         this.handleTaskIndicatorMouseLeave = this.handleTaskIndicatorMouseLeave.bind(this);
         this.editTask = this.editTask.bind(this);
@@ -44,6 +46,8 @@ class Task extends React.Component {
         this.handleIndicatorKeyDown = this.handleIndicatorKeyDown.bind(this);
         this.handleInputBlur = this.handleInputBlur.bind(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
+
+        this.DOM = React.createRef();
     }
 
     render() {
@@ -63,10 +67,12 @@ class Task extends React.Component {
         }
         return (
             <TaskRowStyle
-                ref={(taskRowDOM) => { this.taskRowDOM = taskRowDOM; }}
+                ref={this.DOM}
                 done={this.props.done}
                 onMouseEnter={this.handleMouseEnter}
                 onMouseLeave={this.handleMouseLeave}
+                onMouseDown={this.handleMouseDown}
+                onClick={this.handleClick}
                 onFocus={this.handleFocus}
                 onBlur={this.handleBlur}
                 onKeyDown={this.handleKeyDown}
@@ -179,6 +185,18 @@ class Task extends React.Component {
 
     // ------------------------
 
+    handleMouseDown(event) {
+        event.preventDefault();
+    }
+
+    // ------------------------
+
+    handleClick(event) {
+        this.DOM.current.focus();
+    }
+
+    // ------------------------
+
     handleTaskIndicatorMouseEnter() {
         this.setState({
             taskIndicatorHover: true
@@ -215,13 +233,13 @@ class Task extends React.Component {
             this.setState({
                 edit: false
             });
-            this.taskRowDOM.focus();
+            this.DOM.current.focus();
         }
         if (event.key === "Escape") {
             this.setState({
                 edit: false
             });
-            this.taskRowDOM.focus();
+            this.DOM.current.focus();
         }
     }
 
@@ -230,7 +248,7 @@ class Task extends React.Component {
     handleIndicatorKeyDown(event) {
         if (event.key === "Enter") {
             this.changeStatus();
-            this.taskRowDOM.focus();
+            this.DOM.current.focus();
         }
     }
 
@@ -245,7 +263,7 @@ class Task extends React.Component {
     // ------------------------
 
     handleInputBlur(event) {
-        this.taskRowDOM.focus();
+        this.DOM.current.focus();
         this.updateTitle(event.target.value);
         this.setState({
             edit: false
@@ -272,7 +290,7 @@ class Task extends React.Component {
 
     changeStatus() {
         const status = !this.props.done;
-        if (status === true) this.taskRowDOM.blur();
+        if (status === true) this.DOM.current.blur();
         const task = {
             id: this.props.id,
             done: status,
