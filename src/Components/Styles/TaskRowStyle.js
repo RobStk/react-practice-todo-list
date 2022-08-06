@@ -9,19 +9,12 @@ const TaskRowStyle = styled.div`
     grid-template-columns: auto 1fr auto;
     /* grid-template-rows: ${(props) => props.isActive ? "auto" : "1.9em"}; */
     justify-items: left;
-    align-items: ${(props) => props.isActive ? "flex-start" : "center"};
+    align-items: flex-start;
+    /* align-items: ${(props) => props.isActive ? "flex-start" : "center"}; */
     gap: 10px;
     padding: 0.4em;
 
-    & :nth-child(2) {
-        width: 100%;
-        overflow: hidden;
-        white-space: ${(props) => props.isActive ? "" : "nowrap"};
-        text-overflow: ellipsis;
-        align-self: center;
-    }
-
-    ${(props) => { if (props.done) return "opacity: 0.3; text-decoration: line-through;" }};
+    ${(props) => { if (props.done) return "opacity: 0.3; text-decoration: line-through;" }}
 
     &:hover {
         background-color: ${({ theme }) => theme.colors.background.stage2};

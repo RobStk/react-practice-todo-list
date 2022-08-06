@@ -4,6 +4,7 @@ import TaskIndicator from "./TaskIndicator";
 import Button from "./Button";
 import RowSectionStyle from "./Styles/RowSectionStyle";
 import InputStyle from "./Styles/InputStyle";
+import TaskContent from "./TaskContent";
 import { BsCalendar3 as CalendarIcon } from "react-icons/bs";
 import { BsTrash as TrashIcon } from "react-icons/bs";
 import { BsPencil as EditIcon } from "react-icons/bs";
@@ -54,7 +55,7 @@ class Task extends React.Component {
         let icon = this.props.done ? "done" : "undone";
         if (this.state.taskIndicatorHover) icon = this.props.done ? "undone" : "done";
         const display = this.state.isActive || this.state.isHoverd ? "flex" : "none";
-        let content = <div>{this.props.title}</div>
+        let content = <TaskContent content={this.props.title} isExpanded={this.state.isActive} />
         if (this.state.edit) {
             content =
                 <InputStyle
@@ -137,7 +138,6 @@ class Task extends React.Component {
             isActive: false
         })
     }
-
 
     // ------------------------
 
