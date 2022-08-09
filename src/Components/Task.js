@@ -3,8 +3,8 @@ import TaskRowStyle from "./Styles/TaskRowStyle";
 import TaskIndicator from "./TaskIndicator";
 import Button from "./Button";
 import RowSectionStyle from "./Styles/RowSectionStyle";
-import InputStyle from "./Styles/InputStyle";
 import TaskContent from "./TaskContent";
+import TextArea from "./TextArea";
 import { BsCalendar3 as CalendarIcon } from "react-icons/bs";
 import { BsTrash as TrashIcon } from "react-icons/bs";
 import { BsPencil as EditIcon } from "react-icons/bs";
@@ -23,6 +23,7 @@ class Task extends React.Component {
         }
 
         this.hasMouseOver = false;
+        this.contentHeight = '';
 
         this.calendarIcon = <CalendarIcon />;
         this.trashIcon = <TrashIcon />;
@@ -40,6 +41,7 @@ class Task extends React.Component {
         this.handleTaskIndicatorMouseEnter = this.handleTaskIndicatorMouseEnter.bind(this);
         this.handleTaskIndicatorMouseLeave = this.handleTaskIndicatorMouseLeave.bind(this);
         this.editTask = this.editTask.bind(this);
+        this.handleAccept = this.handleAccept.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
         this.openCalendar = this.openCalendar.bind(this);
@@ -47,6 +49,7 @@ class Task extends React.Component {
         this.handleIndicatorKeyDown = this.handleIndicatorKeyDown.bind(this);
         this.handleInputBlur = this.handleInputBlur.bind(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.getContentHeight = this.getContentHeight.bind(this);
 
         this.DOM = React.createRef();
     }
@@ -55,21 +58,30 @@ class Task extends React.Component {
         let icon = this.props.done ? "done" : "undone";
         if (this.state.taskIndicatorHover) icon = this.props.done ? "undone" : "done";
         const display = this.state.isActive || this.state.isHoverd ? "flex" : "none";
-        let content = <TaskContent content={this.props.title} isExpanded={this.state.isActive} />
+        let content = (
+            <TaskContent
+                content={this.props.title}
+                isExpanded={this.state.isActive}
+                onUpdate={this.getContentHeight}
+            />
+        )
         if (this.state.edit) {
-            content =
-                <InputStyle
-                    autoFocus={true}
-                    type="text"
+            content = (
+                <TextArea
                     defaultValue={this.props.title}
+                    autoFocus={true}
                     onKeyDown={this.handleInputKeyDown}
                     onBlur={this.handleInputBlur}
-            />
+                    height={this.contentHeight}
+                    className="taskEditTextArea"
+                />
+            )
         }
         return (
             <TaskRowStyle
                 ref={this.DOM}
                 done={this.props.done}
+                isActive={this.state.isActive}
                 onMouseEnter={this.handleMouseEnter}
                 onMouseLeave={this.handleMouseLeave}
                 onMouseDown={this.handleMouseDown}
@@ -77,7 +89,6 @@ class Task extends React.Component {
                 onFocus={this.handleFocus}
                 onBlur={this.handleBlur}
                 onKeyDown={this.handleKeyDown}
-                isActive={this.state.isActive}
                 tabIndex="0"
             >
 
@@ -96,18 +107,20 @@ class Task extends React.Component {
                         display={this.state.edit ? display : "none"}
                         icon={this.cancelIcon}
                         onMouseDown={this.handleCancel}
-                        className="cancel"
+                        className="cancelButton"
                     />
                     <Button
                         display={this.state.edit ? display : "none"}
                         icon={this.acceptIcon}
-                        className="accept"
+                        onMouseDown={this.handleAccept}
+                        className="acceptButton"
                     />
                     <Button
                         display={this.state.edit ? "none" : display}
                         icon={this.editIcon}
                         onClick={this.editTask}
                         onFocus={this.handleFocus}
+                        className="editButton"
                     />
                     <Button
                         display={display}
@@ -186,13 +199,15 @@ class Task extends React.Component {
     // ------------------------
 
     handleMouseDown(event) {
+        if (event.target.classList.contains("editButton")) return;
+        if (event.target.classList.contains("taskEditTextArea")) return;
         event.preventDefault();
     }
 
     // ------------------------
 
     handleClick(event) {
-        this.DOM.current.focus();
+        if (!event.target.classList.contains("taskEditTextArea")) this.DOM.current.focus();
     }
 
     // ------------------------
@@ -229,7 +244,8 @@ class Task extends React.Component {
 
     handleInputKeyDown(event) {
         if (event.key === "Enter") {
-            this.updateTitle(event.target.value);
+            const value = this.DOM.current.querySelector(".taskEditTextArea").value;
+            this.updateTitle(value);
             this.setState({
                 edit: false
             });
@@ -254,7 +270,14 @@ class Task extends React.Component {
 
     // ------------------------
 
-    handleCancel(event) {
+    handleAccept(event) {
+        const value = this.DOM.current.querySelector(".taskEditTextArea").value;
+        this.updateTitle(value);
+    }
+
+    // ------------------------
+
+    handleCancel() {
         this.setState({
             edit: false
         })
@@ -263,11 +286,18 @@ class Task extends React.Component {
     // ------------------------
 
     handleInputBlur(event) {
-        this.DOM.current.focus();
-        this.updateTitle(event.target.value);
-        this.setState({
-            edit: false
-        });
+        // this.updateTitle(event.target.value);
+        if (this.hasMouseOver) {
+            this.setState({
+                edit: false
+            });
+        }
+        if (!this.hasMouseOver) {
+            this.setState({
+                edit: false,
+                isHoverd: false
+            });
+        }
     }
 
     // ------------------------
@@ -305,6 +335,10 @@ class Task extends React.Component {
                 isActive: true
             })
         }
+    }
+
+    getContentHeight(elementScrollHeight) {
+        this.contentHeight = elementScrollHeight;
     }
 }
 

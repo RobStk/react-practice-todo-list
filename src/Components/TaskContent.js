@@ -19,11 +19,11 @@ class TaskContent extends React.Component {
         requestAnimationFrame(() => {
             this.DOM.current.style.height = currentScrollHeight + 'px';
         });
+        const height = this.DOM.current.scrollHeight + 'px';
+        this.props.onUpdate(height);
     }
 
     render() {
-        if (this.DOM.current) {
-        }
         return (
             <TaskContentStyle
                 ref={this.DOM}

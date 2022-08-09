@@ -13,9 +13,9 @@ const ButtonStyle = styled.button`
     column-gap: 0.4em;
     color: ${({ color }) => color || "white"};
     color: ${(props) => {
-        if (props.className === "accept") return props.theme.colors.foreground.green;
-        if (props.className === "cancel") return props.theme.colors.foreground.red;
-        if (props.color) return props.color;
+    if (props.className === "acceptButton") return props.theme.colors.foreground.green;
+    if (props.className === "cancelButton") return props.theme.colors.foreground.red;
+    if (props.color) return props.color;
     }};
 
     &:hover{
