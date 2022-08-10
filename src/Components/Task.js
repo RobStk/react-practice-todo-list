@@ -104,7 +104,7 @@ class Task extends React.Component {
 
                 <RowSectionStyle>
                     <Button
-                        display={this.state.edit ? display : "none"}
+                        opacity={this.state.edit ? "1" : "0"}
                         icon={this.cancelIcon}
                         onMouseDown={this.handleCancel}
                         className="cancelButton"

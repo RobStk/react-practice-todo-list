@@ -9,6 +9,7 @@ const ButtonStyle = styled.button`
     border-radius: 4px;
     width: ${(props) => props.width || ""};
     display: ${(props) => props.display || "none"};
+    opacity: ${(props) => props.opacity || "inherit"};
     align-items: center;
     column-gap: 0.4em;
     color: ${({ color }) => color || "white"};
