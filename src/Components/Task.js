@@ -60,7 +60,7 @@ class Task extends React.Component {
         const display = this.state.isActive || this.state.isHoverd ? "flex" : "none";
         let content = (
             <TaskContent
-                content={this.props.title}
+                content={this.props.content}
                 isExpanded={this.state.isActive}
                 onUpdate={this.getContentHeight}
             />
@@ -68,7 +68,7 @@ class Task extends React.Component {
         if (this.state.edit) {
             content = (
                 <TextArea
-                    defaultValue={this.props.title}
+                    defaultValue={this.props.content}
                     autoFocus={true}
                     onKeyDown={this.handleInputKeyDown}
                     onBlur={this.handleInputBlur}
@@ -90,6 +90,9 @@ class Task extends React.Component {
                 onBlur={this.handleBlur}
                 onKeyDown={this.handleKeyDown}
                 tabIndex="0"
+                transitionDelay={this.props.transitionDelay}
+                transform={this.props.transform}
+                zIndex={this.props.zIndex}
             >
 
                 <TaskIndicator
@@ -98,6 +101,7 @@ class Task extends React.Component {
                     onMouseEnter={this.handleTaskIndicatorMouseEnter}
                     onMouseLeave={this.handleTaskIndicatorMouseLeave}
                     onKeyDown={this.handleIndicatorKeyDown}
+                    className="taskIndicator"
                 />
 
                 {content}
@@ -199,7 +203,11 @@ class Task extends React.Component {
     // ------------------------
 
     handleMouseDown(event) {
-        if (event.target.classList.contains("editButton")) return;
+        if (event.target.classList.contains("editButton")) {
+            this.setState({
+                isActive: true
+            })
+        }
         if (event.target.classList.contains("taskEditTextArea")) return;
         event.preventDefault();
     }
@@ -245,7 +253,7 @@ class Task extends React.Component {
     handleInputKeyDown(event) {
         if (event.key === "Enter") {
             const value = this.DOM.current.querySelector(".taskEditTextArea").value;
-            this.updateTitle(value);
+            this.updateContent(value);
             this.setState({
                 edit: false
             });
@@ -272,7 +280,10 @@ class Task extends React.Component {
 
     handleAccept(event) {
         const value = this.DOM.current.querySelector(".taskEditTextArea").value;
-        this.updateTitle(value);
+        this.updateContent(value);
+        this.setState({
+            edit: false
+        })
     }
 
     // ------------------------
@@ -286,7 +297,7 @@ class Task extends React.Component {
     // ------------------------
 
     handleInputBlur(event) {
-        // this.updateTitle(event.target.value);
+        // this.updateContent(event.target.value);
         if (this.hasMouseOver) {
             this.setState({
                 edit: false
@@ -308,10 +319,10 @@ class Task extends React.Component {
 
     // ------------------------
 
-    updateTitle(title) {
+    updateContent(content) {
         const task = {
             id: this.props.id,
-            title: title,
+            content: content,
         }
         this.props.onTaskChange(task);
     }
@@ -329,11 +340,22 @@ class Task extends React.Component {
     }
 
     handleKeyDown(event) {
-        if (event.code === "Tab" && !event.target.classList.contains("trash")) {
+        if (event.key === "Tab") {
+            if (!event.target.classList.contains("trash") && event.target !== this.DOM.current) {
+                event.target.blur();
+                this.setState({
+                    isActive: true
+                });
+            }
+            if (event.target.classList.contains("trash") && event.shiftKey) {
+                event.target.blur();
+                this.setState({
+                    isActive: true
+                });
+            }
+        }
+        if (event.code === "Escape" && this.state.edit === false) {
             event.target.blur();
-            this.setState({
-                isActive: true
-            })
         }
     }
 

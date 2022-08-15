@@ -16,6 +16,10 @@ const theme = {
     padding: {
         medium: "6px",
         large: "12px"
+    },
+    margin: {
+        medium: "6px",
+        large: "12px"
     }
 }
 

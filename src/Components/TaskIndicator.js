@@ -21,6 +21,7 @@ class TaskIndicator extends React.Component {
                 onMouseLeave={this.handleMouseLeave}
                 onKeyDown={this.props.onKeyDown}
                 tabIndex="0"
+                className={this.props.className}
             >
                 {icon}
             </TaskIndicatorStyle>

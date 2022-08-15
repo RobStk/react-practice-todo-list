@@ -35,11 +35,12 @@ class SortByPanel extends React.Component {
             >
                 <Button
                     txt={this.props.sortingProp}
-                    fontSize={"medium"}
+                    fontSize={"small"}
                     onClick={this.handleClick}
                     display={this.props.display}
                     width="max-content"
                     ref={this.sortByButtonDOM}
+                    backgroundColor="background-stage1"
                 />
                 <DropDownOptions
                     display={menuDisplay}

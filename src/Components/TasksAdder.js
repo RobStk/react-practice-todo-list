@@ -68,7 +68,7 @@ class TasksAdder extends React.Component {
         event.preventDefault();
         if (!this.state.inputValue) return;
         this.props.onTaskAdd({
-            title: this.state.inputValue
+            content: this.state.inputValue
         });
         this.setState({
             inputValue: ""

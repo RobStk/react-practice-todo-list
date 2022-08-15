@@ -2,11 +2,12 @@ import React from "react";
 import TasksRowsContainerStyle from "./Styles/TasksRowsContainerStyle";
 import Task from "./Task";
 import Button from "./Button";
-import { BsChevronDown as ExpandIcon } from "react-icons/bs"
 import ExpandIconStyle from "./Styles/ExpandIconStyle";
 import RowSectionStyle from "./Styles/RowSectionStyle";
 import SortDirectionButton from "./SortDirectionButton";
 import SortByPanel from "./SortByPanel";
+import { BsChevronDown as ExpandIcon } from "react-icons/bs";
+import ConnectionError from "./ConnectionError";
 
 class TasksListContainer extends React.Component {
     constructor(props) {
@@ -16,7 +17,7 @@ class TasksListContainer extends React.Component {
         this.changeSortProp = this.changeSortProp.bind(this);
         this.isFirstRender = true;
 
-        this.sortOptions = ["Nazwa", "Data utworzenia", "Ostatnia modyfikacja"];
+        this.sortOptions = ["Alfabetycznie", "Data utworzenia", "Ostatnia modyfikacja"];
 
         this.state = {
             doneVisibility: "collapsed",
@@ -31,7 +32,7 @@ class TasksListContainer extends React.Component {
         const doneTasks = sortedTasks.filter((task) => task.done);
         const todoTasksComponents = this.prepareTasks(todoTasks);
         const doneTasksComponents = this.prepareTasks(doneTasks);
-        const sortingDisplay = this.props.tasksArr.length > 1 ? "" : "none";
+        const sortingDisplay = this.props.tasksArr.length ? "" : "none";
         const doneSectionBtnDisplay = doneTasksComponents.length > 0 ? "" : "none";
         const doneSectionDisplay = this.state.doneVisibility === "expanded" ? "" : "none";
         const expandIcon = <ExpandIconStyle className={this.state.doneVisibility}><ExpandIcon /></ExpandIconStyle>;
@@ -40,10 +41,11 @@ class TasksListContainer extends React.Component {
         if (this.isFirstRender && todoTasksComponents.length === 0) toDisplay = <div>Ładowanie...</div>;
         if (!this.isFirstRender && todoTasksComponents.length === 0) toDisplay = <div>Brak zadań do wykonania.</div>;
         this.isFirstRender = false;
+        if (this.props.connectionError && !this.props.tasksArr.length) toDisplay = <ConnectionError description='Nie można pobrać zadań z serwera.' />;
 
         return (
             <>
-                <RowSectionStyle gap="0" display={sortingDisplay}>
+                <RowSectionStyle gap="4px" display={sortingDisplay}>
                     <SortDirectionButton
                         onClick={this.changeSorting}
                         isAscending={this.state.isAscending}
@@ -77,10 +79,10 @@ class TasksListContainer extends React.Component {
     /* ------------------------ */
 
     prepareTasks(tasksArr) {
-        const tasksComponentsList = tasksArr.map((task) =>
+        const tasksComponentsList = tasksArr.map((task, index) =>
             task = (
                 <Task
-                    title={task.title}
+                    content={task.content}
                     done={task.done}
                     key={task.id || task.tempId}
                     id={task.id}
@@ -119,9 +121,9 @@ class TasksListContainer extends React.Component {
     sortTasks(tasksArr, sortBy, isAscending) {
         let sortedTasks = [];
         switch (sortBy) {
-            case "Nazwa":
-                if (isAscending) sortedTasks = [...tasksArr].sort((a, b) => a.title.localeCompare(b.title));
-                if (!isAscending) sortedTasks = [...tasksArr].sort((a, b) => b.title.localeCompare(a.title));
+            case "Alfabetycznie":
+                if (isAscending) sortedTasks = [...tasksArr].sort((a, b) => a.content.localeCompare(b.content));
+                if (!isAscending) sortedTasks = [...tasksArr].sort((a, b) => b.content.localeCompare(a.content));
                 return sortedTasks;
             case "Data utworzenia":
                 if (isAscending) sortedTasks = [...tasksArr].sort((a, b) => a.creationDate - b.creationDate);

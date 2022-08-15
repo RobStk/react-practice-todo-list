@@ -5,6 +5,7 @@ class Button extends React.Component {
     render() {
         return (
             <ButtonStyle
+                backgroundColor={this.props.backgroundColor || ""}
                 hoverBackgroundColor={this.props.hoverBackgroundColor}
                 display={this.props.display || "flex"}
                 opacity={this.props.opacity || "inherit"}
@@ -13,8 +14,11 @@ class Button extends React.Component {
                 color={this.props.color}
                 className={this.props.className}
                 width={this.props.width}
-                font-family={this.props.fontFamily || "inherit"}
+                fontFamily={this.props.fontFamily || "inherit"}
                 fontSize={this.props.fontSize || ""}
+                border={this.props.border}
+                borderColor={this.props.borderColor}
+                lineHeight={this.props.borderColor || 1}
             >
                 {this.props.icon}
                 {this.props.txt}

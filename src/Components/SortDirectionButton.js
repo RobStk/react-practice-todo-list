@@ -15,7 +15,8 @@ class SortDirectionButton extends React.Component {
             icon={icon}
             onClick={this.handleClick}
             display={this.props.display}
-            fontSize={"medium"}
+            fontSize={"small"}
+            backgroundColor="background-stage1"
         />
     }
 
