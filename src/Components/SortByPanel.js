@@ -6,7 +6,7 @@ import DropDownOptions from "./DropDownOptions";
 class SortByPanel extends React.Component {
     constructor(props) {
         super(props);
-        this.handleClick = this.handleClick.bind(this);
+        this.handleExpansion = this.handleExpansion.bind(this);
         this.selectOption = this.selectOption.bind(this);
 
         this.handleDocumentClick = this.handleDocumentClick.bind(this);
@@ -36,7 +36,7 @@ class SortByPanel extends React.Component {
                 <Button
                     txt={this.props.sortingProp}
                     fontSize={"small"}
-                    onClick={this.handleClick}
+                    onClick={this.handleExpansion}
                     display={this.props.display}
                     width="max-content"
                     ref={this.sortByButtonDOM}
@@ -56,7 +56,7 @@ class SortByPanel extends React.Component {
     /* Methods                  */
     /* ------------------------ */
 
-    handleClick() {
+    handleExpansion() {
         const isMenuExpanded = this.state.isMenuExpanded;
         this.setState({
             isMenuExpanded: !isMenuExpanded
@@ -71,7 +71,7 @@ class SortByPanel extends React.Component {
     }
 
     handleDocumentClick(event) {
-        !this.DOM.current.contains(event.target) && this.setState({ isMenuExpanded: false });
+        this.DOM.current && !this.DOM.current.contains(event.target) && this.setState({ isMenuExpanded: false });
     }
 }
 

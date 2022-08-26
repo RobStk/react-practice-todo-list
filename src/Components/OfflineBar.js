@@ -9,7 +9,7 @@ class OfflineBar extends React.Component {
             <OfflineBarStyle display={this.props.display}>
                 <WarrningIcon />
                 <span>Jesteś w trybie offline.</span>
-                <Button txt='Spróbuj ponownie'></Button>
+                <Button txt='Spróbuj ponownie' onClick={this.props.onReconnect} />
             </OfflineBarStyle>
         )
     }

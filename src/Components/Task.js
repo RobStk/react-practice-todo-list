@@ -237,7 +237,7 @@ class Task extends React.Component {
     // ------------------------
 
     handleDelete() {
-        this.props.onDelete(this.props.id);
+        this.props.onDelete(this);
     }
 
     // ------------------------
@@ -324,6 +324,7 @@ class Task extends React.Component {
             id: this.props.id,
             content: content,
         }
+        if (!this.props.id) task.tempId = this.props.tempId;
         this.props.onTaskChange(task);
     }
 
@@ -332,10 +333,10 @@ class Task extends React.Component {
     changeStatus() {
         const status = !this.props.done;
         if (status === true) this.DOM.current.blur();
-        const task = {
-            id: this.props.id,
-            done: status,
-        }
+        const task = {};
+        task.done = status;
+        if (this.props.id) task.id = this.props.id;
+        if (!this.props.id) task.tempId = this.props.tempId;
         this.props.onTaskChange(task);
     }
 

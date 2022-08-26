@@ -8,8 +8,11 @@ import HeaderStyle from "./Styles/HeaderStyle";
 import TasksAdder from "./TasksAdder";
 import Timer from "./Timer";
 import Connection from "../connection";
-import Time from "../utilities/time";
+import TimeManager from "../utilities/time-manager";
 import OfflineBar from "./OfflineBar";
+import QueryQueue from "../utilities/query-queue";
+import QueryManager from "../utilities/query-manager";
+import { eventsManager, events } from "../utilities/events-manager";
 
 class ToDoList extends React.Component {
     constructor(props) {
@@ -17,6 +20,8 @@ class ToDoList extends React.Component {
         this.tasks = [];
         this.newTasks = [];
         this.query = new Connection(props.dbPath);
+        this.db = new QueryManager(this.props.dbPath);
+        this.queryQueue = new QueryQueue();
         this.theme = darkTheme;
 
         this.tempIdCnt = 0;
@@ -24,6 +29,13 @@ class ToDoList extends React.Component {
         this.updateTask = this.updateTask.bind(this);
         this.deleteTask = this.deleteTask.bind(this);
         this.addTask = this.addTask.bind(this);
+        this.updateConnectionStateToCorrect = this.updateConnectionStateToCorrect.bind(this);
+        this.reconnect = this.reconnect.bind(this);
+        this.setToOffline = this.setToOffline.bind(this);
+
+        this.eventsManager = eventsManager;
+        this.events = events;
+
         this.state = {
             tasks: [],
             connectionError: false
@@ -31,6 +43,8 @@ class ToDoList extends React.Component {
     }
 
     componentDidMount() {
+        eventsManager.on(events.connectionCorrect, this.updateConnectionStateToCorrect);
+        eventsManager.on(events.connectionError, this.setToOffline);
         this.getTasks();
     }
 
@@ -41,7 +55,7 @@ class ToDoList extends React.Component {
             <>
                 <ThemeProvider theme={this.theme}>
                     <GlobalStyle backgroundColor={this.theme.colors.background.primary} />
-                    <OfflineBar display={offlineDisplay} />
+                    <OfflineBar display={offlineDisplay} onReconnect={this.reconnect} />
                     <ToDoListStyle>
                         <HeaderStyle data-style="HeaderStyle">
                             <TasksAdder onTaskAdd={this.addTask} />
@@ -64,16 +78,24 @@ class ToDoList extends React.Component {
     /* ------------------------ */
 
     async getTasks() {
-        try {
-            const tasks = await this.query.get();
+        const connection = await this.db.connect();
+        if (connection.error && connection.error !== 404) {
+            return;
+        }
+
+        const query = await this.db.getTasks();
+        const tasks = query.data;
+        const error = query.error;
+        if (!error) {
             tasks.forEach(task => {
-                if (task.tempId) delete task.tempId;
+                if (task.tempId) {
+                    delete task.tempId;
+                    this.db.updateTask(task);
+                }
             });
             this.setTasks(tasks);
-            this.setState({ connectionError: false });
         }
-        catch (error) {
-            this.setState({ connectionError: true });
+        if (error) {
             this.setTasks([]);
         }
     }
@@ -88,68 +110,68 @@ class ToDoList extends React.Component {
     // ------------------------
 
     async addTask(taskData) {
-        try {
-            const newTask = this.createTask();
-            newTask.content = taskData.content;
-            newTask.tempId = "tempId" + this.tempIdCnt;
-            this.tempIdCnt++;
-            this.newTasks.push(newTask);
-            this.tasks = [...this.state.tasks, newTask];
-            this.setTasks(this.tasks);
-            // await this.query.post(newTask);
-            while (this.newTasks.length) {
-                await this.query.post(this.newTasks[0]);
-                this.newTasks = this.newTasks.slice(1);
-            }
-            this.setState({ connectionError: false });
-        }
-        catch (error) {
-            this.setState({ connectionError: true });
-        }
-        this.getTasks();
+        const newTask = this.createTask();
+        newTask.content = taskData.content;
+        newTask.tempId = "tempId" + this.tempIdCnt;
+        this.tempIdCnt++;
+        const tasks = [...this.state.tasks, newTask];
+        this.setTasks(tasks);
+        await this.db.addTask(newTask);
+        this.eventsManager.emit(events.dataUpdated);
     }
 
     // ------------------------
 
     async updateTask(updatedTask) {
-        try {
-            const id = updatedTask.id;
-            let tasks = [...this.state.tasks];
-            let task = tasks.find((task) => task.id === id);
-            tasks = tasks.filter((task) => task.id !== id);
-            task = { ...task, ...updatedTask };
-            const timer = new Time();
-            task.modificationDate = timer.getFullTimeRaw();
-            tasks.push(task);
-            this.setTasks(tasks);
-            const response = await this.query.put(task);
-            if (!response) throw new Error();
-            this.setState({ connectionError: false });
+        const id = updatedTask.id;
+        const tempId = updatedTask.tempId;
+        let tasks = [...this.state.tasks];
+        let task = null;
+        if (id) {
+            task = tasks.find((t) => t.id === id);
+            tasks = tasks.filter((t) => t.id !== id);
         }
-        catch (error) {
-            this.setState({ connectionError: true });
+        if (!id) {
+            task = tasks.find((t) => t.tempId === tempId);
+            tasks = tasks.filter((t) => t.tempId !== tempId);
         }
+        task = { ...task, ...updatedTask };
+        const timer = new TimeManager();
+        task.modificationDate = timer.getFullTimeRaw();
+        tasks.push(task);
+        this.setTasks(tasks);
+
+        await this.db.updateTask(task);
+        this.eventsManager.emit(events.dataUpdated);
     }
 
     // ------------------------
 
-    async deleteTask(id) {
-        try {
-            const tasks = this.state.tasks.filter((task) => (task.id !== id));
-            this.setTasks(tasks);
-            const response = await this.query.delete(id);
-            if (!response) throw new Error();
-            this.setState({ connectionError: false });
+    async deleteTask(task) {
+        const id = task.props.id;
+        const tempId = task.props.tempId;
+        let tasks = [];
+
+        if (id) {
+            tasks = this.state.tasks.filter((task) => (task.id !== id));
         }
-        catch (error) {
-            this.setState({ connectionError: true });
+
+        if (!id) {
+            tasks = this.state.tasks.filter((t) => (t.tempId !== tempId));
         }
+
+        this.setState({
+            tasks: tasks
+        });
+
+        await this.db.deleteTask(task);
+        this.eventsManager.emit(events.dataUpdated);
     }
 
     // ------------------------
 
     createTask() {
-        const timer = new Time();
+        const timer = new TimeManager();
         const creationDate = timer.getFullTimeRaw();
         const modificationDate = creationDate;
 
@@ -159,6 +181,27 @@ class ToDoList extends React.Component {
             creationDate: creationDate,
             modificationDate: modificationDate
         };
+    }
+
+    // ------------------------
+
+    setToOffline() {
+        this.setState({ connectionError: true });
+    }
+
+    // ------------------------
+
+    async reconnect() {
+        console.log("Reconnect...");
+        this.getTasks();
+    }
+
+    // ------------------------
+
+    async updateConnectionStateToCorrect() {
+        if (this.state.connectionError) {
+            this.setState({ connectionError: false });
+        }
     }
 }
 

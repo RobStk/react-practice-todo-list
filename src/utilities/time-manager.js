@@ -1,4 +1,4 @@
-class Time {
+class TimeManager {
     /* ------------------------ */
     /* Methods                  */
     /* ------------------------ */
@@ -90,4 +90,4 @@ class Time {
     }
 }
 
-export default Time;
+export default TimeManager;
