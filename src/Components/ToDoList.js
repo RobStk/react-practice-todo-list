@@ -10,7 +10,6 @@ import Timer from "./Timer";
 import Connection from "../connection";
 import TimeManager from "../utilities/time-manager";
 import OfflineBar from "./OfflineBar";
-import QueryQueue from "../utilities/query-queue";
 import QueryManager from "../utilities/query-manager";
 import { eventsManager, events } from "../utilities/events-manager";
 
@@ -21,7 +20,6 @@ class ToDoList extends React.Component {
         this.newTasks = [];
         this.query = new Connection(props.dbPath);
         this.db = new QueryManager(this.props.dbPath);
-        this.queryQueue = new QueryQueue();
         this.theme = darkTheme;
 
         this.tempIdCnt = 0;
@@ -45,6 +43,7 @@ class ToDoList extends React.Component {
     componentDidMount() {
         eventsManager.on(events.connectionCorrect, this.updateConnectionStateToCorrect);
         eventsManager.on(events.connectionError, this.setToOffline);
+        eventsManager.on(events.queryQueueCompleted, this.getTasks.bind(this));
         this.getTasks();
     }
 
@@ -78,15 +77,10 @@ class ToDoList extends React.Component {
     /* ------------------------ */
 
     async getTasks() {
-        const connection = await this.db.connect();
-        if (connection.error && connection.error !== 404) {
-            return;
-        }
-
         const query = await this.db.getTasks();
-        const tasks = query.data;
         const error = query.error;
         if (!error) {
+            const tasks = query.data;
             tasks.forEach(task => {
                 if (task.tempId) {
                     delete task.tempId;

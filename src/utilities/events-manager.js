@@ -70,7 +70,8 @@ const eventsManager = new EventsManager();
 const events = {
     connectionError: "Connection error",
     connectionCorrect: "Connection correct",
-    dataUpdated: "Data updated"
+    dataUpdated: "Data updated",
+    queryQueueCompleted: "Query queue completed"
 }
 
 export default EventsManager;

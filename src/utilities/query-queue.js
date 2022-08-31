@@ -7,7 +7,7 @@ class QueryQueue {
 
     #queue;
     #eventsManager;
-    #events;
+    #interval;
 
     /* ------------------------ */
     /* Constructor              */
@@ -15,7 +15,8 @@ class QueryQueue {
     constructor() {
         this.#queue = [];
         this.#eventsManager = eventsManager;
-        this.#events = events;
+
+        this.#interval = setInterval(this.emit.bind(this), 5000);
 
         this.#eventsManager.on(events.dataUpdated, this.emit.bind(this));
     }
@@ -31,14 +32,6 @@ class QueryQueue {
      */
     add(fn, ...args) {
         this.#queue.push({ fn: fn, args: args });
-        // console.log("Dodano do kolejki:", fn, args.props || args);
-        // console.log("Aktualna kolejka:");
-        // let i = 0;
-        // this.#queue.forEach(element => {
-        //     console.log(i + ": ", element.fn, element.args.props || element.args);
-        //     i++;
-        // });
-        // console.log("===");
     }
 
     // ------------------------
@@ -48,24 +41,21 @@ class QueryQueue {
      * @returns {Object} Query result.
      */
     async emit() {
-        let query = {};
-        // console.log("this.#queue.length on start:", this.#queue.length);
+        let query = null;
         while (this.#queue.length) {
-            // console.log("Próbuję wywołac funkcję:", this.#queue[0].fn);
+            query = {};
             query = await this.#queue[0].fn(...this.#queue[0].args);
-            if (query.error && query.error !== 404) return query;
+            if (query.error && query.error !== 404) {
+                this.#eventsManager.emit(events.connectionError);
+                return query;
+            }
             else {
-                // console.log("Usuwam z kolejki:", this.#queue[0].fn, this.#queue[0].args.props || this.#queue[0].args);
                 this.#queue = this.#queue.slice(1);
-                // console.log("Aktualna kolejka:");
-                // let i = 0;
-                // this.#queue.forEach(element => {
-                //     console.log(i + ": ", element.fn, element.args.props || element.args);
-                //     i++;
-                // });
-                // console.log("===");
+                if (!this.#queue.length) this.#eventsManager.emit(events.queryQueueCompleted);
             }
         }
+        if (query) this.#eventsManager.emit(events.connectionCorrect);
+        query = {};
         return query;
     }
 

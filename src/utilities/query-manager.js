@@ -62,8 +62,16 @@ class QueryManager {
     // ------------------------
 
     async #getTasks() {
+        const connection = await this.#connect();
+        if (connection.error) {
+            eventsManager.emit(events.connectionError);
+            return connection;
+        }
+
         const query = await this.#db.get();
-        if (query.error) eventsManager.emit(events.connectionError);
+        if (query.error) {
+            eventsManager.emit(events.connectionError);
+        }
         return query;
     }
 
@@ -107,11 +115,6 @@ class QueryManager {
 
         const query = await this.#db.get(taskPath);
 
-        if (query.error) {
-            this.#eventsManager.emit(events.connectionError);
-            return query;
-        }
-
         if (query.data) {
             const dbData = query.data[0] || query.data;
             if (dbData.id) {
@@ -120,11 +123,12 @@ class QueryManager {
                 if (dbData.tempId) delete dbData.tempId;
                 taskPath = this.#dbPath + "/" + task.id;
                 task = { ...dbData, ...task };
-
                 this.#queryQueue.add(this.#db.put, task);
             }
             return query;
         }
+        else this.#queryQueue.add(this.#updateTask.bind(this), task);
+        return { error: true };
     }
 
     // ------------------------
