@@ -1,5 +1,5 @@
 import React from "react";
-import InputStyle from "./Styles/InputStyle";
+import InputStyle from "./styles/InputStyle";
 
 class Input extends React.Component {
     constructor(props) {

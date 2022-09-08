@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "./Button";
+import Button from "../Button/Button";
 import { BsArrowDown as ArrowDownIcon } from "react-icons/bs";
 import { BsArrowUp as ArrowUpIcon } from "react-icons/bs";
 

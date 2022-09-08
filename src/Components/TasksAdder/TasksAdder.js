@@ -1,8 +1,8 @@
 import React from "react";
-import RowSectionStyle from "./Styles/RowSectionStyle";
-import TaskAdderStyle from "./Styles/TasksAdderStyle";
-import { Input } from "./Input";
-import TaskIndicator from "./TaskIndicator";
+import RowSectionStyle from "../../Styles/RowSectionStyle";
+import TaskAdderStyle from "./styles/TasksAdderStyle";
+import { Input } from "../Input/Input";
+import TaskIndicator from "../TaskIndicator/TaskIndicator";
 
 class TasksAdder extends React.Component {
     constructor(props) {

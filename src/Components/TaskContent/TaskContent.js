@@ -1,5 +1,5 @@
 import React from "react";
-import TaskContentStyle from "./Styles/TaskContentStyle";
+import TaskContentStyle from "./styles/TaskContentStyle";
 
 class TaskContent extends React.Component {
     constructor(props) {

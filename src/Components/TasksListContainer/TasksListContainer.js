@@ -1,13 +1,13 @@
 import React from "react";
-import TasksRowsContainerStyle from "./Styles/TasksRowsContainerStyle";
-import Task from "./Task";
-import Button from "./Button";
-import ExpandIconStyle from "./Styles/ExpandIconStyle";
-import RowSectionStyle from "./Styles/RowSectionStyle";
-import SortDirectionButton from "./SortDirectionButton";
-import SortByPanel from "./SortByPanel";
+import TasksRowsContainerStyle from "./styles/TasksRowsContainerStyle";
+import Task from "../Task/Task";
+import Button from "../Button/Button";
+import ExpandIconStyle from "../../Styles/ExpandIconStyle";
+import RowSectionStyle from "../../Styles/RowSectionStyle";
+import SortDirectionButton from "../SortDirectionButton/SortDirectionButton";
+import SortByPanel from "../SortByPanel/SortByPanel";
 import { BsChevronDown as ExpandIcon } from "react-icons/bs";
-import ConnectionError from "./ConnectionError";
+import ConnectionError from "../ConnectionError/ConnectionError";
 
 class TasksListContainer extends React.Component {
     constructor(props) {

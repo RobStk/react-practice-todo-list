@@ -1,10 +1,10 @@
 import React from "react";
-import TaskRowStyle from "./Styles/TaskRowStyle";
-import TaskIndicator from "./TaskIndicator";
-import Button from "./Button";
-import RowSectionStyle from "./Styles/RowSectionStyle";
-import TaskContent from "./TaskContent";
-import TextArea from "./TextArea";
+import TaskRowStyle from "./styles/TaskRowStyle";
+import TaskIndicator from "../TaskIndicator/TaskIndicator";
+import Button from "../Button/Button";
+import RowSectionStyle from "../../Styles/RowSectionStyle";
+import TaskContent from "../TaskContent/TaskContent";
+import TextArea from "../TextArea/TextArea";
 import { BsCalendar3 as CalendarIcon } from "react-icons/bs";
 import { BsTrash as TrashIcon } from "react-icons/bs";
 import { BsPencil as EditIcon } from "react-icons/bs";
@@ -17,7 +17,7 @@ class Task extends React.Component {
 
         this.state = {
             isActive: false,
-            isHoverd: false,
+            isHovered: false,
             taskIndicatorHover: false,
             edit: false
         }
@@ -57,7 +57,7 @@ class Task extends React.Component {
     render() {
         let icon = this.props.done ? "done" : "undone";
         if (this.state.taskIndicatorHover) icon = this.props.done ? "undone" : "done";
-        const display = this.state.isActive || this.state.isHoverd ? "flex" : "none";
+        const display = this.state.isActive || this.state.isHovered ? "flex" : "none";
         let content = (
             <TaskContent
                 content={this.props.content}
@@ -170,7 +170,7 @@ class Task extends React.Component {
         if (!this.hasMouseOver) {
             this.setState({
                 isActive: false,
-                isHoverd: false
+                isHovered: false
             })
         }
         if (this.hasMouseOver) {
@@ -185,7 +185,7 @@ class Task extends React.Component {
     handleMouseEnter() {
         this.hasMouseOver = true;
         this.setState({
-            isHoverd: true
+            isHovered: true
         });
     }
 
@@ -195,7 +195,7 @@ class Task extends React.Component {
         this.hasMouseOver = false;
         if (!this.state.isActive) {
             this.setState({
-                isHoverd: false
+                isHovered: false
             });
         }
     }
@@ -306,7 +306,7 @@ class Task extends React.Component {
         if (!this.hasMouseOver) {
             this.setState({
                 edit: false,
-                isHoverd: false
+                isHovered: false
             });
         }
     }

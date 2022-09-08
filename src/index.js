@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { ToDoList } from './Components/ToDoList';
+import { ToDoList } from './Components/ToDoList/ToDoList';
 
 const dbPath = "http://localhost:5000/tasks";
 

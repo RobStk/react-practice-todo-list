@@ -1,6 +1,6 @@
 import React from "react";
-import DropDownOptionsStyle from "./Styles/DropDownOptionsStyle";
-import Button from "./Button";
+import DropDownOptionsStyle from "./styles/DropDownOptionsStyle";
+import Button from "../Button/Button";
 
 class DropDownOptions extends React.Component {
     constructor(props) {

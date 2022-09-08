@@ -1,7 +1,7 @@
 import React from "react";
-import Button from "./Button";
-import ColumnSectionStyle from "./Styles/ColumnSectionStyle";
-import DropDownOptions from "./DropDownOptions";
+import Button from "../Button/Button";
+import ColumnSectionStyle from "../../Styles/ColumnSectionStyle";
+import DropDownOptions from "../DropDownOptions/DropDownOptions";
 
 class SortByPanel extends React.Component {
     constructor(props) {

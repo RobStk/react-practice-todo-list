@@ -2,7 +2,7 @@ import React from "react";
 import { BsPlusCircle as AddIcon } from "react-icons/bs";
 import { BsCircle as UndoneIcon } from "react-icons/bs";
 import { BsCheckCircle as DoneIcon } from "react-icons/bs";
-import TaskIndicatorStyle from "./Styles/TaskIndicatorStyle";
+import TaskIndicatorStyle from "./styles/TaskIndicatorStyle";
 
 class TaskIndicator extends React.Component {
     constructor(props) {

@@ -1,4 +1,4 @@
-import Connection from "../connection";
+import Connection from "./connection";
 import QueryQueue from "./query-queue";
 import { eventsManager, events } from "./events-manager";
 

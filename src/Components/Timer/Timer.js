@@ -1,6 +1,6 @@
 import React from "react";
-import TimeManager from "../utilities/time-manager";
-import TimerStyle from "./Styles/TimerStyle";
+import TimeManager from "../../utilities/time-manager";
+import TimerStyle from "./styles/TimerStyle";
 
 class Timer extends React.Component {
     constructor(props) {

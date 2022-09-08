@@ -1,17 +1,17 @@
 import React from "react";
-import GlobalStyle from "./Styles/GlobalStyles";
 import { ThemeProvider } from "styled-components";
-import darkTheme from "./Styles/dark-theme";
-import ToDoListStyle from "./Styles/ToDoListStyle";
-import TasksListContainer from "./TasksListContainer";
-import HeaderStyle from "./Styles/HeaderStyle";
-import TasksAdder from "./TasksAdder";
-import Timer from "./Timer";
-import Connection from "../connection";
-import TimeManager from "../utilities/time-manager";
-import OfflineBar from "./OfflineBar";
-import QueryManager from "../utilities/query-manager";
-import { eventsManager, events } from "../utilities/events-manager";
+import GlobalStyle from "../../Styles/GlobalStyles";
+import darkTheme from "../../Styles/dark-theme";
+import HeaderStyle from "../../Styles/HeaderStyle";
+import ToDoListStyle from "./styles/ToDoListStyle";
+import TasksListContainer from "../TasksListContainer/TasksListContainer";
+import TasksAdder from "../TasksAdder/TasksAdder";
+import Timer from "../Timer/Timer";
+import OfflineBar from "../OfflineBar/OfflineBar";
+import Connection from "../../utilities/connection";
+import TimeManager from "../../utilities/time-manager";
+import QueryManager from "../../utilities/query-manager";
+import { eventsManager, events } from "../../utilities/events-manager";
 
 class ToDoList extends React.Component {
     constructor(props) {

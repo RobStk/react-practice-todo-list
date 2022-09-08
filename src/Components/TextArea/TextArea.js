@@ -1,5 +1,5 @@
 import React from "react";
-import TextAreaStyle from "./Styles/TextAreaStyle";
+import TextAreaStyle from "./styles/TextAreaStyle";
 
 class TextArea extends React.Component {
     constructor(props) {
