@@ -8,9 +8,7 @@ class DropDownOptions extends React.Component {
         this.selectOption = this.selectOption.bind(this);
     }
     render() {
-        const options = this.props.options.map((option, index) =>
-            option = <Button txt={option} key={index} onClick={this.selectOption} />
-        )
+        const options = this.changeOptionsToButtons(this.props.options);
         return (
             <DropDownOptionsStyle
                 display={this.props.display}
@@ -27,9 +25,18 @@ class DropDownOptions extends React.Component {
     /* Methods                  */
     /* ------------------------ */
 
+    changeOptionsToButtons(options) {
+        const buttons = options.map((option, index) => option = <Button txt={option} key={index} onClick={this.selectOption} />)
+        return buttons;
+    }
+
+    // ------------------------
+
     selectOption(event) {
         this.props.onClick && this.props.onClick(event.target.textContent);
     }
+
+    // ------------------------
 }
 
 export default DropDownOptions;
