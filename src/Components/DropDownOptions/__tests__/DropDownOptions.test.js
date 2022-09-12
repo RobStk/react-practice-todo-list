@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom';
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
+import userEvent from '@testing-library/user-event';
 import { ThemeProvider } from "styled-components";
 import darkTheme from "../../../Styles/dark-theme";
 import DropDownOptions from "../DropDownOptions";
@@ -18,9 +19,7 @@ describe('DropDownOptions options', () => {
                 />
             </ThemeProvider>
         );
-
-        const buttons = screen.getAllByRole('button');
-        expect(buttons.length).toBe(3);
+        expect(screen.getAllByRole('button').length).toBe(3);
     });
 
     it('should be clickable', () => {
@@ -36,11 +35,8 @@ describe('DropDownOptions options', () => {
                 />
             </ThemeProvider>
         );
-
-        const buttons = screen.getAllByRole('button');
-        const button = buttons[1];
-        fireEvent.click(button);
-        expect(button.textContent).toBe(clickedTextContent);
+        userEvent.click(screen.getAllByRole('button')[1]);
+        expect(screen.getAllByRole('button')[1].textContent).toBe(clickedTextContent);
     });
 
     it('should not be visible', () => {
@@ -52,7 +48,6 @@ describe('DropDownOptions options', () => {
                 />
             </ThemeProvider>
         );
-        const buttons = screen.queryAllByRole('button');
-        expect(buttons.length).toBe(0);
+        expect(screen.queryAllByRole('button').length).toBe(0);
     });
 })

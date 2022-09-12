@@ -10,7 +10,7 @@ const ButtonStyle = styled.button`
             case "background-stage1": return props.theme.colors.background.stage1;
             case "background-stage2": return props.theme.colors.background.stage2;
             case "background-stage3": return props.theme.colors.background.stage3;
-            default: return;
+            default: return props.backgroundColor;
         }
     }};
     padding: ${({ theme }) => theme.padding.medium};
@@ -20,7 +20,7 @@ const ButtonStyle = styled.button`
             case "background-stage1": return props.theme.colors.background.stage1;
             case "background-stage2": return props.theme.colors.background.stage2;
             case "background-stage3": return props.theme.colors.background.stage3;
-            default: return;
+            default: return props.backgroundColor;
         }
     }};
     border-radius: 4px;
