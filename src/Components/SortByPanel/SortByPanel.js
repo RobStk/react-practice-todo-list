@@ -8,7 +8,6 @@ class SortByPanel extends React.Component {
         super(props);
         this.handleExpansion = this.handleExpansion.bind(this);
         this.selectOption = this.selectOption.bind(this);
-
         this.handleDocumentClick = this.handleDocumentClick.bind(this);
 
         this.state = {
@@ -64,10 +63,10 @@ class SortByPanel extends React.Component {
     }
 
     selectOption(option) {
+        this.props.onOptionSelect && this.props.onOptionSelect(option);
         this.setState({
             isMenuExpanded: false
         });
-        this.props.onOptionSelect && this.props.onOptionSelect(option);
     }
 
     handleDocumentClick(event) {
