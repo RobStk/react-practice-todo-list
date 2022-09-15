@@ -39,7 +39,11 @@ const ButtonStyle = styled.button`
     &:hover{
         background-color: ${(props) => props.hoverBackgroundColor ? props.hoverBackgroundColor : props.theme.colors.background.stage3};
         cursor: default;
-    }
+    };
+
+    & .buttonTextValue{
+        display: ${(props) => props.textValueDisplay};
+    };
 `
 ButtonStyle.displayName = "ButtonStyle";
 
