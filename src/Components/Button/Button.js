@@ -19,9 +19,12 @@ class Button extends React.Component {
                 border={this.props.border}
                 borderColor={this.props.borderColor}
                 lineHeight={this.props.borderColor || 1}
+                name={this.props.name}
+                textValueDisplay={this.props.txt ? this.props.textValueDisplay : "none"}
+                data-testid={this.props.testId}
             >
                 {this.props.icon}
-                {this.props.txt}
+                <span class="buttonTextValue">{this.props.txt}</span>
             </ButtonStyle>
         )
     }

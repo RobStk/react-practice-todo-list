@@ -112,12 +112,20 @@ class Task extends React.Component {
                         icon={this.cancelIcon}
                         onMouseDown={this.handleCancel}
                         className="cancelButton"
+                        name="cancelButton"
+                        txt="cancel button"
+                        textValueDisplay="none"
+                        testId="cancelButton"
                     />
                     <Button
                         display={this.state.edit ? display : "none"}
                         icon={this.acceptIcon}
                         onMouseDown={this.handleAccept}
                         className="acceptButton"
+                        name="acceptButton"
+                        txt="accept button"
+                        textValueDisplay="none"
+                        testId="acceptButton"
                     />
                     <Button
                         display={this.state.edit ? "none" : display}
@@ -125,18 +133,30 @@ class Task extends React.Component {
                         onClick={this.editTask}
                         onFocus={this.handleFocus}
                         className="editButton"
+                        name="editButton"
+                        txt="edit button"
+                        textValueDisplay="none"
+                        testId="editButton"
                     />
                     <Button
                         display={display}
                         icon={this.calendarIcon}
                         onClick={this.openCalendar}
                         onFocus={this.handleFocus}
+                        name="calendarOpenButton"
+                        txt="calendar open button"
+                        textValueDisplay="none"
+                        testId="calendarButton"
                     />
                     <Button
                         display={display}
                         icon={this.trashIcon}
                         onClick={this.handleDelete}
                         className="trash"
+                        name="deleteButton"
+                        txt="delete button"
+                        textValueDisplay="none"
+                        testId="deleteButton"
                     />
                 </RowSectionStyle>
 
