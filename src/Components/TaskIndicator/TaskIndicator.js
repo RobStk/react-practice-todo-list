@@ -37,11 +37,11 @@ class TaskIndicator extends React.Component {
             case "add":
                 return <AddIcon />;
             case "undone":
-                return <UndoneIcon />
+                return <UndoneIcon data-testid="undoneIcon" />
             case "done":
-                return <DoneIcon />
+                return <DoneIcon data-testid="doneIcon" />
             default:
-                return <UndoneIcon />;
+                return <UndoneIcon data-testid="undoneIcon" />;
         }
     }
 

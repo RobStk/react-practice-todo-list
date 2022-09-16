@@ -5,7 +5,7 @@ import { ThemeProvider } from "styled-components";
 import darkTheme from "../../../Styles/dark-theme";
 import Task from "../Task";
 
-describe('Task', () => {
+describe("Every Task", () => {
     afterEach(cleanup);
 
     it('should display the provided content', () => {
@@ -108,9 +108,7 @@ describe('Task', () => {
     it('should display accept button on edit mode', () => {
         render(
             <ThemeProvider theme={darkTheme}>
-                <Task
-                    content='test content'
-                />
+                <Task />
             </ThemeProvider>
         );
 
@@ -123,9 +121,7 @@ describe('Task', () => {
     it('should display cancel button on edit mode', () => {
         render(
             <ThemeProvider theme={darkTheme}>
-                <Task
-                    content='test content'
-                />
+                <Task />
             </ThemeProvider>
         );
 
@@ -141,7 +137,6 @@ describe('Task', () => {
         render(
             <ThemeProvider theme={darkTheme}>
                 <Task
-                    content='test content'
                     onTaskChange={onTaskChangeMock}
                 />
             </ThemeProvider>
@@ -163,7 +158,6 @@ describe('Task', () => {
         render(
             <ThemeProvider theme={darkTheme}>
                 <Task
-                    content='test content'
                     onTaskChange={onTaskChangeMock}
                 />
             </ThemeProvider>
@@ -185,7 +179,6 @@ describe('Task', () => {
         render(
             <ThemeProvider theme={darkTheme}>
                 <Task
-                    content='test content'
                     onTaskChange={onTaskChangeMock}
                 />
             </ThemeProvider>
@@ -200,5 +193,110 @@ describe('Task', () => {
         expect(acceptButton).not.toBeVisible();
         expect(cancelButton).not.toBeVisible();
     });
+});
 
-})
+describe('Undone Task', () => {
+    afterEach(cleanup);
+
+    it("should display undone icon on default", () => {
+        render(
+            <ThemeProvider theme={darkTheme}>
+                <Task
+                    done={false}
+                />
+            </ThemeProvider>
+        );
+        expect(screen.getByTestId("undoneIcon")).toBeInTheDocument();
+    });
+
+    it("should not display done icon on default", () => {
+        render(
+            <ThemeProvider theme={darkTheme}>
+                <Task
+                    done={false}
+                />
+            </ThemeProvider>
+        );
+        expect(screen.queryByTestId("doneIcon")).not.toBeInTheDocument();
+    });
+
+    it("should display done icon on hover", () => {
+        render(
+            <ThemeProvider theme={darkTheme}>
+                <Task
+                    done={false}
+                />
+            </ThemeProvider>
+        );
+        userEvent.hover(screen.getByTestId("undoneIcon"));
+        expect(screen.getByTestId("doneIcon")).toBeInTheDocument();
+        expect(screen.queryByTestId("undoneIcon")).not.toBeInTheDocument();
+    });
+
+    it("should display undone icon after hover", () => {
+        render(
+            <ThemeProvider theme={darkTheme}>
+                <Task
+                    done={false}
+                />
+            </ThemeProvider>
+        );
+        userEvent.hover(screen.getByTestId("undoneIcon"));
+        userEvent.unhover(screen.getByTestId("doneIcon"));
+        expect(screen.getByTestId("undoneIcon")).toBeInTheDocument();
+        expect(screen.queryByTestId("doneIcon")).not.toBeInTheDocument();
+    });
+});
+
+describe("Done Task", () => {
+    afterEach(cleanup);
+
+    it("should display done icon on default", () => {
+        render(
+            <ThemeProvider theme={darkTheme}>
+                <Task
+                    done={true}
+                />
+            </ThemeProvider>
+        );
+        expect(screen.getByTestId("doneIcon")).toBeInTheDocument();
+    });
+
+    it("should not display undone icon on default", () => {
+        render(
+            <ThemeProvider theme={darkTheme}>
+                <Task
+                    done={true}
+                />
+            </ThemeProvider>
+        );
+        expect(screen.queryByTestId("undoneIcon")).not.toBeInTheDocument();
+    });
+
+    it("should display undone icon on hover", () => {
+        render(
+            <ThemeProvider theme={darkTheme}>
+                <Task
+                    done={true}
+                />
+            </ThemeProvider>
+        );
+        userEvent.hover(screen.getByTestId("doneIcon"));
+        expect(screen.getByTestId("undoneIcon")).toBeInTheDocument();
+        expect(screen.queryByTestId("doneIcon")).not.toBeInTheDocument();
+    });
+
+    it("should display done icon after hover", () => {
+        render(
+            <ThemeProvider theme={darkTheme}>
+                <Task
+                    done={true}
+                />
+            </ThemeProvider>
+        );
+        userEvent.hover(screen.getByTestId("doneIcon"));
+        userEvent.unhover(screen.getByTestId("undoneIcon"));
+        expect(screen.getByTestId("doneIcon")).toBeInTheDocument();
+        expect(screen.queryByTestId("undoneIcon")).not.toBeInTheDocument();
+    });
+});
