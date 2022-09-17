@@ -53,7 +53,52 @@ describe("Every Task", () => {
         const editButton = screen.getByTestId('editButton');
         userEvent.hover(screen.getByText('test content'));
         expect(editButton).toBeVisible();
+    });
+
+    it('should not display edit button after hover', () => {
+        render(
+            <ThemeProvider theme={darkTheme}>
+                <Task
+                    content='test content'
+                />
+            </ThemeProvider>
+        );
+
+        const editButton = screen.getByTestId('editButton');
+        userEvent.hover(screen.getByText('test content'));
         userEvent.unhover(screen.getByText('test content'));
+        expect(editButton).not.toBeVisible();
+    });
+
+    it('should display edit button when is active', () => {
+        render(
+            <ThemeProvider theme={darkTheme}>
+                <Task
+                    content='test content'
+                />
+            </ThemeProvider>
+        );
+
+        const editButton = screen.getByTestId('editButton');
+        userEvent.click(screen.getByText('test content'));
+        expect(editButton).toBeVisible();
+        userEvent.unhover(screen.getByText('test content'));
+        expect(editButton).toBeVisible();
+    });
+
+    it('should not display edit button after deactivation', () => {
+        render(
+            <ThemeProvider theme={darkTheme}>
+                <Task
+                    content='test content'
+                />
+            </ThemeProvider>
+        );
+
+        const editButton = screen.getByTestId('editButton');
+        userEvent.click(screen.getByText('test content'));
+        userEvent.unhover(screen.getByText('test content'));
+        userEvent.click(document.body);
         expect(editButton).not.toBeVisible();
     });
 
@@ -69,7 +114,52 @@ describe("Every Task", () => {
         const calendarButton = screen.getByTestId('calendarButton');
         userEvent.hover(screen.getByText('test content'));
         expect(calendarButton).toBeVisible();
+    });
+
+    it('should not display calendar button after hover', () => {
+        render(
+            <ThemeProvider theme={darkTheme}>
+                <Task
+                    content='test content'
+                />
+            </ThemeProvider>
+        );
+
+        const calendarButton = screen.getByTestId('calendarButton');
+        userEvent.hover(screen.getByText('test content'));
         userEvent.unhover(screen.getByText('test content'));
+        expect(calendarButton).not.toBeVisible();
+    });
+
+    it('should display calendar button when is active', () => {
+        render(
+            <ThemeProvider theme={darkTheme}>
+                <Task
+                    content='test content'
+                />
+            </ThemeProvider>
+        );
+
+        const calendarButton = screen.getByTestId('calendarButton');
+        userEvent.click(screen.getByText('test content'));
+        expect(calendarButton).toBeVisible();
+        userEvent.unhover(screen.getByText('test content'));
+        expect(calendarButton).toBeVisible();
+    });
+
+    it('should not display calendar button after deactivation', () => {
+        render(
+            <ThemeProvider theme={darkTheme}>
+                <Task
+                    content='test content'
+                />
+            </ThemeProvider>
+        );
+
+        const calendarButton = screen.getByTestId('calendarButton');
+        userEvent.click(screen.getByText('test content'));
+        userEvent.unhover(screen.getByText('test content'));
+        userEvent.click(document.body);
         expect(calendarButton).not.toBeVisible();
     });
 
@@ -85,7 +175,52 @@ describe("Every Task", () => {
         const deleteButton = screen.getByTestId('deleteButton');
         userEvent.hover(screen.getByText('test content'));
         expect(deleteButton).toBeVisible();
+    });
+
+    it('should not display delete button after hover', () => {
+        render(
+            <ThemeProvider theme={darkTheme}>
+                <Task
+                    content='test content'
+                />
+            </ThemeProvider>
+        );
+
+        const deleteButton = screen.getByTestId('deleteButton');
+        userEvent.hover(screen.getByText('test content'));
         userEvent.unhover(screen.getByText('test content'));
+        expect(deleteButton).not.toBeVisible();
+    });
+
+    it('should display delete button when is active', () => {
+        render(
+            <ThemeProvider theme={darkTheme}>
+                <Task
+                    content='test content'
+                />
+            </ThemeProvider>
+        );
+
+        const deleteButton = screen.getByTestId('deleteButton');
+        userEvent.click(screen.getByText('test content'));
+        expect(deleteButton).toBeVisible();
+        userEvent.unhover(screen.getByText('test content'));
+        expect(deleteButton).toBeVisible();
+    });
+
+    it('should not display delete button after deactivation', () => {
+        render(
+            <ThemeProvider theme={darkTheme}>
+                <Task
+                    content='test content'
+                />
+            </ThemeProvider>
+        );
+
+        const deleteButton = screen.getByTestId('deleteButton');
+        userEvent.click(screen.getByText('test content'));
+        userEvent.unhover(screen.getByText('test content'));
+        userEvent.click(document.body);
         expect(deleteButton).not.toBeVisible();
     });
 
@@ -102,6 +237,8 @@ describe("Every Task", () => {
         userEvent.click(editButton);
         expect(editButton).not.toBeVisible();
         userEvent.unhover(screen.getByText('test content'));
+        expect(editButton).not.toBeVisible();
+        userEvent.hover(screen.getByText('test content'));
         expect(editButton).not.toBeVisible();
     });
 
