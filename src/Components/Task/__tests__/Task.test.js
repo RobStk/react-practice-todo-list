@@ -437,3 +437,59 @@ describe("Done Task", () => {
         expect(screen.queryByTestId("undoneIcon")).not.toBeInTheDocument();
     });
 });
+
+describe("Editing Task", () => {
+    afterEach(cleanup);
+
+    it("should call changing function on accept", () => {
+        const changingFunction = jest.fn();
+        render(
+            <ThemeProvider theme={darkTheme}>
+                <Task
+                    content='old test content'
+                    onTaskChange={changingFunction}
+                />
+            </ThemeProvider>
+        );
+        const taskContent = screen.getByText("old test content");
+        userEvent.hover(taskContent);
+        userEvent.click(screen.getByTestId("editButton"));
+        userEvent.type(screen.getByRole("textbox"), "new test content");
+        userEvent.click(screen.getByTestId("acceptButton"));
+        expect(changingFunction).toBeCalled();
+    });
+
+    it("should not call changing function on cancel", () => {
+        const changingFunction = jest.fn();
+        render(
+            <ThemeProvider theme={darkTheme}>
+                <Task
+                    content='old test content'
+                    onTaskChange={changingFunction}
+                />
+            </ThemeProvider>
+        );
+        const taskContent = screen.getByText("old test content");
+        userEvent.hover(taskContent);
+        userEvent.click(screen.getByTestId("editButton"));
+        userEvent.type(screen.getByRole("textbox"), "new test content");
+        userEvent.click(screen.getByTestId("cancelButton"));
+        expect(changingFunction).not.toBeCalled();
+    });
+
+    it("should call delete function on delete", () => {
+        const deleteFunction = jest.fn();
+        render(
+            <ThemeProvider theme={darkTheme}>
+                <Task
+                    content='old test content'
+                    onDelete={deleteFunction}
+                />
+            </ThemeProvider>
+        );
+        const taskContent = screen.getByText("old test content");
+        userEvent.hover(taskContent);
+        userEvent.click(screen.getByTestId("deleteButton"));
+        expect(deleteFunction).toBeCalled();
+    });
+});

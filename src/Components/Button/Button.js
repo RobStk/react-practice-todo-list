@@ -24,7 +24,7 @@ class Button extends React.Component {
                 data-testid={this.props.testId}
             >
                 {this.props.icon}
-                <span className="buttonTextValue">{this.props.txt}</span>
+                <div className="buttonTextValue">{this.props.txt}</div>
             </ButtonStyle>
         )
     }
