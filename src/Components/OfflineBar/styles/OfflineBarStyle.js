@@ -10,7 +10,7 @@ const OfflineBarStyle = styled.div`
     position: absolute;
     width: 100%;
 
-    & :first-child {
+    & .icon {
         font-size: xx-large;
         margin: 0px 10px;
         color: ${({ theme }) => theme.colors.foreground.red};

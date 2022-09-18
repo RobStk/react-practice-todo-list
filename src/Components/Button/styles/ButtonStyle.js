@@ -43,8 +43,6 @@ const ButtonStyle = styled.button`
 
     & .buttonTextValue{
         display: ${(props) => props.textValueDisplay};
-        color: inherit;
-        font: inherit;
     };
 `
 ButtonStyle.displayName = "ButtonStyle";
