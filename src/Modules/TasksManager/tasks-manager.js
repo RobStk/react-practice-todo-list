@@ -1,4 +1,4 @@
-import TasksLocalProvider from "./TasksLocalProvider/tasks-local-provider";
+import LocalStorageBroker from "./LocalStorageBroker/local-storage-broker";
 
 class TasksManager {
 
@@ -6,29 +6,35 @@ class TasksManager {
     /* Private properties       */
     /* ------------------------ */
 
-    #tasksLocalProvider;
+    #localStorageBroker;
 
     /* ------------------------ */
     /* Constructor              */
     /* ------------------------ */
 
     constructor() {
-        this.#tasksLocalProvider = new TasksLocalProvider();
+        this.#localStorageBroker = new LocalStorageBroker();
     }
-
-    /* ------------------------ */
-    /* Getters/Setters          */
-    /* ------------------------ */
-
-    get getTasks() { return this.#getTasks }
 
     /* ------------------------ */
     /* Methods                  */
     /* ------------------------ */
 
-    #getTasks() {
-        return this.#tasksLocalProvider.getTasks() || [];
+    getTasks() {
+        //TODO
+        console.warn("Not implemented method.");
+        return this.#localStorageBroker.getTasks();
     }
+
+    // ------------------------
+
+    setTasks(tasks) {
+        //TODO
+        console.warn("Not implemented method.");
+        this.#localStorageBroker.setTasks(tasks);
+    }
+
+    // ------------------------
 }
 
 export default TasksManager;
