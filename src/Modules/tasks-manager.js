@@ -1,4 +1,4 @@
-import LocalStorageBroker from "./LocalStorageBroker/local-storage-broker";
+import LocalStorageBroker from "./storage-broker-local";
 
 class TasksManager {
 
@@ -20,6 +20,10 @@ class TasksManager {
     /* Methods                  */
     /* ------------------------ */
 
+    /**
+     * Returns tasks.
+     * @returns Tasks array
+     */
     getTasks() {
         //TODO
         console.warn("Not implemented method.");
@@ -28,6 +32,10 @@ class TasksManager {
 
     // ------------------------
 
+    /**
+     * Sets received tasks.
+     * @param {Object[]} tasks 
+     */
     setTasks(tasks) {
         //TODO
         console.warn("Not implemented method.");
