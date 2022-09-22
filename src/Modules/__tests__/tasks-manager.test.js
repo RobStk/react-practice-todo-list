@@ -1,5 +1,5 @@
 import TasksManager from "../tasks-manager";
-import LocalStorageBroker from "../LocalStorageBroker/local-storage-broker";
+import LocalStorageBroker from "../storage-broker-local";
 
 describe("TasksManager.getTasks method", () => {
     beforeEach(() => {
