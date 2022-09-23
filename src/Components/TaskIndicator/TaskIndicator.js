@@ -22,7 +22,7 @@ class TaskIndicator extends React.Component {
                 onKeyDown={this.props.onKeyDown}
                 tabIndex="0"
                 className={this.props.className}
-                data-testId="TaskIndicator"
+                data-testid="TaskIndicator"
             >
                 {icon}
             </TaskIndicatorStyle>
