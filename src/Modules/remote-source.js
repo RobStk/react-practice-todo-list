@@ -1,56 +1,42 @@
-/**
- * @typedef ResponseObject
- * @property {Array|null} data
- * @property {number|null} error
- */
-/**
- * @typedef RemoteSourceInterface
- * @property {function():ResponseObject} get
- * @property {function(Array):bool} post
- */
-
-class StorageBrokerRemote {
+class RemoteSource {
     /* ---------------------------------------------------- */
     /* Constructor                                          */
     /* ---------------------------------------------------- */
     /**
-     * @param {RemoteSourceInterface} source 
+     * @param {string} url 
      */
-    constructor(source) {
-        this.#source = source;
+    constructor(url) {
+        this.#url = url;
     }
 
     /* ---------------------------------------------------- */
     /* Private properties                                   */
     /* ---------------------------------------------------- */
-    #source;
+    #url
 
     /* ---------------------------------------------------- */
     /* Getters/Setters                                      */
     /* ---------------------------------------------------- */
-
-    get getData() { return this.#getData };
-    get sendData() { return this.#sendData };
+    get get() { return this.#get }
+    get post() { return this.#post }
 
     /* ---------------------------------------------------- */
     /* Methods                                              */
     /* ---------------------------------------------------- */
 
-    #getData() {
-        const response = this.#source.get();
-        const output = response ? response.data : null;
-        return output;
+    #get() {
+        //TODO
+        console.warn("Not implemented method.");
+    }
+
+    #post() {
+        //TODO
+        console.warn("Not implemented method.");
     }
 
     // --------------------------
-
-    #sendData(data) {
-        const response = this.#source.post(data);
-        const output = response;
-        return output;
-    }
 
     // --------------------------
 }
 
-export default StorageBrokerRemote;
+export default RemoteSource;
