@@ -1,5 +1,6 @@
+import StorageBrokerLocal from "../storage-broker-local";
+import StorageBrokerRemote from "../storage-broker-remote";
 import TasksManager from "../tasks-manager";
-import LocalStorageBroker from "../storage-broker-local";
 
 describe("TasksManager.getTasks method", () => {
     beforeEach(() => {
@@ -8,19 +9,21 @@ describe("TasksManager.getTasks method", () => {
         jest.restoreAllMocks();
     });
 
-    it("should call getTasks method on localStorageBroker", () => {
-        const tasksManager = new TasksManager();
-        const getTaskMock = jest.spyOn(LocalStorageBroker.prototype, 'getTasks');
+    const localStorageBroker = new StorageBrokerLocal();
+    const remoteStorageBroker = new StorageBrokerRemote();
+    const tasksManager = new TasksManager(localStorageBroker, remoteStorageBroker);
+
+    it("should call getData method on localStorageBroker", () => {
+        const testFn = jest.spyOn(localStorageBroker, "getData");
         tasksManager.getTasks();
-        expect(getTaskMock).toHaveBeenCalledTimes(1);
+        expect(testFn).toHaveBeenCalledTimes(1);
     });
 
     it("should return an empty array if it does not receive any items", () => {
         const getTaskMock = jest
-            .spyOn(LocalStorageBroker.prototype, 'getTasks')
+            .spyOn(localStorageBroker, "getData")
             .mockImplementation(() => []);
 
-        const tasksManager = new TasksManager();
         const tasks = tasksManager.getTasks();
         expect(getTaskMock).toHaveBeenCalledTimes(1);
         expect(tasks.length).toBe(0);
@@ -28,10 +31,9 @@ describe("TasksManager.getTasks method", () => {
 
     it("should return array of items", () => {
         const getTaskMock = jest
-            .spyOn(LocalStorageBroker.prototype, 'getTasks')
+            .spyOn(localStorageBroker, "getData")
             .mockImplementation(() => ["items1", "items2", "items3"]);
 
-        const tasksManager = new TasksManager();
         const tasks = tasksManager.getTasks();
         expect(getTaskMock).toHaveBeenCalledTimes(1);
         expect(tasks.length).toBe(3);
@@ -40,16 +42,31 @@ describe("TasksManager.getTasks method", () => {
 });
 
 describe("TasksManager.setTasks method", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        jest.resetAllMocks();
+        jest.restoreAllMocks();
+    });
 
-    it("should call setTasks method with correct params on LocalStorageBroker", () => {
+    const localStorageBroker = new StorageBrokerLocal();
+    const remoteStorageBroker = new StorageBrokerRemote();
+    const tasksManager = new TasksManager(localStorageBroker, remoteStorageBroker);
+
+    it("should call setTasks method with correct params on localStorageBroker", () => {
         const params = "testParams";
-        const getTaskMock = jest
-            .spyOn(LocalStorageBroker.prototype, 'setTasks');
+        const testFn = jest.spyOn(localStorageBroker, "setData");
 
-        const tasksManager = new TasksManager();
         tasksManager.setTasks(params);
-        expect(getTaskMock).toHaveBeenCalledTimes(1);
-        expect(getTaskMock).toHaveBeenCalledWith(params);
+        expect(testFn).toHaveBeenCalledTimes(1);
+        expect(testFn).toHaveBeenCalledWith(params);
+    });
+
+});
+
+describe("TasksManager.synchronize method", () => {
+
+    it("TODO", () => {
+        //TODO
     });
 
 });

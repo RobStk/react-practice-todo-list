@@ -1,64 +1,73 @@
-import Connection from "../../utilities/connection";
+import RemoteSource from "../remote-source";
 import RemoteStorageBroker from "../storage-broker-remote";
 
-describe("RemoteStorageBroker getTasks method", () => {
-    jest.clearAllMocks();
-    jest.resetAllMocks();
-    jest.restoreAllMocks();
+describe("RemoteStorageBroker getData method", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        jest.resetAllMocks();
+        jest.restoreAllMocks();
+    });
 
-    it("should return a response object", async () => {
-        const getTaskMock = jest.spyOn(Connection.prototype, 'get').mockImplementation(() => {
-            return new Promise((resolve, reject) => {
-                resolve({
-                    data: "test data",
-                    error: false
-                });
-            });
-        });
-        const dbConnectionInterface = new Connection();
-        const remoteStorageBroker = new RemoteStorageBroker(dbConnectionInterface);
-        const response = await remoteStorageBroker.getTasks();
+    it("should return a data array", () => {
+        const remoteSource = new RemoteSource();
+        const getDataMock = jest.spyOn(remoteSource, 'get').mockReturnValue({ data: ["test data 1", "test data 2"], error: null });
+        const remoteStorageBroker = new RemoteStorageBroker(remoteSource);
+        const response = remoteStorageBroker.getData();
+        const isArray = Array.isArray(response);
         expect.assertions(3);
-        expect(getTaskMock).toBeCalled();
-        expect(response.data).toBe("test data");
-        expect(response.error).toBeFalsy();
+        expect(getDataMock).toBeCalled();
+        expect(isArray).toBeTruthy();
+        expect(response[1]).toBe("test data 2");
+    });
+
+    it("should return null if receives no data", () => {
+        const remoteSource = new RemoteSource();
+        const getDataMock = jest.spyOn(remoteSource, 'get').mockReturnValue(null);
+        const remoteStorageBroker = new RemoteStorageBroker(remoteSource);
+        const response = remoteStorageBroker.getData();
+        const isArray = Array.isArray(response);
+        expect.assertions(3);
+        expect(getDataMock).toBeCalled();
+        expect(isArray).toBeFalsy();
+        expect(response).toBe(null);
     });
 });
 
-describe("RemoteStorageBroker sendTasks method", () => {
-    jest.clearAllMocks();
-    jest.resetAllMocks();
-    jest.restoreAllMocks();
-
-    it("should call post method on dbConnectionInterface with correct args", async () => {
-        const getTaskMock = jest.spyOn(Connection.prototype, 'post').mockImplementation((args) => {
-            return new Promise((resolve, reject) => {
-                resolve({
-                    error: false
-                });
-            });
-        });
-        const dbConnectionInterface = new Connection();
-        const remoteStorageBroker = new RemoteStorageBroker(dbConnectionInterface);
-        await remoteStorageBroker.sendTasks("test arg");
-        expect.assertions(1);
-        expect(getTaskMock).toBeCalledWith("test arg");
+describe("RemoteStorageBroker sendData method", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        jest.resetAllMocks();
+        jest.restoreAllMocks();
     });
 
-    it("should return a response object", async () => {
-        jest.spyOn(Connection.prototype, 'post').mockImplementation((args) => {
-            return new Promise((resolve, reject) => {
-                resolve({
-                    error: 404
-                });
-            });
-        });
-        const dbConnectionInterface = new Connection();
-        const remoteStorageBroker = new RemoteStorageBroker(dbConnectionInterface);
-        const response = await remoteStorageBroker.sendTasks("test arg");
+    it("should call post method on remoteSource with correct args", () => {
+        const remoteSource = new RemoteSource();
+        const postDataMock = jest.spyOn(remoteSource, 'post');
+        const remoteStorageBroker = new RemoteStorageBroker(remoteSource);
+        remoteStorageBroker.sendData("test arg");
+        expect.assertions(1);
+        expect(postDataMock).toBeCalledWith("test arg");
+    });
+
+    it("should return false if receives false", () => {
+        const remoteSource = new RemoteSource();
+        const postDataMock = jest.spyOn(remoteSource, 'post').mockReturnValue(false);
+        const remoteStorageBroker = new RemoteStorageBroker(remoteSource);
+        const response = remoteStorageBroker.sendData("test arg");
         expect.assertions(3);
-        expect(response.error).toBeDefined();
-        expect(response.error).toBeTruthy();
-        expect(response.error).toBe(404);
+        expect(postDataMock).toBeCalledWith("test arg");
+        expect(response).toBeDefined();
+        expect(response).toBeFalsy();
+    });
+
+    it("should return true if receives true", () => {
+        const remoteSource = new RemoteSource();
+        const postDataMock = jest.spyOn(remoteSource, 'post').mockReturnValue(true);
+        const remoteStorageBroker = new RemoteStorageBroker(remoteSource);
+        const response = remoteStorageBroker.sendData("test arg");
+        expect.assertions(3);
+        expect(postDataMock).toBeCalledWith("test arg");
+        expect(response).toBeDefined();
+        expect(response).toBeTruthy();
     });
 });

@@ -1,33 +1,46 @@
-import LocalStorageBroker from "./storage-broker-local";
+/**
+ * @typedef StorageBrokerLocal
+ * @property {function() : Array} getData
+ * @property {function(Array)} setData
+ */
+/**
+ * @typedef StorageBrokerRemote
+ * @property {function() : Array|null} getData
+ * @property {function(Array): bool} setData
+ */
 
 class TasksManager {
 
-    /* ------------------------ */
-    /* Private properties       */
-    /* ------------------------ */
+    /* ---------------------------------------------------- */
+    /* Private properties                                   */
+    /* ---------------------------------------------------- */
 
     #localStorageBroker;
+    #remoteStorageBroker;
 
-    /* ------------------------ */
-    /* Constructor              */
-    /* ------------------------ */
+    /* ---------------------------------------------------- */
+    /* Constructor                                          */
+    /* ---------------------------------------------------- */
 
-    constructor() {
-        this.#localStorageBroker = new LocalStorageBroker();
+    /**
+     * @param {StorageBrokerLocal} localStorageBroker 
+     * @param {StorageBrokerRemote} remoteStorageBroker 
+     */
+    constructor(localStorageBroker, remoteStorageBroker) {
+        this.#localStorageBroker = localStorageBroker;
+        this.#remoteStorageBroker = remoteStorageBroker;
     }
 
-    /* ------------------------ */
-    /* Methods                  */
-    /* ------------------------ */
+    /* ---------------------------------------------------- */
+    /* Methods                                              */
+    /* ---------------------------------------------------- */
 
     /**
      * Returns tasks.
-     * @returns Tasks array
+     * @returns {Array|null}    Tasks array
      */
     getTasks() {
-        //TODO
-        console.warn("Not implemented method.");
-        return this.#localStorageBroker.getTasks();
+        return this.#localStorageBroker.getData();
     }
 
     // ------------------------
@@ -37,9 +50,7 @@ class TasksManager {
      * @param {Object[]} tasks 
      */
     setTasks(tasks) {
-        //TODO
-        console.warn("Not implemented method.");
-        this.#localStorageBroker.setTasks(tasks);
+        this.#localStorageBroker.setData(tasks);
     }
 
     // ------------------------
