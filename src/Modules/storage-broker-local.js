@@ -26,7 +26,7 @@ class StorageBrokerLocal {
     /* ---------------------------------------------------- */
 
     /**
-     * Returns an array with data from local storage or null
+     * Returns an array with data from local storage.
      * @returns {Array} Data array
      */
     #getData() {

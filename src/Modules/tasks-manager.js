@@ -1,12 +1,7 @@
 /**
- * @typedef StorageBrokerLocal
- * @property {function() : Array} getData
- * @property {function(Array)} setData
- */
-/**
- * @typedef StorageBrokerRemote
- * @property {function() : Array|null} getData
- * @property {function(Array): bool} setData
+ * @typedef {import('./storage-broker-local').default} StorageBrokerLocal
+ * @typedef {import('./storage-broker-remote').default} StorageBrokerRemote
+ * @typedef {import('./tasks-arrays-synchronizer').default} TasksArraySynchronizer
  */
 
 class TasksManager {
@@ -17,6 +12,14 @@ class TasksManager {
 
     #localStorageBroker;
     #remoteStorageBroker;
+    #tasksArraysSynchronizer;
+
+    /* ---------------------------------------------------- */
+    /* Getters/Setters                                      */
+    /* ---------------------------------------------------- */
+    get getTasks() { return this.#getTasks }
+    get setTasks() { return this.#setTasks }
+    get addTask() { return this.#addTask }
 
     /* ---------------------------------------------------- */
     /* Constructor                                          */
@@ -24,11 +27,12 @@ class TasksManager {
 
     /**
      * @param {StorageBrokerLocal} localStorageBroker 
-     * @param {StorageBrokerRemote} remoteStorageBroker 
+     * @param {StorageBrokerRemote} remoteStorageBroker
      */
-    constructor(localStorageBroker, remoteStorageBroker) {
+    constructor(localStorageBroker, remoteStorageBroker, tasksArraySynchronizer) {
         this.#localStorageBroker = localStorageBroker;
         this.#remoteStorageBroker = remoteStorageBroker;
+        this.#tasksArraysSynchronizer = tasksArraySynchronizer;
     }
 
     /* ---------------------------------------------------- */
@@ -39,7 +43,7 @@ class TasksManager {
      * Returns tasks.
      * @returns {Array|null}    Tasks array
      */
-    getTasks() {
+    #getTasks() {
         return this.#localStorageBroker.getData();
     }
 
@@ -47,10 +51,22 @@ class TasksManager {
 
     /**
      * Sets received tasks.
-     * @param {Object[]} tasks 
+     * @param {Task[]} tasks 
      */
-    setTasks(tasks) {
+    #setTasks(tasks) {
         this.#localStorageBroker.setData(tasks);
+    }
+
+    // ------------------------
+
+    /**
+     * Adds new Task
+     * @param {Task} task 
+     */
+    #addTask(task) {
+        const localTasks = this.#localStorageBroker.getData();
+        localTasks.push(task);
+        this.#localStorageBroker.setData(localTasks);
     }
 
     // ------------------------

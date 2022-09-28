@@ -2,7 +2,7 @@ import StorageBrokerLocal from "../storage-broker-local";
 import StorageBrokerRemote from "../storage-broker-remote";
 import TasksManager from "../tasks-manager";
 
-describe("TasksManager.getTasks method", () => {
+describe("getTasks method", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         jest.resetAllMocks();
@@ -10,8 +10,7 @@ describe("TasksManager.getTasks method", () => {
     });
 
     const localStorageBroker = new StorageBrokerLocal();
-    const remoteStorageBroker = new StorageBrokerRemote();
-    const tasksManager = new TasksManager(localStorageBroker, remoteStorageBroker);
+    const tasksManager = new TasksManager(localStorageBroker);
 
     it("should call getData method on localStorageBroker", () => {
         const testFn = jest.spyOn(localStorageBroker, "getData");
@@ -41,7 +40,7 @@ describe("TasksManager.getTasks method", () => {
 
 });
 
-describe("TasksManager.setTasks method", () => {
+describe("setTasks method", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         jest.resetAllMocks();
@@ -63,10 +62,44 @@ describe("TasksManager.setTasks method", () => {
 
 });
 
-describe("TasksManager.synchronize method", () => {
+describe("addTask method", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        jest.resetAllMocks();
+        jest.restoreAllMocks();
+    });
+
+    const localStorageBroker = new StorageBrokerLocal();
+    const remoteStorageBroker = new StorageBrokerRemote();
+    const tasksManager = new TasksManager(localStorageBroker, remoteStorageBroker);
+
+    it("should call setData method with correct params on localStorageBroker", () => {
+        const baseLocalData = ["item1", "item2"];
+        const newTask = "newTask";
+        const expectedValue = [...baseLocalData];
+        expectedValue.push(newTask);
+
+        const lsGetDataMethod = jest.spyOn(localStorageBroker, "getData").mockReturnValue(baseLocalData);
+
+        const lsSetDataMethod = jest.spyOn(localStorageBroker, "setData");
+
+        expect.assertions(3);
+        tasksManager.addTask(newTask);
+        expect(lsGetDataMethod).toHaveBeenCalledTimes(1);
+        expect(lsSetDataMethod).toHaveBeenCalledTimes(1);
+        expect(lsSetDataMethod).toHaveBeenCalledWith(expectedValue);
+    });
+
+});
+
+describe("updateTask method", () => {
 
     it("TODO", () => {
         //TODO
     });
 
 });
+
+describe("synchronize method", () => {
+    //TODO
+})

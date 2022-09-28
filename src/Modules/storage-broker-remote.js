@@ -6,7 +6,7 @@
 /**
  * @typedef RemoteSourceInterface
  * @property {function():ResponseObject} get
- * @property {function(Array):bool} post
+ * @property {function(Array):boolean} post
  */
 
 class StorageBrokerRemote {
