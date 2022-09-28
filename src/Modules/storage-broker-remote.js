@@ -3,11 +3,6 @@
  * @property {Array|null} data
  * @property {number|null} error
  */
-/**
- * @typedef RemoteSourceInterface
- * @property {function():ResponseObject} get
- * @property {function(Array):boolean} post
- */
 
 class StorageBrokerRemote {
     /* ---------------------------------------------------- */
@@ -30,7 +25,7 @@ class StorageBrokerRemote {
     /* ---------------------------------------------------- */
 
     get getData() { return this.#getData };
-    get sendData() { return this.#sendData };
+    get setData() { return this.#setData };
 
     /* ---------------------------------------------------- */
     /* Methods                                              */
@@ -44,7 +39,7 @@ class StorageBrokerRemote {
 
     // --------------------------
 
-    #sendData(data) {
+    #setData(data) {
         const response = this.#source.post(data);
         const output = response;
         return output;

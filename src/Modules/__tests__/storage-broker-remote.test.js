@@ -33,7 +33,7 @@ describe("RemoteStorageBroker getData method", () => {
     });
 });
 
-describe("RemoteStorageBroker sendData method", () => {
+describe("RemoteStorageBroker setData method", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         jest.resetAllMocks();
@@ -44,7 +44,7 @@ describe("RemoteStorageBroker sendData method", () => {
         const remoteSource = new RemoteSource();
         const postDataMock = jest.spyOn(remoteSource, 'post');
         const remoteStorageBroker = new RemoteStorageBroker(remoteSource);
-        remoteStorageBroker.sendData("test arg");
+        remoteStorageBroker.setData("test arg");
         expect.assertions(1);
         expect(postDataMock).toBeCalledWith("test arg");
     });
@@ -53,7 +53,7 @@ describe("RemoteStorageBroker sendData method", () => {
         const remoteSource = new RemoteSource();
         const postDataMock = jest.spyOn(remoteSource, 'post').mockReturnValue(false);
         const remoteStorageBroker = new RemoteStorageBroker(remoteSource);
-        const response = remoteStorageBroker.sendData("test arg");
+        const response = remoteStorageBroker.setData("test arg");
         expect.assertions(3);
         expect(postDataMock).toBeCalledWith("test arg");
         expect(response).toBeDefined();
@@ -64,7 +64,7 @@ describe("RemoteStorageBroker sendData method", () => {
         const remoteSource = new RemoteSource();
         const postDataMock = jest.spyOn(remoteSource, 'post').mockReturnValue(true);
         const remoteStorageBroker = new RemoteStorageBroker(remoteSource);
-        const response = remoteStorageBroker.sendData("test arg");
+        const response = remoteStorageBroker.setData("test arg");
         expect.assertions(3);
         expect(postDataMock).toBeCalledWith("test arg");
         expect(response).toBeDefined();
