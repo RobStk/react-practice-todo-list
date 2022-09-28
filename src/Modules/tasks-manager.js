@@ -20,6 +20,7 @@ class TasksManager {
     get getTasks() { return this.#getTasks }
     get setTasks() { return this.#setTasks }
     get addTask() { return this.#addTask }
+    get synchronize() { return this.#synchronize }
 
     /* ---------------------------------------------------- */
     /* Constructor                                          */
@@ -67,6 +68,16 @@ class TasksManager {
         const localTasks = this.#localStorageBroker.getData();
         localTasks.push(task);
         this.#localStorageBroker.setData(localTasks);
+    }
+
+    // ------------------------
+
+    #synchronize() {
+        const remoteTasks = this.#remoteStorageBroker.getData();
+        const localTasks = this.#localStorageBroker.getData();
+        const synchronizedTasks = this.#tasksArraysSynchronizer.synchronize(localTasks, remoteTasks);
+        this.#localStorageBroker.setData(synchronizedTasks);
+        this.#remoteStorageBroker.setData(synchronizedTasks);
     }
 
     // ------------------------
