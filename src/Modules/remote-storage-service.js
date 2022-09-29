@@ -1,4 +1,16 @@
-class RemoteSource {
+class RemoteStorageService {
+
+    /* ---------------------------------------------------- */
+    /* Getters/Setters                                      */
+    /* ---------------------------------------------------- */
+    get getData() { return this.#getData };
+    get setData() { return this.#setData };
+
+    /* ---------------------------------------------------- */
+    /* Private properties                                   */
+    /* ---------------------------------------------------- */
+    #url;
+
     /* ---------------------------------------------------- */
     /* Constructor                                          */
     /* ---------------------------------------------------- */
@@ -10,33 +22,16 @@ class RemoteSource {
     }
 
     /* ---------------------------------------------------- */
-    /* Private properties                                   */
-    /* ---------------------------------------------------- */
-    #url
-
-    /* ---------------------------------------------------- */
-    /* Getters/Setters                                      */
-    /* ---------------------------------------------------- */
-    get get() { return this.#get }
-    get post() { return this.#post }
-
-    /* ---------------------------------------------------- */
     /* Methods                                              */
     /* ---------------------------------------------------- */
 
-    #get() {
-        //TODO
-        console.warn("Not implemented method.");
-    }
-
-    #post() {
-        //TODO
-        console.warn("Not implemented method.");
-    }
+    #getData() { console.warn("Not implemented method") } //TODO
 
     // --------------------------
+
+    #setData() { console.warn("Not implemented method") } //TODO
 
     // --------------------------
 }
 
-export default RemoteSource;
+export default RemoteStorageService;
