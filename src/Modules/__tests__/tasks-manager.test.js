@@ -113,18 +113,16 @@ describe("synchronize method", () => {
     const tasksArraysSynchronizer = new TasksArraySynchronizer();
     const tasksManager = new TasksManager(localStorageBroker, remoteStorageBroker, tasksArraysSynchronizer);
 
+    const localTasks = ["localTask"];
+    const remoteTasks = ["remoteTask"];
+    const synchronizedTasks = [...localTasks, ...remoteTasks];
+
     it("should distribute synchronized tasks", () => {
-        const localTasks = ["localTask"];
-        const remoteTasks = ["remoteTask"];
         const lsGetMethod = jest.spyOn(localStorageBroker, "getData").mockReturnValue(localTasks);
         const rsGetMethod = jest.spyOn(remoteStorageBroker, "getData").mockReturnValue(remoteTasks);
         const lsSetMethod = jest.spyOn(localStorageBroker, "setData");
         const rsSetMethod = jest.spyOn(remoteStorageBroker, "setData").mockImplementation();
-
-        const synchronizedTasks = [...localTasks, ...remoteTasks];
-
         const synchronizeMethod = jest.spyOn(tasksArraysSynchronizer, "synchronize").mockReturnValue(synchronizedTasks);
-
 
         tasksManager.synchronize();
 
@@ -137,9 +135,77 @@ describe("synchronize method", () => {
         expect(rsSetMethod).toBeCalledTimes(1);
         expect(lsSetMethod).toBeCalledWith(synchronizedTasks);
         expect(rsSetMethod).toBeCalledWith(synchronizedTasks);
-    })
+    });
 
-    it("should not distribute synchronized tasks if not received tasks array from remote storage", () => {
+    it("should stop the procedure if receive null from remote storage", () => {
+        const rsGetMethod = jest.spyOn(remoteStorageBroker, "getData").mockReturnValue(null);
 
-    })
-})
+        const lsGetMethod = jest.spyOn(localStorageBroker, "getData");
+        const lsSetMethod = jest.spyOn(localStorageBroker, "setData");
+        const rsSetMethod = jest.spyOn(remoteStorageBroker, "setData");
+        const synchronizeMethod = jest.spyOn(tasksArraysSynchronizer, "synchronize");
+
+        tasksManager.synchronize();
+
+        expect.assertions(5);
+        expect(rsGetMethod).toBeCalledTimes(1);
+        expect(lsGetMethod).not.toBeCalled();
+        expect(synchronizeMethod).not.toBeCalled();
+        expect(lsSetMethod).not.toBeCalled();
+        expect(rsSetMethod).not.toBeCalled();
+    });
+
+    it("should stop the procedure if receive number from remote storage", () => {
+        const rsGetMethod = jest.spyOn(remoteStorageBroker, "getData").mockReturnValue(1);
+
+        const lsGetMethod = jest.spyOn(localStorageBroker, "getData");
+        const lsSetMethod = jest.spyOn(localStorageBroker, "setData");
+        const rsSetMethod = jest.spyOn(remoteStorageBroker, "setData");
+        const synchronizeMethod = jest.spyOn(tasksArraysSynchronizer, "synchronize");
+
+        tasksManager.synchronize();
+
+        expect.assertions(5);
+        expect(rsGetMethod).toBeCalledTimes(1);
+        expect(lsGetMethod).not.toBeCalled();
+        expect(synchronizeMethod).not.toBeCalled();
+        expect(lsSetMethod).not.toBeCalled();
+        expect(rsSetMethod).not.toBeCalled();
+    });
+
+    it("should stop the procedure if receive string from remote storage", () => {
+        const rsGetMethod = jest.spyOn(remoteStorageBroker, "getData").mockReturnValue("string");
+
+        const lsGetMethod = jest.spyOn(localStorageBroker, "getData");
+        const lsSetMethod = jest.spyOn(localStorageBroker, "setData");
+        const rsSetMethod = jest.spyOn(remoteStorageBroker, "setData");
+        const synchronizeMethod = jest.spyOn(tasksArraysSynchronizer, "synchronize");
+
+        tasksManager.synchronize();
+
+        expect.assertions(5);
+        expect(rsGetMethod).toBeCalledTimes(1);
+        expect(lsGetMethod).not.toBeCalled();
+        expect(synchronizeMethod).not.toBeCalled();
+        expect(lsSetMethod).not.toBeCalled();
+        expect(rsSetMethod).not.toBeCalled();
+    });
+
+    it("should stop the procedure if receive object from remote storage", () => {
+        const rsGetMethod = jest.spyOn(remoteStorageBroker, "getData").mockReturnValue({});
+
+        const lsGetMethod = jest.spyOn(localStorageBroker, "getData");
+        const lsSetMethod = jest.spyOn(localStorageBroker, "setData");
+        const rsSetMethod = jest.spyOn(remoteStorageBroker, "setData");
+        const synchronizeMethod = jest.spyOn(tasksArraysSynchronizer, "synchronize");
+
+        tasksManager.synchronize();
+
+        expect.assertions(5);
+        expect(rsGetMethod).toBeCalledTimes(1);
+        expect(lsGetMethod).not.toBeCalled();
+        expect(synchronizeMethod).not.toBeCalled();
+        expect(lsSetMethod).not.toBeCalled();
+        expect(rsSetMethod).not.toBeCalled();
+    });
+});

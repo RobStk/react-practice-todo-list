@@ -74,6 +74,10 @@ class TasksManager {
 
     #synchronize() {
         const remoteTasks = this.#remoteStorageBroker.getData();
+
+        const remoteTasksIsArray = Array.isArray(remoteTasks);
+        if (!remoteTasksIsArray) return;
+
         const localTasks = this.#localStorageBroker.getData();
         const synchronizedTasks = this.#tasksArraysSynchronizer.synchronize(localTasks, remoteTasks);
         this.#localStorageBroker.setData(synchronizedTasks);
