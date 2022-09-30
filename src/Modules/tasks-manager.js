@@ -15,6 +15,7 @@ class TasksManager {
     /* ---------------------------------------------------- */
     get getTasks() { return this.#getTasks }
     get addTask() { return this.#addTask }
+    get updateTask() { return this.#updateTask }
 
     /* ---------------------------------------------------- */
     /* Constructor                                          */
@@ -46,23 +47,36 @@ class TasksManager {
      * @param {Object} task 
      */
     #addTask(task) {
+        const isTaskCorrect = this.#checkTaskCorrectness(task);
+        if (isTaskCorrect) this.#storage.addItem(task);
+    }
+
+    // ------------------------
+
+
+    #updateTask(taskToUpdate) {
+        const isTaskCorrect = this.#checkTaskCorrectness(taskToUpdate);
+        if (isTaskCorrect) this.#storage.replaceItem(taskToUpdate);
+    }
+
+    // ------------------------
+
+    #checkTaskCorrectness(task) {
         const notObjectErrorMessage = "Argument must be an object.";
         if (!task) {
             console.error(notObjectErrorMessage);
-            return;
+            return false;
         }
-        const taskIsNotObject = (typeof (task) !== "object");
+        const taskIsNotObject = (typeof task !== "object");
         const taskIsArray = Array.isArray(task);
         const taskProps = Object.entries(task);
         const taskHasNoProperties = !taskProps.length;
         if (taskIsNotObject || taskIsArray || taskHasNoProperties) {
             console.error(notObjectErrorMessage);
-            return;
+            return false;
         }
-        this.#storage.addItem(task);
+        return true;
     }
-
-    // ------------------------
 }
 
 export default TasksManager;
