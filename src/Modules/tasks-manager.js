@@ -8,7 +8,7 @@ class TasksManager {
     /* Private properties                                   */
     /* ---------------------------------------------------- */
 
-    #storageManager;
+    #storage;
 
     /* ---------------------------------------------------- */
     /* Getters/Setters                                      */
@@ -24,18 +24,43 @@ class TasksManager {
      * @param {StorageManager} storageManager 
      */
     constructor(storageManager) {
-        this.#storageManager = storageManager;
+        this.#storage = storageManager;
     }
 
     /* ---------------------------------------------------- */
     /* Methods                                              */
     /* ---------------------------------------------------- */
 
-    #getTasks() { console.warn("Not implemented method") } //TODO
+    /**
+     * Returns tasks array from storage.
+     * @returns {Array} Tasks array form storage.
+     */
+    #getTasks() {
+        const data = this.#storage.getData() || [];
+        return data
+    }
 
     // ------------------------
 
-    #addTask() { console.warn("Not implemented method") } //TODO
+    /**
+     * @param {Object} task 
+     */
+    #addTask(task) {
+        const notObjectErrorMessage = "Argument must be an object.";
+        if (!task) {
+            console.error(notObjectErrorMessage);
+            return;
+        }
+        const taskIsNotObject = (typeof (task) !== "object");
+        const taskIsArray = Array.isArray(task);
+        const taskProps = Object.entries(task);
+        const taskHasNoProperties = !taskProps.length;
+        if (taskIsNotObject || taskIsArray || taskHasNoProperties) {
+            console.error(notObjectErrorMessage);
+            return;
+        }
+        this.#storage.addItem(task);
+    }
 
     // ------------------------
 }
