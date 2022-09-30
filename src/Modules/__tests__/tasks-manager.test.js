@@ -1,6 +1,19 @@
 import StorageManager from "../storage-manager";
 import TasksManager from "../tasks-manager";
 
+describe("Interface", () => {
+    it("should be implemented", () => {
+        const tasksManager = new TasksManager();
+        const getTasksIsImplemented = (tasksManager.getTasks !== undefined);
+        const addTaskIsImplemented = (tasksManager.addTask !== undefined);
+        const updateTaskIsImplemented = (tasksManager.updateTask !== undefined);
+
+        expect(getTasksIsImplemented).toBeTruthy();
+        expect(addTaskIsImplemented).toBeTruthy();
+        expect(updateTaskIsImplemented).toBeTruthy();
+    });
+});
+
 describe("getTasks method", () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -54,9 +67,8 @@ describe("addTask method", () => {
     });
 
     it("should call addItem method on StorageManager", () => {
-
         const storageManager = new StorageManager();
-        Object.defineProperty(storageManager, "getData", { value: jest.fn() });
+        Object.defineProperty(storageManager, "addItem", { value: jest.fn() });
         const storageManagerAddItemMethod = jest.spyOn(storageManager, "addItem");
         const tasksManager = new TasksManager(storageManager);
         const testArgument = { content: "test argument" };
@@ -68,9 +80,7 @@ describe("addTask method", () => {
     });
 
     it("should not call addItem method on StorageManager if argument is a string", () => {
-
         const storageManager = new StorageManager();
-        Object.defineProperty(storageManager, "getData", { value: jest.fn() });
         const storageManagerAddItemMethod = jest.spyOn(storageManager, "addItem");
         const tasksManager = new TasksManager(storageManager);
         const testArgument = "test argument";
@@ -82,9 +92,7 @@ describe("addTask method", () => {
     });
 
     it("should not call addItem method on StorageManager if argument is array", () => {
-
         const storageManager = new StorageManager();
-        Object.defineProperty(storageManager, "getData", { value: jest.fn() });
         const storageManagerAddItemMethod = jest.spyOn(storageManager, "addItem");
         const tasksManager = new TasksManager(storageManager);
         const testArgument = ["test argument"];
@@ -96,9 +104,7 @@ describe("addTask method", () => {
     });
 
     it("should not call addItem method on StorageManager if argument is number", () => {
-
         const storageManager = new StorageManager();
-        Object.defineProperty(storageManager, "getData", { value: jest.fn() });
         const storageManagerAddItemMethod = jest.spyOn(storageManager, "addItem");
         const tasksManager = new TasksManager(storageManager);
         const testArgument = 1;
@@ -110,9 +116,7 @@ describe("addTask method", () => {
     });
 
     it("should not call addItem method on StorageManager if argument is null", () => {
-
         const storageManager = new StorageManager();
-        Object.defineProperty(storageManager, "getData", { value: jest.fn() });
         const storageManagerAddItemMethod = jest.spyOn(storageManager, "addItem");
         const tasksManager = new TasksManager(storageManager);
         const testArgument = null;
@@ -124,9 +128,7 @@ describe("addTask method", () => {
     });
 
     it("should not call addItem method on StorageManager if argument is undefined", () => {
-
         const storageManager = new StorageManager();
-        Object.defineProperty(storageManager, "getData", { value: jest.fn() });
         const storageManagerAddItemMethod = jest.spyOn(storageManager, "addItem");
         const tasksManager = new TasksManager(storageManager);
         const testArgument = undefined;
@@ -138,9 +140,7 @@ describe("addTask method", () => {
     });
 
     it("should not call addItem method on StorageManager if argument is empty object", () => {
-
         const storageManager = new StorageManager();
-        Object.defineProperty(storageManager, "getData", { value: jest.fn() });
         const storageManagerAddItemMethod = jest.spyOn(storageManager, "addItem");
         const tasksManager = new TasksManager(storageManager);
         const testArgument = {};
@@ -160,8 +160,95 @@ describe("updateTask method", () => {
         jest.restoreAllMocks();
     });
 
-    it("should 3", () => {
-        //TODO
+    it("should call replaceItem method on StorageManager", () => {
+        const storageManager = new StorageManager();
+        Object.defineProperty(storageManager, "replaceItem", { value: jest.fn() });
+        const storageManagerReplaceItemMethod = jest.spyOn(storageManager, "replaceItem");
+        const tasksManager = new TasksManager(storageManager);
+        const taskToUpdate = { content: "test content" };
+
+        tasksManager.updateTask(taskToUpdate);
+
+        expect.assertions(1);
+        expect(storageManagerReplaceItemMethod).toBeCalledWith(taskToUpdate);
+    });
+
+    it("should not call replaceItem method on StorageManager if argument is a string", () => {
+        const storageManager = new StorageManager();
+        Object.defineProperty(storageManager, "replaceItem", { value: jest.fn() });
+        const storageManagerReplaceItemMethod = jest.spyOn(storageManager, "replaceItem");
+        const tasksManager = new TasksManager(storageManager);
+        const taskToUpdate = "test content";
+
+        tasksManager.updateTask(taskToUpdate);
+
+        expect.assertions(1);
+        expect(storageManagerReplaceItemMethod).not.toBeCalled();
+    });
+
+    it("should not call replaceItem method on StorageManager if argument is array", () => {
+        const storageManager = new StorageManager();
+        Object.defineProperty(storageManager, "replaceItem", { value: jest.fn() });
+        const storageManagerReplaceItemMethod = jest.spyOn(storageManager, "replaceItem");
+        const tasksManager = new TasksManager(storageManager);
+        const taskToUpdate = ["test content"];
+
+        tasksManager.updateTask(taskToUpdate);
+
+        expect.assertions(1);
+        expect(storageManagerReplaceItemMethod).not.toBeCalled();
+    });
+
+    it("should not call replaceItem method on StorageManager if argument is number", () => {
+        const storageManager = new StorageManager();
+        Object.defineProperty(storageManager, "replaceItem", { value: jest.fn() });
+        const storageManagerReplaceItemMethod = jest.spyOn(storageManager, "replaceItem");
+        const tasksManager = new TasksManager(storageManager);
+        const taskToUpdate = 1;
+
+        tasksManager.updateTask(taskToUpdate);
+
+        expect.assertions(1);
+        expect(storageManagerReplaceItemMethod).not.toBeCalled();
+    });
+
+    it("should not call replaceItem method on StorageManager if argument is null", () => {
+        const storageManager = new StorageManager();
+        Object.defineProperty(storageManager, "replaceItem", { value: jest.fn() });
+        const storageManagerReplaceItemMethod = jest.spyOn(storageManager, "replaceItem");
+        const tasksManager = new TasksManager(storageManager);
+        const taskToUpdate = null;
+
+        tasksManager.updateTask(taskToUpdate);
+
+        expect.assertions(1);
+        expect(storageManagerReplaceItemMethod).not.toBeCalled();
+    });
+
+    it("should not call replaceItem method on StorageManager if argument is undefined", () => {
+        const storageManager = new StorageManager();
+        Object.defineProperty(storageManager, "replaceItem", { value: jest.fn() });
+        const storageManagerReplaceItemMethod = jest.spyOn(storageManager, "replaceItem");
+        const tasksManager = new TasksManager(storageManager);
+        const taskToUpdate = undefined;
+
+        tasksManager.updateTask(taskToUpdate);
+
+        expect.assertions(1);
+        expect(storageManagerReplaceItemMethod).not.toBeCalled();
+    });
+
+    it("should not call replaceItem method on StorageManager if argument is empty object", () => {
+        const storageManager = new StorageManager();
+        Object.defineProperty(storageManager, "replaceItem", { value: jest.fn() });
+        const storageManagerReplaceItemMethod = jest.spyOn(storageManager, "replaceItem");
+        const tasksManager = new TasksManager(storageManager);
+        const taskToUpdate = {};
+
+        tasksManager.updateTask(taskToUpdate);
+
+        expect.assertions(1);
+        expect(storageManagerReplaceItemMethod).not.toBeCalled()
     });
 
 });

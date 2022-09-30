@@ -11,6 +11,7 @@ class StorageManager {
     get getData() { return this.#getData }
     get setData() { return this.#setData }
     get addItem() { return this.#addItem }
+    get replaceItem() { return this.#replaceItem }
     get synchronize() { return this.#synchronize }
 
     /* ---------------------------------------------------- */
@@ -61,7 +62,11 @@ class StorageManager {
 
     // ------------------------
 
-    #addItem() { console.warn("Not implemented method") }; //TODO
+    #addItem() { throw new Error("Not implemented method.") }; //TODO
+
+    // ------------------------
+
+    #replaceItem() { throw new Error("Not implemented method.") }; //TODO
 
     // ------------------------
 
