@@ -3,6 +3,8 @@ import LocalStorageService from "../local-storage-service";
 import RemoteStorageService from "../remote-storage-service";
 import StorageManager from "../storage-manager";
 
+//TODO Interface test
+
 describe("getData method", () => {
     afterEach(() => {
         jest.clearAllMocks();

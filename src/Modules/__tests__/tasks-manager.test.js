@@ -252,3 +252,102 @@ describe("updateTask method", () => {
     });
 
 });
+
+describe("deleteTask method", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        jest.resetAllMocks();
+        jest.restoreAllMocks();
+    });
+
+    it("should call deleteItem on Storage Manager", () => {
+        const storageManager = new StorageManager();
+        Object.defineProperty(storageManager, "deleteItem", { value: jest.fn() });
+        const testedFunction = jest.spyOn(storageManager, "deleteItem");
+        const tasksManager = new TasksManager(storageManager);
+
+        const taskToDelete = { content: "deletedTaskContent" };
+        tasksManager.deleteTask(taskToDelete);
+
+        expect.assertions(1);
+        expect(testedFunction).toBeCalledWith(taskToDelete);
+    });
+
+    it("should not call deleteItem method on Storage Manager if argument is a string", () => {
+        const storageManager = new StorageManager();
+        Object.defineProperty(storageManager, "deleteItem", { value: jest.fn() });
+        const testedFunction = jest.spyOn(storageManager, "deleteItem");
+        const tasksManager = new TasksManager(storageManager);
+        const taskToDelete = "test content";
+
+        tasksManager.deleteTask(taskToDelete);
+
+        expect.assertions(1);
+        expect(testedFunction).not.toBeCalled();
+    });
+
+    it("should not call deleteItem method on Storage Manager if argument is array", () => {
+        const storageManager = new StorageManager();
+        Object.defineProperty(storageManager, "deleteItem", { value: jest.fn() });
+        const testedFunction = jest.spyOn(storageManager, "deleteItem");
+        const tasksManager = new TasksManager(storageManager);
+        const taskToDelete = ["test content"];
+
+        tasksManager.deleteTask(taskToDelete);
+
+        expect.assertions(1);
+        expect(testedFunction).not.toBeCalled();
+    });
+
+    it("should not call deleteItem method on Storage Manager if argument is number", () => {
+        const storageManager = new StorageManager();
+        Object.defineProperty(storageManager, "deleteItem", { value: jest.fn() });
+        const testedFunction = jest.spyOn(storageManager, "deleteItem");
+        const tasksManager = new TasksManager(storageManager);
+        const taskToDelete = 1;
+
+        tasksManager.deleteTask(taskToDelete);
+
+        expect.assertions(1);
+        expect(testedFunction).not.toBeCalled();
+    });
+
+    it("should not call deleteItem method on Storage Manager if argument is null", () => {
+        const storageManager = new StorageManager();
+        Object.defineProperty(storageManager, "deleteItem", { value: jest.fn() });
+        const testedFunction = jest.spyOn(storageManager, "deleteItem");
+        const tasksManager = new TasksManager(storageManager);
+        const taskToDelete = null;
+
+        tasksManager.deleteTask(taskToDelete);
+
+        expect.assertions(1);
+        expect(testedFunction).not.toBeCalled();
+    });
+
+    it("should not call deleteItem method on Storage Manager if argument is undefined", () => {
+        const storageManager = new StorageManager();
+        Object.defineProperty(storageManager, "deleteItem", { value: jest.fn() });
+        const testedFunction = jest.spyOn(storageManager, "deleteItem");
+        const tasksManager = new TasksManager(storageManager);
+        const taskToDelete = undefined;
+
+        tasksManager.deleteTask(taskToDelete);
+
+        expect.assertions(1);
+        expect(testedFunction).not.toBeCalled();
+    });
+
+    it("should not call deleteItem method on Storage Manager if argument is empty object", () => {
+        const storageManager = new StorageManager();
+        Object.defineProperty(storageManager, "deleteItem", { value: jest.fn() });
+        const testedFunction = jest.spyOn(storageManager, "deleteItem");
+        const tasksManager = new TasksManager(storageManager);
+        const taskToDelete = {};
+
+        tasksManager.deleteTask(taskToDelete);
+
+        expect.assertions(1);
+        expect(testedFunction).not.toBeCalled()
+    });
+})

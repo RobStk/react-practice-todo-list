@@ -1,5 +1,7 @@
 import LocalStorageService from "../local-storage-service";
 
+//TODO Interface test
+
 describe("getData method", () => {
     afterEach(() => {
         jest.clearAllMocks();

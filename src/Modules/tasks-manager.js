@@ -5,17 +5,18 @@
 class TasksManager {
 
     /* ---------------------------------------------------- */
-    /* Private properties                                   */
-    /* ---------------------------------------------------- */
-
-    #storage;
-
-    /* ---------------------------------------------------- */
     /* Getters/Setters                                      */
     /* ---------------------------------------------------- */
     get getTasks() { return this.#getTasks }
     get addTask() { return this.#addTask }
     get updateTask() { return this.#updateTask }
+    get deleteTask() { return this.#deleteTask }
+
+    /* ---------------------------------------------------- */
+    /* Private properties                                   */
+    /* ---------------------------------------------------- */
+
+    #storage;
 
     /* ---------------------------------------------------- */
     /* Constructor                                          */
@@ -61,6 +62,13 @@ class TasksManager {
 
     // ------------------------
 
+    #deleteTask(taskToDelete) {
+        const taskIsCorrect = this.#checkTaskCorrectness(taskToDelete);
+        if (taskIsCorrect) this.#storage.deleteItem(taskToDelete);
+    };
+
+    // ------------------------
+
     #checkTaskCorrectness(task) {
         const notObjectErrorMessage = "Argument must be an object.";
         if (!task) {
@@ -77,6 +85,8 @@ class TasksManager {
         }
         return true;
     }
+
+    // ------------------------
 }
 
 export default TasksManager;
