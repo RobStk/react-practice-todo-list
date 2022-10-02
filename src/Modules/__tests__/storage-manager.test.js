@@ -45,6 +45,40 @@ describe("setData method", () => {
         expect(setDataMock).toBeCalledTimes(1);
         expect(setDataMock).toBeCalledWith("test data");
     });
+
+    //TODO: Should synchronize?
+});
+
+describe("addItem method", () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+        jest.resetAllMocks();
+        jest.restoreAllMocks();
+        localStorage.clear();
+    });
+
+    const localDB = new LocalStorageService("test");
+    Object.defineProperty(localDB, "getData", { value: jest.fn() });
+    Object.defineProperty(localDB, "setData", { value: jest.fn() });
+
+    it("should call setItem with correct arguments on localDB", () => {
+        const baseArray = [{ content: "item1" }, { content: "item2" }];
+        const newItem = { content: "item3" };
+        const newArray = [...baseArray];
+        newArray.push(newItem);
+
+        const getDataMock = jest.spyOn(localDB, "getData").mockReturnValue(baseArray);
+        const setDataMock = jest.spyOn(localDB, "setData");
+
+        const storageManager = new StorageManager(localDB);
+        storageManager.addItem(newItem);
+
+        expect.assertions(2);
+        expect(getDataMock).toBeCalledTimes(1);
+        expect(setDataMock).toBeCalledWith(newArray);
+    });
+
+    //TODO: Should synchronize?
 });
 
 describe("synchronize method", () => {
@@ -99,7 +133,7 @@ describe("synchronize method", () => {
         expect(rsSetMethod).not.toBeCalled();
     });
 
-    it("should stop the procedure if receive number from remote storage", () => {
+    it("should stop the procedure if receive a number from remote storage", () => {
         const lsGetMethod = jest.spyOn(localService, "getData").mockReturnValue(localDataArr);
         const rsGetMethod = jest.spyOn(remoteService, "getData").mockReturnValue(1);
         const lsSetMethod = jest.spyOn(localService, "setData");
@@ -116,7 +150,7 @@ describe("synchronize method", () => {
         expect(rsSetMethod).not.toBeCalled();
     });
 
-    it("should stop the procedure if receive string from remote storage", () => {
+    it("should stop the procedure if receive a string from remote storage", () => {
         const lsGetMethod = jest.spyOn(localService, "getData").mockReturnValue("string");
         const rsGetMethod = jest.spyOn(remoteService, "getData").mockReturnValue(1);
         const lsSetMethod = jest.spyOn(localService, "setData");
@@ -133,7 +167,7 @@ describe("synchronize method", () => {
         expect(rsSetMethod).not.toBeCalled();
     });
 
-    it("should stop the procedure if receive object from remote storage", () => {
+    it("should stop the procedure if receive an object from remote storage", () => {
         const lsGetMethod = jest.spyOn(localService, "getData").mockReturnValue({});
         const rsGetMethod = jest.spyOn(remoteService, "getData").mockReturnValue(1);
         const lsSetMethod = jest.spyOn(localService, "setData");
