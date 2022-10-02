@@ -21,6 +21,7 @@ class StorageManager {
     #localService
     #remoteService;
     #syncKey;
+    #nextFreeId
 
     /* ---------------------------------------------------- */
     /* Constructor                                          */
@@ -38,6 +39,7 @@ class StorageManager {
         const defaultKey = "lastUpdate";
         const receivedKeyIsString = syncDateItemKey && (typeof syncDateItemKey === "string");
         this.#syncKey = receivedKeyIsString ? syncDateItemKey : defaultKey;
+        this.#nextFreeId = 1;
     }
 
     /* ---------------------------------------------------- */
@@ -74,11 +76,34 @@ class StorageManager {
 
     // ------------------------
 
-    #replaceItem() { throw new Error("Not implemented method.") }; //TODO
+    #replaceItem(itemToReplace) {
+        if (!itemToReplace.id && !itemToReplace.tempId) {
+            itemToReplace.tempId = this.#getNewTempId();
+        }
+        const id = itemToReplace.id;
+        const tempId = itemToReplace.tempId;
+        const data = this.#localService.getData();
+
+        const newData = id ?
+            data.filter((item) => item.id !== id)
+            :
+            data.filter((item) => item.tempId !== tempId)
+
+        newData.push(itemToReplace);
+        this.#localService.setData(newData);
+    };
 
     // ------------------------
 
     #deleteItem() { throw new Error("Not implemented method.") }; //TODO
+
+    // ------------------------
+
+    #getNewTempId() {
+        const tempId = this.#nextFreeId;
+        this.#nextFreeId++;
+        return tempId;
+    };
 
     // ------------------------
 
