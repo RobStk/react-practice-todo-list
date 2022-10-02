@@ -26,18 +26,18 @@ class StorageManager {
     /* Constructor                                          */
     /* ---------------------------------------------------- */
     /**
-     * @param {LocalStorageService} localService    Remote storage object.
-     * @param {RemoteStorageService} remoteService  Remote storage object.
-     * @param {string} [itemSyncDateKey=lastUpdate] Optional: Key under which the date 
-     *                                              to be synchronized is stored.
+     * @param {LocalStorageService} localService        Local storage object.
+     * @param {RemoteStorageService} remoteService      Remote storage object.
+     * @param {string} [syncDateItemKey=lastUpdate]     Optional: Key under which the date 
+     *                                                  to be synchronized is stored.
      */
-    constructor(localService, remoteService, itemSyncDateKey) {
+    constructor(localService, remoteService, syncDateItemKey) {
         this.#localService = localService;
         this.#remoteService = remoteService;
 
         const defaultKey = "lastUpdate";
-        const receivedKeyIsString = itemSyncDateKey && (typeof itemSyncDateKey === "string");
-        this.#syncKey = receivedKeyIsString ? itemSyncDateKey : defaultKey;
+        const receivedKeyIsString = syncDateItemKey && (typeof syncDateItemKey === "string");
+        this.#syncKey = receivedKeyIsString ? syncDateItemKey : defaultKey;
     }
 
     /* ---------------------------------------------------- */
@@ -63,7 +63,14 @@ class StorageManager {
 
     // ------------------------
 
-    #addItem() { throw new Error("Not implemented method.") }; //TODO
+    /**
+     * @param {Object} itemToAdd 
+     */
+    #addItem(itemToAdd) {
+        const data = this.#localService.getData();
+        data.push(itemToAdd);
+        this.#localService.setData(data);
+    };
 
     // ------------------------
 
