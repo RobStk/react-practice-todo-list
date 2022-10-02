@@ -12,7 +12,7 @@ class StorageManager {
     get setData() { return this.#setData }
     get addItem() { return this.#addItem }
     get replaceItem() { return this.#replaceItem }
-    get deleteItem() { throw new Error("Not implemented method.") } //TODO
+    get deleteItem() { return this.#deleteItem }
     get synchronize() { return this.#synchronize }
 
     /* ---------------------------------------------------- */
@@ -75,6 +75,10 @@ class StorageManager {
     // ------------------------
 
     #replaceItem() { throw new Error("Not implemented method.") }; //TODO
+
+    // ------------------------
+
+    #deleteItem() { throw new Error("Not implemented method.") }; //TODO
 
     // ------------------------
 

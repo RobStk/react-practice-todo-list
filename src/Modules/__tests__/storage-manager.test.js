@@ -4,6 +4,24 @@ import RemoteStorageService from "../remote-storage-service";
 import StorageManager from "../storage-manager";
 
 //TODO Interface test
+describe("Interface", () => {
+    it("should be implemented", () => {
+        const storageManager = new StorageManager();
+        const getDataIsImplemented = (storageManager.getData !== undefined);
+        const setDataIsImplemented = (storageManager.setData !== undefined);
+        const addItemIsImplemented = (storageManager.addItem !== undefined);
+        const replaceItemIsImplemented = (storageManager.replaceItem !== undefined);
+        const deleteItemIsImplemented = (storageManager.deleteItem !== undefined);
+        const synchronizeIsImplemented = (storageManager.synchronize !== undefined);
+
+        expect(getDataIsImplemented).toBeTruthy();
+        expect(setDataIsImplemented).toBeTruthy();
+        expect(addItemIsImplemented).toBeTruthy();
+        expect(replaceItemIsImplemented).toBeTruthy();
+        expect(deleteItemIsImplemented).toBeTruthy();
+        expect(synchronizeIsImplemented).toBeTruthy();
+    });
+});
 
 describe("getData method", () => {
     afterEach(() => {
