@@ -21,7 +21,6 @@ class StorageManager {
     #localService
     #remoteService;
     #syncKey;
-    #nextFreeId
 
     /* ---------------------------------------------------- */
     /* Constructor                                          */
@@ -39,7 +38,6 @@ class StorageManager {
         const defaultKey = "lastUpdate";
         const receivedKeyIsString = syncDateItemKey && (typeof syncDateItemKey === "string");
         this.#syncKey = receivedKeyIsString ? syncDateItemKey : defaultKey;
-        this.#nextFreeId = 1;
     }
 
     /* ---------------------------------------------------- */
@@ -47,7 +45,7 @@ class StorageManager {
     /* ---------------------------------------------------- */
 
     /**
-     * @returns {Array | null}
+     * @returns {Array}
      */
     #getData() {
         const data = this.#localService.getData();
@@ -69,40 +67,25 @@ class StorageManager {
      * @param {Object} itemToAdd 
      */
     #addItem(itemToAdd) {
-        const data = this.#localService.getData();
-        data.push(itemToAdd);
-        this.#localService.setData(data);
+        this.#localService.addItem(itemToAdd);
     };
 
     // ------------------------
 
+    /**
+     * @param {Object} itemToReplace 
+     */
     #replaceItem(itemToReplace) {
-        if (!itemToReplace.id && !itemToReplace.tempId) {
-            itemToReplace.tempId = this.#getNewTempId();
-        }
-        const id = itemToReplace.id;
-        const tempId = itemToReplace.tempId;
-        const data = this.#localService.getData();
-
-        const newData = id ?
-            data.filter((item) => item.id !== id)
-            :
-            data.filter((item) => item.tempId !== tempId)
-
-        newData.push(itemToReplace);
-        this.#localService.setData(newData);
+        this.#localService.replaceItem(itemToReplace)
     };
 
     // ------------------------
 
-    #deleteItem() { throw new Error("Not implemented method.") }; //TODO
-
-    // ------------------------
-
-    #getNewTempId() {
-        const tempId = this.#nextFreeId;
-        this.#nextFreeId++;
-        return tempId;
+    /**
+     * @param {Object} itemToDelete 
+     */
+    #deleteItem(itemToDelete) {
+        this.#localService.deleteItem(itemToDelete);
     };
 
     // ------------------------
