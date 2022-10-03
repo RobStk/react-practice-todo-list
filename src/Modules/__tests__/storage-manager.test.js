@@ -3,6 +3,14 @@ import LocalStorageService from "../local-storage-service";
 import RemoteStorageService from "../remote-storage-service";
 import StorageManager from "../storage-manager";
 
+const localDB = new LocalStorageService("test");
+const storageManager = new StorageManager(localDB);
+
+Object.defineProperty(localDB, "getData", { value: jest.fn() });
+Object.defineProperty(localDB, "setData", { value: jest.fn() });
+Object.defineProperty(localDB, "replaceItem", { value: jest.fn() });
+Object.defineProperty(localDB, "deleteItem", { value: jest.fn() });
+
 //TODO Interface test
 describe("Interface", () => {
     it("should be implemented", () => {
@@ -31,6 +39,7 @@ describe("getData method", () => {
     });
 
     const localService = new LocalStorageService();
+    Object.defineProperty(localService, "getData", { value: jest.fn() });
     const storageManager = new StorageManager(localService);
 
     it("should return array of items", () => {
@@ -49,7 +58,6 @@ describe("setData method", () => {
         jest.clearAllMocks();
         jest.resetAllMocks();
         jest.restoreAllMocks();
-        localStorage.clear();
     });
 
     const localService = new LocalStorageService();
@@ -72,31 +80,22 @@ describe("addItem method", () => {
         jest.clearAllMocks();
         jest.resetAllMocks();
         jest.restoreAllMocks();
-        localStorage.clear();
     });
 
     const localDB = new LocalStorageService("test");
-    Object.defineProperty(localDB, "getData", { value: jest.fn() });
-    Object.defineProperty(localDB, "setData", { value: jest.fn() });
+    Object.defineProperty(localDB, "addItem", { value: jest.fn() });
 
-    it("should call setData with correct arguments on localDB", () => {
-        const baseArray = [{ content: "item1" }, { content: "item2" }];
-        const newItem = { content: "item3" };
-        const newArray = [...baseArray];
-        newArray.push(newItem);
-
-        const getDataMock = jest.spyOn(localDB, "getData").mockReturnValue(baseArray);
-        const setDataMock = jest.spyOn(localDB, "setData");
+    it("should call addItem with correct arguments on localDB", () => {
+        const newItem = { content: "itemContent" };
+        const addItemMock = jest.spyOn(localDB, "addItem");
 
         const storageManager = new StorageManager(localDB);
         storageManager.addItem(newItem);
 
-        expect.assertions(2);
-        expect(getDataMock).toBeCalledTimes(1);
-        expect(setDataMock).toBeCalledWith(newArray);
+        expect.assertions(1);
+        expect(addItemMock).toBeCalledWith(newItem);
     });
 
-    //TODO: tempId
     //TODO: Should synchronize?
 });
 
@@ -105,105 +104,36 @@ describe("replaceItem method", () => {
         jest.clearAllMocks();
         jest.resetAllMocks();
         jest.restoreAllMocks();
-        localStorage.clear();
     });
 
-    const localDB = new LocalStorageService("test");
-    Object.defineProperty(localDB, "getData", { value: jest.fn() });
-    Object.defineProperty(localDB, "setData", { value: jest.fn() });
+    it("should call setData with correct arguments on localDB", () => {
+        const item = { id: 1, content: "item1" };
+        const replaceItemMock = jest.spyOn(localDB, "replaceItem");
 
-    it("should call setData with correct arguments on localDB if item has an id", () => {
-        const baseArray = [
-            { id: 1, content: "item1" },
-            { id: 2, content: "item2 old" },
-            { id: 3, content: "item3" }
-        ];
+        storageManager.replaceItem(item);
 
-        const newItem = { id: 2, content: "item2 new" };
-        const newArray = [
-            { id: 1, content: "item1" },
-            { id: 3, content: "item3" },
-            newItem
-        ];
+        expect.assertions(1);
+        expect(replaceItemMock).toBeCalledWith(item);
+    });
+});
 
-        const getDataMock = jest.spyOn(localDB, "getData").mockReturnValue(baseArray);
-        const setDataMock = jest.spyOn(localDB, "setData");
-        const storageManager = new StorageManager(localDB);
-
-        storageManager.replaceItem(newItem);
-
-        expect.assertions(2);
-        expect(getDataMock).toBeCalledTimes(1);
-        expect(setDataMock).toBeCalledWith(newArray);
+describe("deleteItem Method", () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+        jest.resetAllMocks();
+        jest.restoreAllMocks();
     });
 
-    it("should call setData with correct arguments on localDB if item has no id", () => {
-        const baseArray = [
-            { id: 1, content: "item1" },
-            { id: 2, content: "item2" },
-            { tempId: 1, content: "item3 old" },
-            { tempId: 2, content: "item4" }
-        ];
+    it("should call deleteItem with correct arguments on localDB", () => {
+        const item = { id: 1, content: "item" };
+        const deleteItemMock = jest.spyOn(localDB, "deleteItem");
 
-        const newItem = { tempId: 1, content: "item3 new" };
-        const newArray = [
-            { id: 1, content: "item1" },
-            { id: 2, content: "item2" },
-            { tempId: 2, content: "item4" },
-            newItem
-        ];
+        storageManager.deleteItem(item);
 
-        const getDataMock = jest.spyOn(localDB, "getData").mockReturnValue(baseArray);
-        const setDataMock = jest.spyOn(localDB, "setData");
-        const storageManager = new StorageManager(localDB);
-
-        storageManager.replaceItem(newItem);
-
-        expect.assertions(2);
-        expect(getDataMock).toBeCalledTimes(1);
-        expect(setDataMock).toBeCalledWith(newArray);
+        expect.assertions(1);
+        expect(deleteItemMock).toBeCalledWith(item);
     });
-
-    it("should call setData with correct arguments on localDB if item has no id and no tempId", () => {
-        const baseArray = [
-            { id: 1, content: "item1" },
-            { id: 2, content: "item2" },
-        ];
-
-        const newItem = { content: "item3" };
-        const newArray = [
-            { id: 1, content: "item1" },
-            { id: 2, content: "item2" },
-            { tempId: 1, content: "item3" }
-        ];
-
-        const getDataMock = jest.spyOn(localDB, "getData").mockReturnValue(baseArray);
-        const setDataMock = jest.spyOn(localDB, "setData");
-        const storageManager = new StorageManager(localDB);
-
-        storageManager.replaceItem(newItem);
-
-        expect.assertions(4);
-
-        expect(getDataMock).toBeCalledTimes(1);
-        expect(setDataMock).toBeCalledWith(newArray);
-
-        const newItem2 = { content: "item4" };
-        const newArray2 = [
-            { id: 1, content: "item1" },
-            { id: 2, content: "item2" },
-            { tempId: 1, content: "item3" },
-            { tempId: 2, content: "item4" }
-        ];
-
-        getDataMock.mockReturnValue(newArray);
-        storageManager.replaceItem(newItem2);
-
-        expect(getDataMock).toBeCalledTimes(2);
-        expect(setDataMock).toBeCalledWith(newArray2);
-    });
-
-})
+});
 
 describe("synchronize method", () => {
     beforeEach(() => {
