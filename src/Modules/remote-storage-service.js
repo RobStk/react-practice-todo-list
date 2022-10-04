@@ -25,11 +25,11 @@ class RemoteStorageService {
     /* Methods                                              */
     /* ---------------------------------------------------- */
 
-    #getData() { console.warn("Not implemented method") } //TODO
+    #getData() { throw new Error("Not implemented method.") } //TODO
 
     // --------------------------
 
-    #setData() { console.warn("Not implemented method") } //TODO
+    #setData() { throw new Error("Not implemented method.") } //TODO
 
     // --------------------------
 }

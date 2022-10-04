@@ -57,7 +57,20 @@ class LocalStorageService {
      * @param {Object} itemToAdd 
      */
     #addItem(itemToAdd) {
+        this.#setIds(itemToAdd);
         const data = this.getData() || [];
+
+        const itemExist = data.find((innerItem) => {
+            if (innerItem.id && innerItem.id === itemToAdd.id) return true;
+            if (innerItem.tempId && innerItem.tempId === itemToAdd.tempId) return true;
+            return false;
+        });
+
+        if (itemExist) {
+            this.#replaceItem(itemToAdd);
+            return;
+        };
+
         data.push(itemToAdd);
         this.setData(data);
     };
@@ -68,9 +81,7 @@ class LocalStorageService {
      * @param {Object} itemToReplace 
      */
     #replaceItem(itemToReplace) {
-        if (!itemToReplace.id && !itemToReplace.tempId) {
-            itemToReplace.tempId = this.#getNewTempId();
-        }
+        this.#setIds(itemToReplace);
         const id = itemToReplace.id;
         const tempId = itemToReplace.tempId;
         const data = this.getData();
@@ -98,12 +109,15 @@ class LocalStorageService {
     // ------------------------
 
     /**
-     * @returns {number} New free temporary id number.
+     * Checks and sets the correct id and temp id on the given object.
+     * @param {Object} item 
      */
-    #getNewTempId() {
-        const tempId = this.#nextFreeId;
-        this.#nextFreeId++;
-        return tempId;
+    #setIds(item) {
+        if (!item.id && !item.tempId) {
+            const tempId = this.#nextFreeId;
+            item.tempId = tempId;
+            this.#nextFreeId++;
+        }
     };
 
     // ------------------------
