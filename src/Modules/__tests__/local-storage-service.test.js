@@ -105,8 +105,8 @@ describe("addItem method", () => {
         const getDataMock = jest.spyOn(localService, "getData");
         const setDataMock = jest.spyOn(localService, "setData");
 
-        const baseArray = [{ content: "item1" }, { content: "item2" }];
-        const newItem = { content: "item3" };
+        const baseArray = [{ id: 1, content: "item1" }, { id: 2, content: "item2" }];
+        const newItem = { id: 3, content: "item3" };
         const newArray = [...baseArray];
         newArray.push(newItem);
 
@@ -122,7 +122,132 @@ describe("addItem method", () => {
         expect(newStorageData).toStrictEqual(newArray);
     });
 
-    //TODO: tempId
+    it("should call setData with correct arguments if item has no id", () => {
+        const localService = new LocalStorageService("test");
+        const getDataMock = jest.spyOn(localService, "getData");
+        const setDataMock = jest.spyOn(localService, "setData");
+
+        const baseArray = [
+            { id: 1, content: "item1" },
+            { id: 2, content: "item2" },
+        ];
+
+        const newItem = { content: "item3" };
+        const newArray = [
+            { id: 1, content: "item1" },
+            { id: 2, content: "item2" },
+            { tempId: 1, content: "item3" }
+        ];
+
+        getDataMock.mockReturnValue(baseArray);
+
+        localService.addItem(newItem);
+
+        expect.assertions(4);
+        expect(getDataMock).toBeCalledTimes(1);
+        expect(setDataMock).toBeCalledWith(newArray);
+        jest.restoreAllMocks();
+        const newStorageData = localService.getData();
+        expect(newStorageData).toStrictEqual(newArray);
+
+        jest.restoreAllMocks();
+        const storageData = localService.getData();
+        expect(storageData).toStrictEqual(newArray);
+    });
+
+    it("should call setData with correct arguments if item has no id and no tempId", () => {
+        const baseArray = [
+            { id: 1, content: "item1" },
+            { id: 2, content: "item2" },
+        ];
+
+        const newItem = { content: "item3" };
+        const newArray = [
+            { id: 1, content: "item1" },
+            { id: 2, content: "item2" },
+            { tempId: 1, content: "item3" }
+        ];
+
+        const localService = new LocalStorageService("test");
+        const getDataMock = jest.spyOn(localService, "getData");
+        const setDataMock = jest.spyOn(localService, "setData");
+        getDataMock.mockReturnValue(baseArray);
+
+        localService.addItem(newItem);
+
+        expect.assertions(5);
+
+        expect(getDataMock).toBeCalledTimes(1);
+        expect(setDataMock).toBeCalledWith(newArray);
+
+        const newItem2 = { content: "item4" };
+        const newArray2 = [
+            { id: 1, content: "item1" },
+            { id: 2, content: "item2" },
+            { tempId: 1, content: "item3" },
+            { tempId: 2, content: "item4" }
+        ];
+
+        getDataMock.mockReturnValue(newArray);
+        localService.addItem(newItem2);
+
+        expect(getDataMock).toBeCalledTimes(2);
+        expect(setDataMock).toBeCalledWith(newArray2);
+
+        jest.restoreAllMocks();
+        const storageData = localService.getData();
+        expect(storageData).toStrictEqual(newArray2);
+    });
+
+    it("should replace item if it finds a storage item with the same id", () => {
+        const baseArray = [
+            { id: 1, content: "item1" },
+            { id: 2, content: "item2" }
+        ];
+
+        const newItem = { id: 1, content: "item3" };
+        const newArray = [
+            { id: 2, content: "item2" },
+            { id: 1, content: "item3" }
+        ];
+
+        const localService = new LocalStorageService(lsKey);
+        const getDataMock = jest.spyOn(localService, "getData");
+        const setDataMock = jest.spyOn(localService, "setData");
+        getDataMock.mockReturnValue(baseArray);
+
+        localService.addItem(newItem);
+        expect.assertions(2);
+
+        expect(getDataMock).toBeCalledTimes(2);
+        expect(setDataMock).toBeCalledWith(newArray);
+    });
+
+    it("should replace item if it finds a storage item with the same tempId", () => {
+        const baseArray = [
+            { id: 1, content: "item1" },
+            { tempId: 2, content: "item2" },
+            { tempId: 3, content: "item3" },
+        ];
+
+        const newItem = { tempId: 3, content: "item4" };
+        const newArray = [
+            { id: 1, content: "item1" },
+            { tempId: 2, content: "item2" },
+            { tempId: 3, content: "item4" },
+        ];
+
+        const localService = new LocalStorageService(lsKey);
+        const getDataMock = jest.spyOn(localService, "getData");
+        const setDataMock = jest.spyOn(localService, "setData");
+        getDataMock.mockReturnValue(baseArray);
+
+        localService.addItem(newItem);
+        expect.assertions(1);
+
+        // expect(getDataMock).toBeCalledTimes(1);
+        expect(setDataMock).toBeCalledWith(newArray);
+    });
 });
 
 describe("replaceItem method", () => {

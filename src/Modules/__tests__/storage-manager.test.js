@@ -154,7 +154,7 @@ describe("synchronize method", () => {
         const lsGetMethod = jest.spyOn(localService, "getData").mockReturnValue(localDataArr);
         const rsGetMethod = jest.spyOn(remoteService, "getData").mockReturnValue(remoteDataArr);
         const lsSetMethod = jest.spyOn(localService, "setData");
-        const rsSetMethod = jest.spyOn(remoteService, "setData");
+        const rsSetMethod = jest.spyOn(remoteService, "setData").mockImplementation();
         const synchronizeMethod = jest.spyOn(ArraySynchronizer, "synchronize").mockReturnValue(synchronizedData);
 
         storageManager.synchronize();
