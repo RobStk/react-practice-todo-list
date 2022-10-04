@@ -4,14 +4,20 @@ import RemoteStorageService from "../remote-storage-service";
 import StorageManager from "../storage-manager";
 
 const localDB = new LocalStorageService("test");
-const storageManager = new StorageManager(localDB);
+const remoteDB = new RemoteStorageService("url");
+const arraySynchronizer = new ArraySynchronizer();
+const storageManager = new StorageManager(localDB, remoteDB, arraySynchronizer);
 
 Object.defineProperty(localDB, "getData", { value: jest.fn() });
 Object.defineProperty(localDB, "setData", { value: jest.fn() });
 Object.defineProperty(localDB, "replaceItem", { value: jest.fn() });
 Object.defineProperty(localDB, "deleteItem", { value: jest.fn() });
 
-//TODO Interface test
+Object.defineProperty(remoteDB, "getData", { value: jest.fn() });
+Object.defineProperty(remoteDB, "setData", { value: jest.fn() });
+
+Object.defineProperty(arraySynchronizer, "synchronize", { value: jest.fn() });
+
 describe("Interface", () => {
     it("should be implemented", () => {
         const storageManager = new StorageManager();
@@ -39,7 +45,6 @@ describe("getData method", () => {
     });
 
     const localService = new LocalStorageService();
-    Object.defineProperty(localService, "getData", { value: jest.fn() });
     const storageManager = new StorageManager(localService);
 
     it("should return array of items", () => {
@@ -60,19 +65,14 @@ describe("setData method", () => {
         jest.restoreAllMocks();
     });
 
-    const localService = new LocalStorageService();
-    const storageManager = new StorageManager(localService);
-
     it("should call setItem with correct arguments on localDB", () => {
         const data = "test data";
-        const setDataMock = jest.spyOn(localService, 'setData');
+        const setDataMock = jest.spyOn(localDB, 'setData');
 
         storageManager.setData(data);
         expect(setDataMock).toBeCalledTimes(1);
         expect(setDataMock).toBeCalledWith("test data");
     });
-
-    //TODO: Should synchronize?
 });
 
 describe("addItem method", () => {
@@ -82,21 +82,25 @@ describe("addItem method", () => {
         jest.restoreAllMocks();
     });
 
-    const localDB = new LocalStorageService("test");
-    Object.defineProperty(localDB, "addItem", { value: jest.fn() });
-
     it("should call addItem with correct arguments on localDB", () => {
         const newItem = { content: "itemContent" };
         const addItemMock = jest.spyOn(localDB, "addItem");
 
-        const storageManager = new StorageManager(localDB);
         storageManager.addItem(newItem);
 
         expect.assertions(1);
         expect(addItemMock).toBeCalledWith(newItem);
     });
 
-    //TODO: Should synchronize?
+    it("should call synchronize method", () => {
+        const newItem = { id: 1, content: "content1", lastUpdate: "20221003" };
+        const synchronizeMock = jest.spyOn(storageManager, "synchronize");
+
+        storageManager.addItem(newItem);
+
+        expect.assertions(1);
+        expect(synchronizeMock).toBeCalled();
+    });
 });
 
 describe("replaceItem method", () => {
@@ -107,13 +111,23 @@ describe("replaceItem method", () => {
     });
 
     it("should call setData with correct arguments on localDB", () => {
-        const item = { id: 1, content: "item1" };
         const replaceItemMock = jest.spyOn(localDB, "replaceItem");
+        const item = { id: 1, content: "item1" };
 
         storageManager.replaceItem(item);
 
         expect.assertions(1);
         expect(replaceItemMock).toBeCalledWith(item);
+    });
+
+    it("should call synchronize method", () => {
+        const synchronizeMock = jest.spyOn(storageManager, "synchronize");
+        const item = { id: 1, content: "content1", lastUpdate: "20221003" };
+
+        storageManager.replaceItem(item);
+
+        expect.assertions(1);
+        expect(synchronizeMock).toBeCalled();
     });
 });
 
@@ -133,108 +147,124 @@ describe("deleteItem Method", () => {
         expect.assertions(1);
         expect(deleteItemMock).toBeCalledWith(item);
     });
+
+    it("should call synchronize method", () => {
+        const synchronizeMock = jest.spyOn(storageManager, "synchronize");
+        const item = { id: 1, content: "content1", lastUpdate: "20221003" };
+
+        storageManager.deleteItem(item);
+
+        expect.assertions(1);
+        expect(synchronizeMock).toBeCalled();
+    });
 });
 
 describe("synchronize method", () => {
-    beforeEach(() => {
+    afterEach(() => {
         jest.clearAllMocks();
         jest.resetAllMocks();
         jest.restoreAllMocks();
     });
 
-    const localService = new LocalStorageService();
-    const remoteService = new RemoteStorageService();
-    const storageManager = new StorageManager(localService, remoteService);
-
     const localDataArr = ["localData"];
     const remoteDataArr = ["remoteData"];
     const synchronizedData = ["synchronizedData"];
 
-    it("should distribute synchronized data", () => {
-        const lsGetMethod = jest.spyOn(localService, "getData").mockReturnValue(localDataArr);
-        const rsGetMethod = jest.spyOn(remoteService, "getData").mockReturnValue(remoteDataArr);
-        const lsSetMethod = jest.spyOn(localService, "setData");
-        const rsSetMethod = jest.spyOn(remoteService, "setData").mockImplementation();
-        const synchronizeMethod = jest.spyOn(ArraySynchronizer, "synchronize").mockReturnValue(synchronizedData);
+    const lsGetMock = jest.spyOn(localDB, "getData");
+    const rsGetMock = jest.spyOn(remoteDB, "getData");
+    const lsSetMock = jest.spyOn(localDB, "setData");
+    const rsSetMock = jest.spyOn(remoteDB, "setData");
+    const synchronizeMock = jest.spyOn(arraySynchronizer, "synchronize");
+
+    it("should call synchronize method on arraySynchronizer with correct arguments", () => {
+        lsGetMock.mockReturnValue(localDataArr);
+        rsGetMock.mockReturnValue(remoteDataArr);
 
         storageManager.synchronize();
 
-        expect.assertions(8);
-        expect(rsGetMethod).toBeCalledTimes(1);
-        expect(lsGetMethod).toBeCalledTimes(1);
-        expect(synchronizeMethod).toBeCalledTimes(1);
-        expect(synchronizeMethod).toBeCalledWith(localDataArr, remoteDataArr);
-        expect(lsSetMethod).toBeCalledTimes(1);
-        expect(rsSetMethod).toBeCalledTimes(1);
-        expect(lsSetMethod).toBeCalledWith(synchronizedData);
-        expect(rsSetMethod).toBeCalledWith(synchronizedData);
+        expect.assertions(4);
+        expect(rsGetMock).toBeCalledTimes(1);
+        expect(lsGetMock).toBeCalledTimes(1);
+        expect(synchronizeMock).toBeCalledTimes(1);
+        expect(synchronizeMock).toBeCalledWith(localDataArr, remoteDataArr);
+    });
+
+    it("should distribute synchronized data", () => {
+        lsGetMock.mockReturnValue(localDataArr);
+        rsGetMock.mockReturnValue(remoteDataArr);
+        synchronizeMock.mockReturnValue(synchronizedData);
+
+        storageManager.synchronize();
+
+        expect.assertions(5);
+        expect(synchronizeMock).toBeCalledTimes(1);
+        expect(lsSetMock).toBeCalledTimes(1);
+        expect(rsSetMock).toBeCalledTimes(1);
+        expect(lsSetMock).toBeCalledWith(synchronizedData);
+        expect(rsSetMock).toBeCalledWith(synchronizedData);
     });
 
     it("should stop the procedure if receive null from remote storage", () => {
-        const lsGetMethod = jest.spyOn(localService, "getData").mockReturnValue(localDataArr);
-        const rsGetMethod = jest.spyOn(remoteService, "getData").mockReturnValue(null);
-        const lsSetMethod = jest.spyOn(localService, "setData");
-        const rsSetMethod = jest.spyOn(remoteService, "setData");
-        const synchronizeMethod = jest.spyOn(ArraySynchronizer, "synchronize").mockReturnValue(synchronizedData);
+        lsGetMock.mockReturnValue(localDataArr);
+        rsGetMock.mockReturnValue(null);
+        synchronizeMock.mockReturnValue(synchronizedData);
 
         storageManager.synchronize();
 
         expect.assertions(5);
-        expect(rsGetMethod).toBeCalledTimes(1);
-        expect(lsGetMethod).not.toBeCalled();
-        expect(synchronizeMethod).not.toBeCalled();
-        expect(lsSetMethod).not.toBeCalled();
-        expect(rsSetMethod).not.toBeCalled();
+        expect(rsGetMock).toBeCalledTimes(1);
+        expect(lsGetMock).not.toBeCalled();
+        expect(synchronizeMock).not.toBeCalled();
+        expect(lsSetMock).not.toBeCalled();
+        expect(rsSetMock).not.toBeCalled();
     });
 
     it("should stop the procedure if receive a number from remote storage", () => {
-        const lsGetMethod = jest.spyOn(localService, "getData").mockReturnValue(localDataArr);
-        const rsGetMethod = jest.spyOn(remoteService, "getData").mockReturnValue(1);
-        const lsSetMethod = jest.spyOn(localService, "setData");
-        const rsSetMethod = jest.spyOn(remoteService, "setData");
-        const synchronizeMethod = jest.spyOn(ArraySynchronizer, "synchronize").mockReturnValue(synchronizedData);
+        lsGetMock.mockReturnValue(localDataArr);
+        rsGetMock.mockReturnValue(1);
+        synchronizeMock.mockReturnValue(synchronizedData);
 
         storageManager.synchronize();
 
         expect.assertions(5);
-        expect(rsGetMethod).toBeCalledTimes(1);
-        expect(lsGetMethod).not.toBeCalled();
-        expect(synchronizeMethod).not.toBeCalled();
-        expect(lsSetMethod).not.toBeCalled();
-        expect(rsSetMethod).not.toBeCalled();
+        expect(rsGetMock).toBeCalledTimes(1);
+        expect(lsGetMock).not.toBeCalled();
+        expect(synchronizeMock).not.toBeCalled();
+        expect(lsSetMock).not.toBeCalled();
+        expect(rsSetMock).not.toBeCalled();
     });
 
     it("should stop the procedure if receive a string from remote storage", () => {
-        const lsGetMethod = jest.spyOn(localService, "getData").mockReturnValue("string");
-        const rsGetMethod = jest.spyOn(remoteService, "getData").mockReturnValue(1);
-        const lsSetMethod = jest.spyOn(localService, "setData");
-        const rsSetMethod = jest.spyOn(remoteService, "setData");
-        const synchronizeMethod = jest.spyOn(ArraySynchronizer, "synchronize").mockReturnValue(synchronizedData);
+        const lsGetMock = jest.spyOn(localDB, "getData").mockReturnValue("string");
+        const rsGetMock = jest.spyOn(remoteDB, "getData").mockReturnValue(1);
+        const lsSetMock = jest.spyOn(localDB, "setData");
+        const rsSetMock = jest.spyOn(remoteDB, "setData");
+        synchronizeMock.mockReturnValue(synchronizedData);
 
         storageManager.synchronize();
 
         expect.assertions(5);
-        expect(rsGetMethod).toBeCalledTimes(1);
-        expect(lsGetMethod).not.toBeCalled();
-        expect(synchronizeMethod).not.toBeCalled();
-        expect(lsSetMethod).not.toBeCalled();
-        expect(rsSetMethod).not.toBeCalled();
+        expect(rsGetMock).toBeCalledTimes(1);
+        expect(lsGetMock).not.toBeCalled();
+        expect(synchronizeMock).not.toBeCalled();
+        expect(lsSetMock).not.toBeCalled();
+        expect(rsSetMock).not.toBeCalled();
     });
 
     it("should stop the procedure if receive an object from remote storage", () => {
-        const lsGetMethod = jest.spyOn(localService, "getData").mockReturnValue({});
-        const rsGetMethod = jest.spyOn(remoteService, "getData").mockReturnValue(1);
-        const lsSetMethod = jest.spyOn(localService, "setData");
-        const rsSetMethod = jest.spyOn(remoteService, "setData");
-        const synchronizeMethod = jest.spyOn(ArraySynchronizer, "synchronize").mockReturnValue(synchronizedData);
+        const lsGetMock = jest.spyOn(localDB, "getData").mockReturnValue({});
+        const rsGetMock = jest.spyOn(remoteDB, "getData").mockReturnValue(1);
+        const lsSetMock = jest.spyOn(localDB, "setData");
+        const rsSetMock = jest.spyOn(remoteDB, "setData");
+        synchronizeMock.mockReturnValue(synchronizedData);
 
         storageManager.synchronize();
 
         expect.assertions(5);
-        expect(rsGetMethod).toBeCalledTimes(1);
-        expect(lsGetMethod).not.toBeCalled();
-        expect(synchronizeMethod).not.toBeCalled();
-        expect(lsSetMethod).not.toBeCalled();
-        expect(rsSetMethod).not.toBeCalled();
+        expect(rsGetMock).toBeCalledTimes(1);
+        expect(lsGetMock).not.toBeCalled();
+        expect(synchronizeMock).not.toBeCalled();
+        expect(lsSetMock).not.toBeCalled();
+        expect(rsSetMock).not.toBeCalled();
     });
 });
