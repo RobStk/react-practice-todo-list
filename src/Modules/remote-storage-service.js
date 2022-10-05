@@ -25,7 +25,21 @@ class RemoteStorageService {
     /* Methods                                              */
     /* ---------------------------------------------------- */
 
-    #getData() { throw new Error("Not implemented method.") } //TODO
+    /**
+     * Returns a promise resolved to a data array or null.
+     * @returns {Promise<Array|null>}
+     */
+    async #getData() {
+        try {
+            const response = await fetch(this.#url);
+            if (!response.ok) throw new Error();
+            const data = await response.json();
+            return data;
+        }
+        catch (error) {
+            return null;
+        }
+    } //TODO
 
     // --------------------------
 
