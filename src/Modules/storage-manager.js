@@ -98,6 +98,7 @@ class StorageManager {
         const remoteDataIsArray = Array.isArray(remoteData);
         if (!remoteDataIsArray) return;
         const localData = this.getData();
+        localData.map((item) => delete item.tempId);
         const synchronizedData = this.#arraySynchronizer.synchronize(localData, remoteData);
         this.setData(synchronizedData);
         this.#remoteService.setData(synchronizedData);

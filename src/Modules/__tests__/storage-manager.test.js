@@ -189,6 +189,27 @@ describe("synchronize method", () => {
         expect(synchronizeMock).toBeCalledWith(localDataArr, remoteDataArr);
     });
 
+    it("should pass local data without tempIds", () => {
+        const localArrWithTempIds = [
+            { content: "content", tempId: "1" },
+            { content: "content", tempId: "2" }
+        ]
+        const localArrWithoutTempIds = [
+            { content: "content" },
+            { content: "content" }
+        ]
+        lsGetMock.mockReturnValue(localArrWithTempIds);
+        rsGetMock.mockReturnValue(remoteDataArr);
+
+        storageManager.synchronize();
+
+        expect.assertions(4);
+        expect(rsGetMock).toBeCalledTimes(1);
+        expect(lsGetMock).toBeCalledTimes(1);
+        expect(synchronizeMock).toBeCalledTimes(1);
+        expect(synchronizeMock).toBeCalledWith(localArrWithoutTempIds, remoteDataArr);
+    });
+
     it("should distribute synchronized data", () => {
         lsGetMock.mockReturnValue(localDataArr);
         rsGetMock.mockReturnValue(remoteDataArr);
