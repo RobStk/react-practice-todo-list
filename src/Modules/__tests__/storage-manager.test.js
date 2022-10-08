@@ -2,11 +2,13 @@ import ArraySynchronizer from "../arrays-synchronizer";
 import LocalStorageService from "../local-storage-service";
 import RemoteStorageService from "../remote-storage-service";
 import StorageManager from "../storage-manager";
+import TimeService from "../time-service";
 
 const localDB = new LocalStorageService("test");
 const remoteDB = new RemoteStorageService("url");
 const arraySynchronizer = new ArraySynchronizer();
-const storageManager = new StorageManager(localDB, remoteDB, arraySynchronizer);
+const timeService = new TimeService();
+const storageManager = new StorageManager(localDB, remoteDB, arraySynchronizer, timeService);
 
 Object.defineProperty(localDB, "getData", { value: jest.fn() });
 Object.defineProperty(localDB, "setData", { value: jest.fn() });
@@ -17,6 +19,8 @@ Object.defineProperty(remoteDB, "getData", { value: jest.fn() });
 Object.defineProperty(remoteDB, "setData", { value: jest.fn() });
 
 Object.defineProperty(arraySynchronizer, "synchronize", { value: jest.fn() });
+
+Object.defineProperty(timeService, "getDateAndTimeString", { value: jest.fn() });
 
 describe("Interface", () => {
     it("should be implemented", () => {
@@ -76,6 +80,9 @@ describe("setData method", () => {
 });
 
 describe("addItem method", () => {
+    const date = "202210081145012";
+    const getDateAndTimeStringMock = jest.spyOn(timeService, "getDateAndTimeString");
+
     afterEach(() => {
         jest.clearAllMocks();
         jest.resetAllMocks();
@@ -85,11 +92,35 @@ describe("addItem method", () => {
     it("should call addItem with correct arguments on localDB", () => {
         const newItem = { content: "itemContent" };
         const addItemMock = jest.spyOn(localDB, "addItem");
-
         storageManager.addItem(newItem);
-
         expect.assertions(1);
         expect(addItemMock).toBeCalledWith(newItem);
+    });
+
+    it("should add creationDate property value to item", () => {
+        const newItem = { content: "itemContent" };
+        getDateAndTimeStringMock.mockReturnValue(date);
+
+        expect.assertions(4);
+        expect(newItem).not.toHaveProperty("creationDate");
+        storageManager.addItem(newItem);
+        expect(newItem).toHaveProperty("creationDate");
+        const propIsString = typeof newItem.creationDate === "string";
+        expect(propIsString).toBeTruthy();
+        expect(newItem.creationDate).toBe(date);
+    });
+
+    it("should add lastUpdate property value to item", () => {
+        const newItem = { content: "itemContent" };
+        getDateAndTimeStringMock.mockReturnValue(date);
+
+        expect.assertions(4);
+        expect(newItem).not.toHaveProperty("lastUpdate");
+        storageManager.addItem(newItem);
+        expect(newItem).toHaveProperty("lastUpdate");
+        const propIsString = typeof newItem.lastUpdate === "string";
+        expect(propIsString).toBeTruthy();
+        expect(newItem.lastUpdate).toBe(date);
     });
 
     it("should call synchronize method", () => {
@@ -104,6 +135,9 @@ describe("addItem method", () => {
 });
 
 describe("replaceItem method", () => {
+    const date = "202210081145012";
+    const getDateAndTimeStringMock = jest.spyOn(timeService, "getDateAndTimeString");
+
     afterEach(() => {
         jest.clearAllMocks();
         jest.resetAllMocks();
@@ -120,6 +154,19 @@ describe("replaceItem method", () => {
         expect(replaceItemMock).toBeCalledWith(item);
     });
 
+    it("should add lastUpdate property value to item", () => {
+        const item = { id: 1, content: "item1" };
+        getDateAndTimeStringMock.mockReturnValue(date);
+
+        expect.assertions(4);
+        expect(item).not.toHaveProperty("lastUpdate");
+        storageManager.replaceItem(item);
+        expect(item).toHaveProperty("lastUpdate");
+        const propIsString = typeof item.lastUpdate === "string";
+        expect(propIsString).toBeTruthy();
+        expect(item.lastUpdate).toBe(date);
+    });
+
     it("should call synchronize method", () => {
         const synchronizeMock = jest.spyOn(storageManager, "synchronize");
         const item = { id: 1, content: "content1", lastUpdate: "20221003" };
@@ -132,6 +179,9 @@ describe("replaceItem method", () => {
 });
 
 describe("deleteItem Method", () => {
+    const date = "202210081145012";
+    const getDateAndTimeStringMock = jest.spyOn(timeService, "getDateAndTimeString");
+
     afterEach(() => {
         jest.clearAllMocks();
         jest.resetAllMocks();
@@ -146,6 +196,19 @@ describe("deleteItem Method", () => {
 
         expect.assertions(1);
         expect(deleteItemMock).toBeCalledWith(item);
+    });
+
+    it("should add lastUpdate property value to item", () => {
+        const item = { id: 1, content: "item1" };
+        getDateAndTimeStringMock.mockReturnValue(date);
+
+        expect.assertions(4);
+        expect(item).not.toHaveProperty("lastUpdate");
+        storageManager.deleteItem(item);
+        expect(item).toHaveProperty("lastUpdate");
+        const propIsString = typeof item.lastUpdate === "string";
+        expect(propIsString).toBeTruthy();
+        expect(item.lastUpdate).toBe(date);
     });
 
     it("should call synchronize method", () => {
