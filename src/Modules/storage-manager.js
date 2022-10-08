@@ -2,6 +2,7 @@
  * @typedef {import('./local-storage-service').default} LocalStorageService
  * @typedef {import('./remote-storage-service').default} RemoteStorageService
  * @typedef {import('./arrays-synchronizer').default} ArraySynchronizer
+ * @typedef {import('./time-service').default} TimeService
  */
 class StorageManager {
     /* ---------------------------------------------------- */
@@ -20,6 +21,7 @@ class StorageManager {
     #localService
     #remoteService;
     #arraySynchronizer;
+    #timeService;
 
     /* ---------------------------------------------------- */
     /* Constructor                                          */
@@ -28,11 +30,13 @@ class StorageManager {
      * @param {LocalStorageService} localService        Local storage object.
      * @param {RemoteStorageService} remoteService      Remote storage object.
      * @param {ArraySynchronizer} arraySynchronizer     Array synchronizer service object.
+     * @param {TimeService} timeService                 Service for acquiring time for items.
      */
-    constructor(localService, remoteService, arraySynchronizer) {
+    constructor(localService, remoteService, arraySynchronizer, timeService) {
         this.#localService = localService;
         this.#remoteService = remoteService;
         this.#arraySynchronizer = arraySynchronizer;
+        this.#timeService = timeService;
     }
 
     /* ---------------------------------------------------- */
@@ -63,6 +67,9 @@ class StorageManager {
      * @param {Object} itemToAdd 
      */
     #addItem(itemToAdd) {
+        const timeString = this.#timeService.getDateAndTimeString();
+        itemToAdd.creationDate = timeString;
+        itemToAdd.lastUpdate = timeString;
         this.#localService.addItem(itemToAdd);
         this.synchronize();
     };
@@ -73,6 +80,7 @@ class StorageManager {
      * @param {Object} itemToReplace 
      */
     #replaceItem(itemToReplace) {
+        itemToReplace.lastUpdate = this.#timeService.getDateAndTimeString();
         this.#localService.replaceItem(itemToReplace);
         this.synchronize();
     };
@@ -83,6 +91,7 @@ class StorageManager {
      * @param {Object} itemToDelete 
      */
     #deleteItem(itemToDelete) {
+        itemToDelete.lastUpdate = this.#timeService.getDateAndTimeString();
         this.#localService.deleteItem(itemToDelete);
         this.synchronize();
     };
