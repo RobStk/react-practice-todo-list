@@ -42,19 +42,25 @@ describe("Interface", () => {
 });
 
 describe("getData method", () => {
+    const storageData = [
+        { content: "item1", deleted: false },
+        { content: "item2", deleted: true },
+        { content: "item3", deleted: false }
+    ];
+
+    const localService = new LocalStorageService();
+    const storageManager = new StorageManager(localService);
+
     afterEach(() => {
         jest.clearAllMocks();
         jest.resetAllMocks();
         jest.restoreAllMocks();
     });
 
-    const localService = new LocalStorageService();
-    const storageManager = new StorageManager(localService);
-
     it("should return array of items", () => {
         const getDataMock = jest
             .spyOn(localService, "getData")
-            .mockReturnValue(["items1", "items2", "items3"]);
+            .mockReturnValue(storageData);
 
         const data = storageManager.getData();
         expect(getDataMock).toHaveBeenCalledTimes(1);

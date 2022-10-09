@@ -37,7 +37,8 @@ class TasksManager {
      * @returns {Array} Tasks array form storage.
      */
     #getTasks() {
-        const data = this.#storage.getData() || [];
+        const storageData = this.#storage.getData() || [];
+        const data = storageData.filter((task) => !task.deleted);
         return data
     }
 
