@@ -4,7 +4,8 @@ class RemoteStorageService {
     /* Getters/Setters                                      */
     /* ---------------------------------------------------- */
     get getData() { return this.#getData };
-    get setData() { return this.#setData };
+    get addItem() { return this.#addItem };
+    get updateItem() { return this.#updateItem };
 
     /* ---------------------------------------------------- */
     /* Private properties                                   */
@@ -45,15 +46,44 @@ class RemoteStorageService {
     // --------------------------
 
     /**
-     * Sends data to the server and returns true if successful or false if not.
-     * @param {Array} data 
+     * Adds data and return true if successful or false if not.
+     * @param {Object} itemToAdd 
      * @returns {boolean}
      */
-    async #setData(data) {
-        const dataString = JSON.stringify(data);
+    async #addItem(itemToAdd) {
+        const dataString = JSON.stringify(itemToAdd);
         try {
             const response = await fetch(this.#url, {
                 method: "post",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: dataString
+            });
+            if (!response.ok) throw new Error(response.status);
+            return true;
+        }
+        catch (error) {
+            console.error("Http error: " + error.status);
+            return false;
+        }
+    }
+
+    // --------------------------
+
+    /**
+     * Updates data and return true if successful or false if not.
+     * @param {Object} itemToUpdate 
+     * @returns {boolean}
+     */
+    async #updateItem(itemToUpdate) {
+        const id = itemToUpdate.id;
+        const tempId = itemToUpdate.tempId;
+        if (id && tempId) delete itemToUpdate.tempId;
+        const dataString = JSON.stringify(itemToUpdate);
+        try {
+            const response = await fetch(this.#url + "/" + id, {
+                method: "put",
                 headers: {
                     "Content-Type": "application/json"
                 },

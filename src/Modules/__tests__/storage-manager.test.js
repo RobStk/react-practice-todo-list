@@ -16,9 +16,11 @@ Object.defineProperty(localDB, "replaceItem", { value: jest.fn() });
 Object.defineProperty(localDB, "deleteItem", { value: jest.fn() });
 
 Object.defineProperty(remoteDB, "getData", { value: jest.fn() });
-Object.defineProperty(remoteDB, "setData", { value: jest.fn() });
+Object.defineProperty(remoteDB, "addItem", { value: jest.fn() });
+Object.defineProperty(remoteDB, "updateItem", { value: jest.fn() });
 
 Object.defineProperty(arraySynchronizer, "synchronize", { value: jest.fn() });
+Object.defineProperty(arraySynchronizer, "findChanged", { value: jest.fn() });
 
 Object.defineProperty(timeService, "getDateAndTimeString", { value: jest.fn() });
 
@@ -75,7 +77,7 @@ describe("setData method", () => {
         jest.restoreAllMocks();
     });
 
-    it("should call setItem with correct arguments on localDB", () => {
+    it("should call setItem with the right args on localDB", () => {
         const data = "test data";
         const setDataMock = jest.spyOn(localDB, 'setData');
 
@@ -95,7 +97,7 @@ describe("addItem method", () => {
         jest.restoreAllMocks();
     });
 
-    it("should call addItem with correct arguments on localDB", () => {
+    it("should call addItem with the right args on localDB", () => {
         const newItem = { content: "itemContent" };
         const addItemMock = jest.spyOn(localDB, "addItem");
         storageManager.addItem(newItem);
@@ -150,7 +152,7 @@ describe("replaceItem method", () => {
         jest.restoreAllMocks();
     });
 
-    it("should call setData with correct arguments on localDB", () => {
+    it("should call setData with the right args on localDB", () => {
         const replaceItemMock = jest.spyOn(localDB, "replaceItem");
         const item = { id: 1, content: "item1" };
 
@@ -194,7 +196,7 @@ describe("deleteItem Method", () => {
         jest.restoreAllMocks();
     });
 
-    it("should call deleteItem with correct arguments on localDB", () => {
+    it("should call deleteItem with the right args on localDB", () => {
         const item = { id: 1, content: "item" };
         const deleteItemMock = jest.spyOn(localDB, "deleteItem");
 
@@ -237,124 +239,178 @@ describe("synchronize method", () => {
 
     const localDataArr = ["localData"];
     const remoteDataArr = ["remoteData"];
-    const synchronizedData = ["synchronizedData"];
+    const synchronizedDataArr = ["synchronizedDataArr"];
 
     const lsGetMock = jest.spyOn(localDB, "getData");
-    const rsGetMock = jest.spyOn(remoteDB, "getData");
     const lsSetMock = jest.spyOn(localDB, "setData");
-    const rsSetMock = jest.spyOn(remoteDB, "setData");
+    const rsGetMock = jest.spyOn(remoteDB, "getData");
+    const rsAddMock = jest.spyOn(remoteDB, "addItem");
+    const rsUpdateMock = jest.spyOn(remoteDB, "updateItem");
     const synchronizeMock = jest.spyOn(arraySynchronizer, "synchronize");
+    const findChangedMock = jest.spyOn(arraySynchronizer, "findChanged");
 
-    it("should call synchronize method on arraySynchronizer with correct arguments", () => {
+    it("should call synchronize method on arraySynchronizer with the right args", async () => {
         lsGetMock.mockReturnValue(localDataArr);
         rsGetMock.mockReturnValue(remoteDataArr);
+        findChangedMock.mockReturnValue([]);
 
-        storageManager.synchronize();
+        await storageManager.synchronize();
 
-        expect.assertions(4);
-        expect(rsGetMock).toBeCalledTimes(1);
+        expect.assertions(3);
         expect(lsGetMock).toBeCalledTimes(1);
         expect(synchronizeMock).toBeCalledTimes(1);
         expect(synchronizeMock).toBeCalledWith(localDataArr, remoteDataArr);
     });
 
-    it("should pass local data without tempIds", () => {
-        const localArrWithTempIds = [
-            { content: "content", tempId: "1" },
-            { content: "content", tempId: "2" }
-        ]
-        const localArrWithoutTempIds = [
-            { content: "content" },
-            { content: "content" }
-        ]
-        lsGetMock.mockReturnValue(localArrWithTempIds);
-        rsGetMock.mockReturnValue(remoteDataArr);
-
-        storageManager.synchronize();
-
-        expect.assertions(4);
-        expect(rsGetMock).toBeCalledTimes(1);
-        expect(lsGetMock).toBeCalledTimes(1);
-        expect(synchronizeMock).toBeCalledTimes(1);
-        expect(synchronizeMock).toBeCalledWith(localArrWithoutTempIds, remoteDataArr);
-    });
-
-    it("should distribute synchronized data", () => {
+    it("should call findChanged method on arraySynchronizer with the right args", async () => {
         lsGetMock.mockReturnValue(localDataArr);
         rsGetMock.mockReturnValue(remoteDataArr);
-        synchronizeMock.mockReturnValue(synchronizedData);
+        synchronizeMock.mockReturnValue(synchronizedDataArr);
+        findChangedMock.mockReturnValue([]);
 
-        storageManager.synchronize();
+        await storageManager.synchronize();
 
-        expect.assertions(5);
-        expect(synchronizeMock).toBeCalledTimes(1);
-        expect(lsSetMock).toBeCalledTimes(1);
-        expect(rsSetMock).toBeCalledTimes(1);
-        expect(lsSetMock).toBeCalledWith(synchronizedData);
-        expect(rsSetMock).toBeCalledWith(synchronizedData);
+        expect.assertions(2);
+        expect(findChangedMock).toBeCalledTimes(1);
+        expect(findChangedMock).toBeCalledWith(remoteDataArr, synchronizedDataArr);
     });
 
     it("should stop the procedure if receive null from remote storage", () => {
         lsGetMock.mockReturnValue(localDataArr);
         rsGetMock.mockReturnValue(null);
-        synchronizeMock.mockReturnValue(synchronizedData);
+        synchronizeMock.mockReturnValue(synchronizedDataArr);
 
         storageManager.synchronize();
 
-        expect.assertions(5);
+        expect.assertions(6);
         expect(rsGetMock).toBeCalledTimes(1);
         expect(lsGetMock).not.toBeCalled();
         expect(synchronizeMock).not.toBeCalled();
         expect(lsSetMock).not.toBeCalled();
-        expect(rsSetMock).not.toBeCalled();
+        expect(rsAddMock).not.toBeCalled();
+        expect(rsUpdateMock).not.toBeCalled();
     });
 
     it("should stop the procedure if receive a number from remote storage", () => {
         lsGetMock.mockReturnValue(localDataArr);
         rsGetMock.mockReturnValue(1);
-        synchronizeMock.mockReturnValue(synchronizedData);
+        synchronizeMock.mockReturnValue(synchronizedDataArr);
 
         storageManager.synchronize();
 
-        expect.assertions(5);
+        expect.assertions(6);
         expect(rsGetMock).toBeCalledTimes(1);
         expect(lsGetMock).not.toBeCalled();
         expect(synchronizeMock).not.toBeCalled();
         expect(lsSetMock).not.toBeCalled();
-        expect(rsSetMock).not.toBeCalled();
+        expect(rsAddMock).not.toBeCalled();
+        expect(rsUpdateMock).not.toBeCalled();
     });
 
     it("should stop the procedure if receive a string from remote storage", () => {
         const lsGetMock = jest.spyOn(localDB, "getData").mockReturnValue("string");
         const rsGetMock = jest.spyOn(remoteDB, "getData").mockReturnValue(1);
         const lsSetMock = jest.spyOn(localDB, "setData");
-        const rsSetMock = jest.spyOn(remoteDB, "setData");
-        synchronizeMock.mockReturnValue(synchronizedData);
+        synchronizeMock.mockReturnValue(synchronizedDataArr);
 
         storageManager.synchronize();
 
-        expect.assertions(5);
+        expect.assertions(6);
         expect(rsGetMock).toBeCalledTimes(1);
         expect(lsGetMock).not.toBeCalled();
         expect(synchronizeMock).not.toBeCalled();
         expect(lsSetMock).not.toBeCalled();
-        expect(rsSetMock).not.toBeCalled();
+        expect(rsAddMock).not.toBeCalled();
+        expect(rsUpdateMock).not.toBeCalled();
     });
 
     it("should stop the procedure if receive an object from remote storage", () => {
         const lsGetMock = jest.spyOn(localDB, "getData").mockReturnValue({});
         const rsGetMock = jest.spyOn(remoteDB, "getData").mockReturnValue(1);
         const lsSetMock = jest.spyOn(localDB, "setData");
-        const rsSetMock = jest.spyOn(remoteDB, "setData");
-        synchronizeMock.mockReturnValue(synchronizedData);
+        synchronizeMock.mockReturnValue(synchronizedDataArr);
 
         storageManager.synchronize();
 
-        expect.assertions(5);
+        expect.assertions(6);
         expect(rsGetMock).toBeCalledTimes(1);
         expect(lsGetMock).not.toBeCalled();
         expect(synchronizeMock).not.toBeCalled();
         expect(lsSetMock).not.toBeCalled();
-        expect(rsSetMock).not.toBeCalled();
+        expect(rsAddMock).not.toBeCalled();
+        expect(rsUpdateMock).not.toBeCalled();
+    });
+
+    it("should send new data to remote service", async () => {
+        lsGetMock.mockReturnValue(localDataArr);
+        rsGetMock.mockReturnValue(remoteDataArr);
+        synchronizeMock.mockReturnValue(synchronizedDataArr);
+        findChangedMock.mockReturnValue([{ id: 1 }, { id: 2 }, { tempId: 1 }]);
+        rsUpdateMock.mockReturnValue(true);
+
+        await storageManager.synchronize();
+        expect.assertions(2);
+        expect(rsAddMock).toBeCalledTimes(1);
+        expect(rsUpdateMock).toBeCalledTimes(2);
+    });
+
+    it("should set new data without tempIds on local service if rejected", async () => {
+        findChangedMock.mockReturnValue([{ tempId: 1 }]);
+        lsGetMock.mockReturnValue(localDataArr);
+        rsGetMock.mockReturnValueOnce([]);
+        rsGetMock.mockReturnValue([{ id: 1 }]);
+        synchronizeMock.mockReturnValue([{ tempId: 1 }, { id: 1 }]);
+        findChangedMock.mockReturnValue([{ tempId: 1 }]);
+        rsAddMock.mockReturnValue(false);
+
+        await storageManager.synchronize();
+        expect.assertions(2);
+        expect(lsSetMock).toBeCalledTimes(1);
+        expect(lsSetMock).toBeCalledWith([{ tempId: 1 }, { id: 1 }]);
+    });
+
+    it("should set new data with ids on local service if resolved", async () => {
+        findChangedMock.mockReturnValue([{ tempId: 1 }]);
+        lsGetMock.mockReturnValue(localDataArr);
+        rsGetMock.mockReturnValueOnce([]);
+        rsGetMock.mockReturnValue([{ id: 1 }, { id: 2 }]);
+        synchronizeMock.mockReturnValue([{ tempId: 1 }, { id: 1 }]);
+        findChangedMock.mockReturnValue([{ tempId: 1 }]);
+        rsAddMock.mockReturnValue(true);
+
+        await storageManager.synchronize();
+        expect.assertions(2);
+        expect(lsSetMock).toBeCalledTimes(1);
+        expect(lsSetMock).toBeCalledWith([{ id: 1 }, { id: 2 }]);
+    });
+
+    it("should return true if resolved", async () => {
+        findChangedMock.mockReturnValue([{}]);
+        lsGetMock.mockReturnValue([{}]);
+        rsGetMock.mockReturnValueOnce([{}]);
+        rsGetMock.mockReturnValue([{}]);
+        synchronizeMock.mockReturnValue([{}]);
+        findChangedMock.mockReturnValue([{}]);
+        rsAddMock.mockReturnValue(true);
+        rsUpdateMock.mockReturnValue(true);
+
+        const result = await storageManager.synchronize();
+        expect.assertions(1);
+        expect(result).toBeTruthy();
+    });
+
+    it("should return false if rejected", async () => {
+        findChangedMock.mockReturnValue([{}]);
+        lsGetMock.mockReturnValue([{}]);
+        rsGetMock.mockReturnValueOnce([{}]);
+        rsGetMock.mockReturnValue([{}]);
+        synchronizeMock.mockReturnValue([{}]);
+        findChangedMock.mockReturnValue([{}]);
+        rsAddMock.mockReturnValue(false);
+        rsUpdateMock.mockReturnValue(false);
+
+        const result = await storageManager.synchronize();
+        expect.assertions(1);
+        expect(result).toBeFalsy();
     });
 });
