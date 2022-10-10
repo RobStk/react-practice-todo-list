@@ -102,15 +102,33 @@ class StorageManager {
      * Synchronizes data from local storage with data from remote storage 
      * based on the last modification date
      */
-    #synchronize() {
-        const remoteData = this.#remoteService.getData();
+    async #synchronize() {
+        let response = true;
+
+        const remoteData = await this.#remoteService.getData();
         const remoteDataIsArray = Array.isArray(remoteData);
         if (!remoteDataIsArray) return;
+
         const localData = this.getData();
-        localData.map((item) => delete item.tempId);
-        const synchronizedData = this.#arraySynchronizer.synchronize(localData, remoteData);
-        this.setData(synchronizedData);
-        this.#remoteService.setData(synchronizedData);
+
+        const latestData = this.#arraySynchronizer.synchronize(localData, remoteData);
+
+        const updatedData = this.#arraySynchronizer.findChanged(remoteData, latestData);
+
+        let i = 0;
+        while ((i < updatedData.length) && response) {
+            const item = updatedData[i];
+            if (item.id) { response = this.#remoteService.updateItem(item) }
+            else response = await this.#remoteService.addItem(item);
+            i++;
+        }
+
+        let dataToSet = latestData;
+        let newRemoteData = null;
+        if (response) newRemoteData = await this.#remoteService.getData();
+        if (newRemoteData) dataToSet = newRemoteData;
+        this.setData(dataToSet);
+        return response;
     };
 
     // ------------------------

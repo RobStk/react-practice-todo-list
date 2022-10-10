@@ -4,6 +4,7 @@ class ArraySynchronizer {
     /* Getters/Setters                                      */
     /* ---------------------------------------------------- */
     get synchronize() { return this.#synchronize };
+    get findChanged() { return this.#findChanged };
 
     /* ---------------------------------------------------- */
     /* Private properties                                   */
@@ -37,8 +38,8 @@ class ArraySynchronizer {
     #synchronize(array1, array2) {
         const key = this.#syncKey;
         const sumArray = [...array1, ...array2];
-        sumArray.sort((arr1, arr2) => {
-            return arr2[key] - arr1[key];
+        sumArray.sort((el1, el2) => {
+            return el2[key] - el1[key];
         });
 
         for (let i = 0; i < sumArray.length; i++) {
@@ -49,9 +50,35 @@ class ArraySynchronizer {
                 if (el.id && el.id === id) sumArray.splice(j, 1);
             }
         }
-
         return sumArray;
     }
+
+    // ------------------------
+
+    /**
+     * Returns an array containing only those elements of the compared array that have a higher value of the comparison key or do not yet have an id.
+     * @param {Array} comparedArray 
+     * @param {Array} baseArray 
+     * @returns {Array}
+     */
+    #findChanged(baseArray, comparedArray) {
+        const base = [...baseArray];
+        const compared = [...comparedArray];
+        const key = this.#syncKey;
+        const outputArray = [];
+
+        compared.forEach(element => {
+            const id = element.id;
+            if (!id) outputArray.push(element);
+            else {
+                const baseElement = base.find((el) => el.id === id);
+                if (element[key] > baseElement[key]) outputArray.push(element);
+            }
+        });
+        return outputArray;
+    }
+
+    // ------------------------
 }
 
 export default ArraySynchronizer;

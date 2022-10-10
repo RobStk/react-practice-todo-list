@@ -5,8 +5,10 @@ const arraySynchronizer = new ArraySynchronizer();
 describe("Interface", () => {
     it("should be implemented", () => {
         const synchronizeIsImplemented = (arraySynchronizer.synchronize !== undefined);
-        expect.assertions(1);
+        const findChangedIsImplemented = (arraySynchronizer.findChanged !== undefined);
+        expect.assertions(2);
         expect(synchronizeIsImplemented).toBeTruthy();
+        expect(findChangedIsImplemented).toBeTruthy();
     });
 });
 
@@ -40,8 +42,8 @@ describe("synchronize method", () => {
         { id: 1, content: "content1", lastUpdate: "20221005053015" },
         { id: 2, content: "content2", lastUpdate: "20221004063020" },
         { id: 5, content: "content5", lastUpdate: "20220906053015" },
-    ]
-
+    ];
+    ;
     it("should return one array of two", () => {
         const synchronizedArray = arraySynchronizer.synchronize(array1, array2);
         expect.assertions(3);
@@ -49,5 +51,35 @@ describe("synchronize method", () => {
         expect(isArray).toBeTruthy();
         expect(synchronizedArray).toHaveLength(9);
         expect(synchronizedArray).toStrictEqual(array3);
-    })
-})
+    });
+});
+
+describe("findChanged method", () => {
+    const baseArray = [
+        { id: 1, content: "content1", lastUpdate: "20221005053015" },
+        { id: 2, content: "content2", lastUpdate: "20221004063020" },
+        { id: 3, content: "content3", lastUpdate: "20221006053015" },
+    ];
+    const comparedArray = [
+        { id: 1, content: "content1", lastUpdate: "20221005053015" },
+        { id: 2, content: "content2 updated", lastUpdate: "20221004063030" },
+        { id: 3, content: "content3", lastUpdate: "20221006053015" },
+        { content: "content4", lastUpdate: "20221006053130", tempId: 1 },
+        { content: "content5", lastUpdate: "20221006053100", tempId: 2 },
+    ];
+
+    const expectedArray = [
+        { id: 2, content: "content2 updated", lastUpdate: "20221004063030" },
+        { content: "content4", lastUpdate: "20221006053130", tempId: 1 },
+        { content: "content5", lastUpdate: "20221006053100", tempId: 2 },
+    ];
+
+    it("should return one filtered array", () => {
+        const filteredArray = arraySynchronizer.findChanged(baseArray, comparedArray);
+        expect.assertions(3);
+        const isArray = Array.isArray(filteredArray);
+        expect(isArray).toBeTruthy();
+        expect(filteredArray).toHaveLength(3);
+        expect(filteredArray).toStrictEqual(expectedArray);
+    });
+});
