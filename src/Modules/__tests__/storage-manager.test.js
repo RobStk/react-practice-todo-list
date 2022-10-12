@@ -14,6 +14,7 @@ Object.defineProperty(localDB, "getData", { value: jest.fn() });
 Object.defineProperty(localDB, "setData", { value: jest.fn() });
 Object.defineProperty(localDB, "replaceItem", { value: jest.fn() });
 Object.defineProperty(localDB, "deleteItem", { value: jest.fn() });
+Object.defineProperty(localDB, "resetId", { value: jest.fn() });
 
 Object.defineProperty(remoteDB, "getData", { value: jest.fn() });
 Object.defineProperty(remoteDB, "addItem", { value: jest.fn() });
@@ -423,5 +424,20 @@ describe("synchronize method", () => {
         const result = await storageManager.synchronize();
         expect.assertions(1);
         expect(result).toBeFalsy();
+    });
+
+    it("should call resetId if resolved", async () => {
+        lsGetMock.mockReturnValue([{}]);
+        rsGetMock.mockReturnValueOnce([{}]);
+        rsGetMock.mockReturnValue([{}]);
+        synchronizeMock.mockReturnValue([{ tempId: 1 }]);
+        findChangedMock.mockReturnValue([{ tempId: 1 }]);
+        rsAddMock.mockReturnValue({ id: 1 });
+        rsUpdateMock.mockReturnValue(true);
+        const resetMock = jest.spyOn(localDB, "resetId");
+
+        await storageManager.synchronize();
+        expect.assertions(1);
+        expect(resetMock).toBeCalledTimes(1);
     });
 });

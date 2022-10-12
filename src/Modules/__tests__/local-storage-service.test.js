@@ -14,12 +14,16 @@ describe("Interface", () => {
         const addItemIsImplemented = (localService.addItem !== undefined);
         const replaceItemIsImplemented = (localService.replaceItem !== undefined);
         const deleteItemIsImplemented = (localService.deleteItem !== undefined);
+        const getNewIdIsImplemented = (localService.getNewId !== undefined);
+        const resetId = (localService.resetId !== undefined);
 
         expect(getDataIsImplemented).toBeTruthy();
         expect(setDataIsImplemented).toBeTruthy();
         expect(addItemIsImplemented).toBeTruthy();
         expect(replaceItemIsImplemented).toBeTruthy();
         expect(deleteItemIsImplemented).toBeTruthy();
+        expect(getNewIdIsImplemented).toBeTruthy();
+        expect(resetId).toBeTruthy();
     });
 });
 
@@ -135,6 +139,7 @@ describe("addItem method", () => {
     it("should call setData with correct arguments if item has no id", () => {
         const getDataMock = jest.spyOn(localService, "getData");
         const setDataMock = jest.spyOn(localService, "setData");
+        jest.spyOn(Storage.prototype, 'getItem').mockReturnValue("1");
 
         const baseArray = [
             { id: 1, content: "item1" },
@@ -480,4 +485,44 @@ describe("deleteItem method", () => {
         expect(storageData).toStrictEqual(newArray2);
     });
 
-})
+});
+
+describe("getNewId method", () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+        jest.resetAllMocks();
+        jest.restoreAllMocks();
+        localStorage.clear();
+    });
+
+    it("should return id number", () => {
+        jest.spyOn(Storage.prototype, 'getItem').mockReturnValue("1");
+        const id = localService.getNewId();
+        expect.assertions(1);
+        expect(id).toBe(1);
+    });
+
+    it("should increment id on storage", () => {
+        jest.spyOn(Storage.prototype, 'getItem').mockReturnValue("1");
+        const setItemMock = jest.spyOn(Storage.prototype, 'setItem');
+        localService.getNewId();
+        expect.assertions(1);
+        expect(setItemMock).toBeCalledWith("id", "2");
+    });
+});
+
+describe("resetId method", () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+        jest.resetAllMocks();
+        jest.restoreAllMocks();
+        localStorage.clear();
+    });
+
+    it("should reset id on storage", () => {
+        const setItemMock = jest.spyOn(Storage.prototype, 'setItem');
+        localService.resetId();
+        expect.assertions(1);
+        expect(setItemMock).toBeCalledWith("id", "1");
+    });
+});

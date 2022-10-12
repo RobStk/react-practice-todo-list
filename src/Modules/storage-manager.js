@@ -130,6 +130,7 @@ class StorageManager {
             }
         }
         this.setData(latestData);
+        if (serverResponded) this.#localService.resetId();
         return serverResponded;
     };
 

@@ -12,6 +12,8 @@ class LocalStorageService {
     get addItem() { return this.#addItem }
     get replaceItem() { return this.#replaceItem }
     get deleteItem() { return this.#deleteItem }
+    get getNewId() { return this.#getNewId }
+    get resetId() { return this.#resetId }
 
 
     /* ---------------------------------------------------- */
@@ -19,7 +21,7 @@ class LocalStorageService {
     /* ---------------------------------------------------- */
     #localStorageKey
     #events
-    #nextFreeId
+    #idStoreKey
 
     /* ---------------------------------------------------- */
     /* Constructor                                          */
@@ -32,7 +34,9 @@ class LocalStorageService {
     constructor(localStorageItemName, dataEventsService) {
         this.#localStorageKey = localStorageItemName;
         this.#events = dataEventsService;
-        this.#nextFreeId = 1;
+        this.#idStoreKey = "id";
+        const id = localStorage.getItem(this.#idStoreKey);
+        if (!id) this.#resetId();
     }
 
     /* ---------------------------------------------------- */
@@ -122,11 +126,28 @@ class LocalStorageService {
      */
     #setIds(item) {
         if (!item.id && !item.tempId) {
-            const tempId = this.#nextFreeId;
-            item.tempId = tempId;
-            this.#nextFreeId++;
+            item.tempId = this.#getNewId();
         }
     };
+
+    // ------------------------
+
+    //TODO: doc
+    #getNewId() {
+        const idString = localStorage.getItem(this.#idStoreKey);
+        const id = Number(idString);
+        const newId = id + 1;
+        const newIdString = newId.toString();
+        localStorage.setItem(this.#idStoreKey, newIdString);
+        return id;
+    }
+
+    // ------------------------
+
+    //TODO: doc
+    #resetId() {
+        localStorage.setItem(this.#idStoreKey, "1");
+    }
 
     // ------------------------
 }
