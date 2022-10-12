@@ -46,9 +46,9 @@ class RemoteStorageService {
     // --------------------------
 
     /**
-     * Adds data and return true if successful or false if not.
+     * Adds data and return true if resolved or false if rejected.
      * @param {Object} itemToAdd 
-     * @returns {boolean}
+     * @returns {Promise<boolean>}
      */
     async #addItem(itemToAdd) {
         const dataString = JSON.stringify(itemToAdd);
@@ -61,20 +61,22 @@ class RemoteStorageService {
                 body: dataString
             });
             if (!response.ok) throw new Error(response.status);
-            return true;
+            const jsonResult = await response.json()
+            const id = jsonResult.id;
+            return id;
         }
         catch (error) {
             console.error("Http error: " + error.status);
-            return false;
+            return null;
         }
     }
 
     // --------------------------
 
     /**
-     * Updates data and return true if successful or false if not.
+     * Updates data and return true if resolved or false if rejected.
      * @param {Object} itemToUpdate 
-     * @returns {boolean}
+     * @returns {Promise<boolean>}
      */
     async #updateItem(itemToUpdate) {
         const id = itemToUpdate.id;

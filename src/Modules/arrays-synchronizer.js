@@ -47,7 +47,7 @@ class ArraySynchronizer {
             const id = element.id;
             for (let j = i + 1; j < sumArray.length; j++) {
                 const el = sumArray[j];
-                if (el.id && el.id === id) sumArray.splice(j, 1);
+                if (el.id && (el.id === id)) sumArray.splice(j, 1);
             }
         }
         return sumArray;

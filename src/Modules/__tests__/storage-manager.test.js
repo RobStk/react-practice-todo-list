@@ -341,7 +341,7 @@ describe("synchronize method", () => {
         expect(rsUpdateMock).not.toBeCalled();
     });
 
-    it("should send new data to remote service", async () => {
+    it("should send new data to remote storage", async () => {
         lsGetMock.mockReturnValue(localDataArr);
         rsGetMock.mockReturnValue(remoteDataArr);
         synchronizeMock.mockReturnValue(synchronizedDataArr);
@@ -354,7 +354,22 @@ describe("synchronize method", () => {
         expect(rsUpdateMock).toBeCalledTimes(2);
     });
 
-    it("should set new data without tempIds on local service if rejected", async () => {
+    it("should send new data to remote storage without tempId", async () => {
+        lsGetMock.mockReturnValue(localDataArr);
+        rsGetMock.mockReturnValue(remoteDataArr);
+        synchronizeMock.mockReturnValue(synchronizedDataArr);
+        findChangedMock.mockReturnValue([{ id: 1 }, { id: 2, tempId: 1 }, { tempId: 2 }]);
+        rsUpdateMock.mockReturnValue(true);
+
+        await storageManager.synchronize();
+        expect.assertions(4);
+        expect(rsAddMock).toBeCalledTimes(1);
+        expect(rsAddMock).toBeCalledWith({});
+        expect(rsUpdateMock).toBeCalledTimes(2);
+        expect(rsUpdateMock).toBeCalledWith({ id: 2 });
+    });
+
+    it("should set new data with tempIds on local storage if rejected", async () => {
         findChangedMock.mockReturnValue([{ tempId: 1 }]);
         lsGetMock.mockReturnValue(localDataArr);
         rsGetMock.mockReturnValueOnce([]);
@@ -369,29 +384,25 @@ describe("synchronize method", () => {
         expect(lsSetMock).toBeCalledWith([{ tempId: 1 }, { id: 1 }]);
     });
 
-    it("should set new data with ids on local service if resolved", async () => {
-        findChangedMock.mockReturnValue([{ tempId: 1 }]);
-        lsGetMock.mockReturnValue(localDataArr);
-        rsGetMock.mockReturnValueOnce([]);
-        rsGetMock.mockReturnValue([{ id: 1 }, { id: 2 }]);
+    it("should set new data with ids on local storage if resolved", async () => {
+        rsGetMock.mockReturnValue([]);
         synchronizeMock.mockReturnValue([{ tempId: 1 }, { id: 1 }]);
         findChangedMock.mockReturnValue([{ tempId: 1 }]);
-        rsAddMock.mockReturnValue(true);
+        rsAddMock.mockReturnValue("storageId");
 
         await storageManager.synchronize();
         expect.assertions(2);
         expect(lsSetMock).toBeCalledTimes(1);
-        expect(lsSetMock).toBeCalledWith([{ id: 1 }, { id: 2 }]);
+        expect(lsSetMock).toBeCalledWith([{ id: "storageId" }, { id: 1 }]);
     });
 
     it("should return true if resolved", async () => {
-        findChangedMock.mockReturnValue([{}]);
         lsGetMock.mockReturnValue([{}]);
         rsGetMock.mockReturnValueOnce([{}]);
         rsGetMock.mockReturnValue([{}]);
-        synchronizeMock.mockReturnValue([{}]);
-        findChangedMock.mockReturnValue([{}]);
-        rsAddMock.mockReturnValue(true);
+        synchronizeMock.mockReturnValue([{ tempId: 1 }]);
+        findChangedMock.mockReturnValue([{ tempId: 1 }]);
+        rsAddMock.mockReturnValue({ id: 1 });
         rsUpdateMock.mockReturnValue(true);
 
         const result = await storageManager.synchronize();
