@@ -11,7 +11,12 @@ const resolvedGetMock = () =>
         )
     });
 
-const resolvedSetMock = () => Promise.resolve({ ok: true });
+const resolvedSetMock = () => Promise.resolve({
+    ok: true,
+    json: () => Promise.resolve(
+        { id: 1, content: "content1" }
+    )
+});
 const rejectedMock = () => Promise.reject({ status: "error test" });
 
 const url = "url";
@@ -77,7 +82,7 @@ describe("getData method", () => {
 
         expect.assertions(1);
         expect(console.error).toBeCalledWith(errorMsg);
-    })
+    });
 });
 
 describe("addItem method", () => {
@@ -111,18 +116,19 @@ describe("addItem method", () => {
         expect(bodyIsString).toBeTruthy();
     });
 
-    it("should return true if resolved", async () => {
+    it("should return id if resolved", async () => {
         global.fetch = jest.fn(resolvedSetMock);
         const response = await remoteService.addItem(data);
         expect.assertions(1);
-        expect(response).toBe(true);
+        const responseIsNumber = typeof response === "number";
+        expect(responseIsNumber).toBeTruthy();
     });
 
     it("should return false if rejected", async () => {
         global.fetch = jest.fn(rejectedMock);
         const response = await remoteService.addItem(data);
         expect.assertions(1);
-        expect(response).toBe(false);
+        expect(response).toBeFalsy();
     });
 
     it("should output an error message to the console", async () => {

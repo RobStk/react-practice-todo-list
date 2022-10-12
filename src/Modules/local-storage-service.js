@@ -61,8 +61,8 @@ class LocalStorageService {
         const data = this.getData() || [];
 
         const itemExist = data.find((innerItem) => {
-            if (innerItem.id && innerItem.id === itemToAdd.id) return true;
-            if (innerItem.tempId && innerItem.tempId === itemToAdd.tempId) return true;
+            if (innerItem.id && (innerItem.id === itemToAdd.id)) return true;
+            if (innerItem.tempId && (innerItem.tempId === itemToAdd.tempId)) return true;
             return false;
         });
 
