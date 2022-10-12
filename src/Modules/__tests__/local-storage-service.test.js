@@ -1,11 +1,14 @@
 import LocalStorageService from "../local-storage-service";
+import EventsService from "../events-service";
 
 const lsKey = "test";
-const localService = new LocalStorageService(lsKey);
+const eventsService = new EventsService();
+const localService = new LocalStorageService(lsKey, eventsService);
+
+Object.defineProperty(eventsService, "emit", { value: jest.fn() });
 
 describe("Interface", () => {
     it("should be implemented", () => {
-        const localService = new LocalStorageService();
         const getDataIsImplemented = (localService.getData !== undefined);
         const setDataIsImplemented = (localService.setData !== undefined);
         const addItemIsImplemented = (localService.addItem !== undefined);
@@ -91,6 +94,13 @@ describe("setData method", () => {
         const dataStr = JSON.stringify(dataObj);
         expect(setItemMock).toBeCalledWith("test", dataStr);
     });
+
+    it("should emit an event", () => {
+        const emitMock = jest.spyOn(eventsService, "emit");
+        localService.setData([{ data: "data" }]);
+        expect.assertions(1);
+        expect(emitMock).toBeCalledWith("new data set");
+    });
 });
 
 describe("addItem method", () => {
@@ -123,7 +133,6 @@ describe("addItem method", () => {
     });
 
     it("should call setData with correct arguments if item has no id", () => {
-        const localService = new LocalStorageService("test");
         const getDataMock = jest.spyOn(localService, "getData");
         const setDataMock = jest.spyOn(localService, "setData");
 
@@ -168,7 +177,8 @@ describe("addItem method", () => {
             { tempId: 1, content: "item3" }
         ];
 
-        const localService = new LocalStorageService("test");
+        const localService = new LocalStorageService(lsKey, eventsService);
+
         const getDataMock = jest.spyOn(localService, "getData");
         const setDataMock = jest.spyOn(localService, "setData");
         getDataMock.mockReturnValue(baseArray);
@@ -211,7 +221,6 @@ describe("addItem method", () => {
             { id: 1, content: "item3" }
         ];
 
-        const localService = new LocalStorageService(lsKey);
         const getDataMock = jest.spyOn(localService, "getData");
         const setDataMock = jest.spyOn(localService, "setData");
         getDataMock.mockReturnValue(baseArray);
@@ -237,7 +246,6 @@ describe("addItem method", () => {
             { tempId: 3, content: "item4" },
         ];
 
-        const localService = new LocalStorageService(lsKey);
         const getDataMock = jest.spyOn(localService, "getData");
         const setDataMock = jest.spyOn(localService, "setData");
         getDataMock.mockReturnValue(baseArray);
@@ -334,6 +342,7 @@ describe("replaceItem method", () => {
             { tempId: 1, content: "item3" }
         ];
 
+        const localService = new LocalStorageService(lsKey, eventsService);
         const getDataMock = jest.spyOn(localService, "getData");
         const setDataMock = jest.spyOn(localService, "setData");
         getDataMock.mockReturnValue(baseArray);
@@ -415,7 +424,6 @@ describe("deleteItem method", () => {
             { tempId: 1, content: "item3", deleted: true }
         ];
 
-        const localService = new LocalStorageService("test");
         const getDataMock = jest.spyOn(localService, "getData").mockReturnValue(baseArray);
         const setDataMock = jest.spyOn(localService, "setData");
 
@@ -442,7 +450,7 @@ describe("deleteItem method", () => {
             { tempId: 1, content: "item3", deleted: true }
         ];
 
-        const localService = new LocalStorageService("test");
+        const localService = new LocalStorageService(lsKey, eventsService);
         const getDataMock = jest.spyOn(localService, "getData").mockReturnValue(baseArray);
         const setDataMock = jest.spyOn(localService, "setData");
 
