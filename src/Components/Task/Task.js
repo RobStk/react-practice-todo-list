@@ -257,7 +257,8 @@ class Task extends React.Component {
     // ------------------------
 
     handleDelete() {
-        this.props.onDelete(this);
+        const task = { ...this.props }
+        this.props.onDelete(task);
     }
 
     // ------------------------

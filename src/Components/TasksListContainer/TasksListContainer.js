@@ -7,7 +7,6 @@ import RowSectionStyle from "../../Styles/RowSectionStyle";
 import SortDirectionButton from "../SortDirectionButton/SortDirectionButton";
 import SortByPanel from "../SortByPanel/SortByPanel";
 import { BsChevronDown as ExpandIcon } from "react-icons/bs";
-import ConnectionError from "../ConnectionError/ConnectionError";
 
 class TasksListContainer extends React.Component {
     constructor(props) {
@@ -37,11 +36,10 @@ class TasksListContainer extends React.Component {
         const doneSectionDisplay = this.state.doneVisibility === "expanded" ? "" : "none";
         const expandIcon = <ExpandIconStyle className={this.state.doneVisibility}><ExpandIcon /></ExpandIconStyle>;
 
-        let toDisplay = todoTasksComponents
+        let toDisplay = todoTasksComponents;
         if (this.isFirstRender && todoTasksComponents.length === 0) toDisplay = <div>Ładowanie...</div>;
         if (!this.isFirstRender && todoTasksComponents.length === 0) toDisplay = <div>Brak zadań do wykonania.</div>;
         this.isFirstRender = false;
-        if (this.props.connectionError && !this.props.tasksArr.length) toDisplay = <ConnectionError description='Nie można pobrać zadań z serwera.' />;
 
         return (
             <>
@@ -84,7 +82,7 @@ class TasksListContainer extends React.Component {
                 <Task
                     content={task.content}
                     done={task.done}
-                    key={task.id || task.tempId}
+                    key={task.id || "temp" + task.tempId}
                     id={task.id}
                     tempId={task.tempId}
                     onDelete={this.props.onDelete}

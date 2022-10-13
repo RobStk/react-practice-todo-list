@@ -38,7 +38,7 @@ class RemoteStorageService {
             return data;
         }
         catch (error) {
-            console.error("Http error: " + error.status);
+            console.error("Http error:", error.status || error);
             return null;
         }
     }
@@ -66,7 +66,7 @@ class RemoteStorageService {
             return id;
         }
         catch (error) {
-            console.error("Http error: " + error.status);
+            console.error("Http error:", error.status || error);
             return null;
         }
     }
@@ -95,7 +95,7 @@ class RemoteStorageService {
             return true;
         }
         catch (error) {
-            console.error("Http error: " + error.status);
+            console.error("Http error:", error.status || error);
             return false;
         }
     }
