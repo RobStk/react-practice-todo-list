@@ -76,12 +76,12 @@ describe("getData method", () => {
     it("should output an error message to the console", async () => {
         global.fetch = jest.fn(rejectedMock);
         global.console.error = jest.fn();
-        const errorMsg = "Http error: error test";
+        const errorMsg = "error test";
 
         await remoteService.getData();
 
         expect.assertions(1);
-        expect(console.error).toBeCalledWith(errorMsg);
+        expect(console.error).toBeCalledWith("Http error:", errorMsg);
     });
 });
 
@@ -134,10 +134,10 @@ describe("addItem method", () => {
     it("should output an error message to the console", async () => {
         global.fetch = jest.fn(rejectedMock);
         global.console.error = jest.fn();
-        const errorMsg = "Http error: error test";
+        const errorMsg = "error test";
         await remoteService.addItem(data);
         expect.assertions(1);
-        expect(console.error).toBeCalledWith(errorMsg);
+        expect(console.error).toBeCalledWith("Http error:", errorMsg);
     });
 });
 
@@ -189,10 +189,10 @@ describe("updateItem method", () => {
     it("should output an error message to the console", async () => {
         global.fetch = jest.fn(rejectedMock);
         global.console.error = jest.fn();
-        const errorMsg = "Http error: error test";
+        const errorMsg = "error test";
         await remoteService.updateItem(data);
         expect.assertions(1);
-        expect(console.error).toBeCalledWith(errorMsg);
+        expect(console.error).toBeCalledWith("Http error:", errorMsg);
     });
 
     it("should delete tempId", async () => {

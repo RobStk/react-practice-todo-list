@@ -87,17 +87,14 @@ class LocalStorageService {
     #replaceItem(itemToReplace) {
         this.#setIds(itemToReplace);
         const id = itemToReplace.id;
-        const tempId = itemToReplace.tempId;
         const data = this.getData();
 
-        const newData = id ?
-            data.filter((item) => item.id !== id)
-            :
-            data.filter((item) => item.tempId !== tempId)
+        let item = null;
+        if (id) item = data.find(item => item.id === itemToReplace.id);
+        if (!id) item = data.find(item => item.tempId === itemToReplace.tempId);
+        if (item) Object.assign(item, itemToReplace);
 
-        newData.push(itemToReplace);
-
-        this.setData(newData);
+        this.setData(data);
     };
 
     // ------------------------
@@ -124,7 +121,10 @@ class LocalStorageService {
 
     // ------------------------
 
-    //TODO: doc
+    /**
+     * Returns a new free localStorage id and set new one.
+     * @returns 
+     */
     #getNewId() {
         const idString = localStorage.getItem(this.#idStoreKey);
         const id = Number(idString);
@@ -136,7 +136,9 @@ class LocalStorageService {
 
     // ------------------------
 
-    //TODO: doc
+    /**
+     * Reset localStorage ids;
+     */
     #resetId() {
         localStorage.setItem(this.#idStoreKey, "1");
     }
