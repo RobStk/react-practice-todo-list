@@ -3,6 +3,7 @@
  * @typedef {import('./remote-storage-service').default} RemoteStorageService
  * @typedef {import('./arrays-synchronizer').default} ArraySynchronizer
  * @typedef {import('./time-service').default} TimeService
+ * @typedef {import('./events-manager').default} EventsManager
  */
 class StorageManager {
     /* ---------------------------------------------------- */
@@ -22,6 +23,7 @@ class StorageManager {
     #remoteService;
     #arraySynchronizer;
     #timeService;
+    #events
 
     /* ---------------------------------------------------- */
     /* Constructor                                          */
@@ -31,12 +33,14 @@ class StorageManager {
      * @param {RemoteStorageService} remoteService      Remote storage object.
      * @param {ArraySynchronizer} arraySynchronizer     Array synchronizer service object.
      * @param {TimeService} timeService                 Service for acquiring time for items.
+     * @param {EventsManager} storageEventsManager      Storage events management object.
      */
-    constructor(localService, remoteService, arraySynchronizer, timeService) {
+    constructor(localService, remoteService, arraySynchronizer, timeService, storageEventsManager) {
         this.#localService = localService;
         this.#remoteService = remoteService;
         this.#arraySynchronizer = arraySynchronizer;
         this.#timeService = timeService;
+        this.#events = storageEventsManager;
     }
 
     /* ---------------------------------------------------- */
@@ -58,6 +62,7 @@ class StorageManager {
      */
     #setData(data) {
         this.#localService.setData(data);
+        this.#events.emit("new data set");
     };
 
     // ------------------------
@@ -129,6 +134,8 @@ class StorageManager {
                 }
             }
         }
+        if (serverResponded) this.#events.emit("remote connection success");
+        else this.#events.emit("remote connection fail");
         this.setData(latestData);
         if (serverResponded) this.#localService.resetId();
         return serverResponded;

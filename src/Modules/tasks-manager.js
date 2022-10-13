@@ -26,6 +26,7 @@ class TasksManager {
      */
     constructor(storageManager) {
         this.#storage = storageManager;
+        this.#storage.synchronize();
     }
 
     /* ---------------------------------------------------- */
