@@ -1,4 +1,4 @@
-class EventsService {
+class EventsManager {
 
     /* ---------------------------------------------------- */
     /* Getters/Setters                                      */
@@ -50,4 +50,4 @@ class EventsService {
     }
 
 }
-export default EventsService;
+export default EventsManager;

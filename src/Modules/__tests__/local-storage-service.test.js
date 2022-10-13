@@ -1,11 +1,7 @@
 import LocalStorageService from "../local-storage-service";
-import EventsService from "../events-service";
 
 const lsKey = "test";
-const eventsService = new EventsService();
-const localService = new LocalStorageService(lsKey, eventsService);
-
-Object.defineProperty(eventsService, "emit", { value: jest.fn() });
+const localService = new LocalStorageService(lsKey);
 
 describe("Interface", () => {
     it("should be implemented", () => {
@@ -98,13 +94,6 @@ describe("setData method", () => {
         const dataStr = JSON.stringify(dataObj);
         expect(setItemMock).toBeCalledWith("test", dataStr);
     });
-
-    it("should emit an event", () => {
-        const emitMock = jest.spyOn(eventsService, "emit");
-        localService.setData([{ data: "data" }]);
-        expect.assertions(1);
-        expect(emitMock).toBeCalledWith("new data set");
-    });
 });
 
 describe("addItem method", () => {
@@ -182,7 +171,7 @@ describe("addItem method", () => {
             { tempId: 1, content: "item3" }
         ];
 
-        const localService = new LocalStorageService(lsKey, eventsService);
+        const localService = new LocalStorageService(lsKey);
 
         const getDataMock = jest.spyOn(localService, "getData");
         const setDataMock = jest.spyOn(localService, "setData");
@@ -347,7 +336,7 @@ describe("replaceItem method", () => {
             { tempId: 1, content: "item3" }
         ];
 
-        const localService = new LocalStorageService(lsKey, eventsService);
+        const localService = new LocalStorageService(lsKey);
         const getDataMock = jest.spyOn(localService, "getData");
         const setDataMock = jest.spyOn(localService, "setData");
         getDataMock.mockReturnValue(baseArray);
@@ -455,7 +444,7 @@ describe("deleteItem method", () => {
             { tempId: 1, content: "item3", deleted: true }
         ];
 
-        const localService = new LocalStorageService(lsKey, eventsService);
+        const localService = new LocalStorageService(lsKey);
         const getDataMock = jest.spyOn(localService, "getData").mockReturnValue(baseArray);
         const setDataMock = jest.spyOn(localService, "setData");
 

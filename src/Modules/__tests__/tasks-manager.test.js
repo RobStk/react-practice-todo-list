@@ -2,16 +2,16 @@ import StorageManager from "../storage-manager";
 import TasksManager from "../tasks-manager";
 
 const storageManager = new StorageManager();
-const tasksManager = new TasksManager(storageManager);
-
 Object.defineProperty(storageManager, "getData", { value: jest.fn() });
 Object.defineProperty(storageManager, "replaceItem", { value: jest.fn() });
 Object.defineProperty(storageManager, "deleteItem", { value: jest.fn() });
 Object.defineProperty(storageManager, "addItem", { value: jest.fn() });
+Object.defineProperty(storageManager, "synchronize", { value: jest.fn() });
+
+const tasksManager = new TasksManager(storageManager);
 
 describe("Interface", () => {
     it("should be implemented", () => {
-        const tasksManager = new TasksManager();
         const getTasksIsImplemented = (tasksManager.getTasks !== undefined);
         const addTaskIsImplemented = (tasksManager.addTask !== undefined);
         const updateTaskIsImplemented = (tasksManager.updateTask !== undefined);

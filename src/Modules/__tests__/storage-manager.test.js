@@ -3,12 +3,14 @@ import LocalStorageService from "../local-storage-service";
 import RemoteStorageService from "../remote-storage-service";
 import StorageManager from "../storage-manager";
 import TimeService from "../time-service";
+import EventsManager from "../events-manager";
 
 const localDB = new LocalStorageService("test");
 const remoteDB = new RemoteStorageService("url");
 const arraySynchronizer = new ArraySynchronizer();
 const timeService = new TimeService();
-const storageManager = new StorageManager(localDB, remoteDB, arraySynchronizer, timeService);
+const eventsManager = new EventsManager();
+const storageManager = new StorageManager(localDB, remoteDB, arraySynchronizer, timeService, eventsManager);
 
 Object.defineProperty(localDB, "getData", { value: jest.fn() });
 Object.defineProperty(localDB, "setData", { value: jest.fn() });
@@ -24,6 +26,8 @@ Object.defineProperty(arraySynchronizer, "synchronize", { value: jest.fn() });
 Object.defineProperty(arraySynchronizer, "findChanged", { value: jest.fn() });
 
 Object.defineProperty(timeService, "getDateAndTimeString", { value: jest.fn() });
+
+Object.defineProperty(eventsManager, "emit", { value: jest.fn() });
 
 describe("Interface", () => {
     it("should be implemented", () => {
@@ -72,6 +76,8 @@ describe("getData method", () => {
 });
 
 describe("setData method", () => {
+    const data = [{ data: "data" }];
+
     afterEach(() => {
         jest.clearAllMocks();
         jest.resetAllMocks();
@@ -79,12 +85,18 @@ describe("setData method", () => {
     });
 
     it("should call setItem with the right args on localDB", () => {
-        const data = "test data";
         const setDataMock = jest.spyOn(localDB, 'setData');
 
         storageManager.setData(data);
         expect(setDataMock).toBeCalledTimes(1);
-        expect(setDataMock).toBeCalledWith("test data");
+        expect(setDataMock).toBeCalledWith([{ data: "data" }]);
+    });
+
+    it("should emit an event", () => {
+        const emitMock = jest.spyOn(eventsManager, "emit");
+        storageManager.setData(data);
+        expect.assertions(1);
+        expect(emitMock).toBeCalledWith("new data set");
     });
 });
 
@@ -398,8 +410,6 @@ describe("synchronize method", () => {
     });
 
     it("should return true if resolved", async () => {
-        lsGetMock.mockReturnValue([{}]);
-        rsGetMock.mockReturnValueOnce([{}]);
         rsGetMock.mockReturnValue([{}]);
         synchronizeMock.mockReturnValue([{ tempId: 1 }]);
         findChangedMock.mockReturnValue([{ tempId: 1 }]);
@@ -412,12 +422,6 @@ describe("synchronize method", () => {
     });
 
     it("should return false if rejected", async () => {
-        findChangedMock.mockReturnValue([{}]);
-        lsGetMock.mockReturnValue([{}]);
-        rsGetMock.mockReturnValueOnce([{}]);
-        rsGetMock.mockReturnValue([{}]);
-        synchronizeMock.mockReturnValue([{}]);
-        findChangedMock.mockReturnValue([{}]);
         rsAddMock.mockReturnValue(false);
         rsUpdateMock.mockReturnValue(false);
 
@@ -426,13 +430,37 @@ describe("synchronize method", () => {
         expect(result).toBeFalsy();
     });
 
-    it("should call resetId if resolved", async () => {
-        lsGetMock.mockReturnValue([{}]);
-        rsGetMock.mockReturnValueOnce([{}]);
+    it("should emit an event if resolved", async () => {
         rsGetMock.mockReturnValue([{}]);
-        synchronizeMock.mockReturnValue([{ tempId: 1 }]);
-        findChangedMock.mockReturnValue([{ tempId: 1 }]);
-        rsAddMock.mockReturnValue({ id: 1 });
+        findChangedMock.mockReturnValue([]);
+        rsAddMock.mockReturnValue(true);
+
+        rsUpdateMock.mockReturnValue(true);
+        const emitMock = jest.spyOn(eventsManager, "emit");
+
+        const result = await storageManager.synchronize();
+        expect.assertions(2);
+        expect(result).toBeTruthy();
+        expect(emitMock).toBeCalledWith("remote connection success");
+    });
+
+    it("should emit an event if rejected", async () => {
+        findChangedMock.mockReturnValue([{}]);
+        rsGetMock.mockReturnValue([{}]);
+        rsAddMock.mockReturnValue(false);
+
+        rsUpdateMock.mockReturnValue(false);
+        const emitMock = jest.spyOn(eventsManager, "emit");
+
+        const result = await storageManager.synchronize();
+        expect.assertions(2);
+        expect(result).toBeFalsy();
+        expect(emitMock).toBeCalledWith("remote connection fail");
+    });
+
+    it("should call resetId if resolved", async () => {
+        rsGetMock.mockReturnValue([{}]);
+        findChangedMock.mockReturnValue([]);
         rsUpdateMock.mockReturnValue(true);
         const resetMock = jest.spyOn(localDB, "resetId");
 

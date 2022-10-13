@@ -1,7 +1,3 @@
-/**
- * @typedef {import('./events-service').default} EventsService
- */
-
 class LocalStorageService {
 
     /* ---------------------------------------------------- */
@@ -20,7 +16,6 @@ class LocalStorageService {
     /* Private properties                                   */
     /* ---------------------------------------------------- */
     #localStorageKey
-    #events
     #idStoreKey
 
     /* ---------------------------------------------------- */
@@ -29,11 +24,9 @@ class LocalStorageService {
     /**
      * @param {string} localStorageItemName     The name of the item under which the 
      *                                          data should be stored in Local.
-     * @param {EventsService} dataEventsService Data event management object.
      */
-    constructor(localStorageItemName, dataEventsService) {
+    constructor(localStorageItemName) {
         this.#localStorageKey = localStorageItemName;
-        this.#events = dataEventsService;
         this.#idStoreKey = "id";
         const id = localStorage.getItem(this.#idStoreKey);
         if (!id) this.#resetId();
@@ -44,7 +37,7 @@ class LocalStorageService {
     /* ---------------------------------------------------- */
 
     /**
-     * @returns {Array | null}
+     * @returns {Array}
      */
     #getData() {
         const dataString = localStorage.getItem(this.#localStorageKey);
@@ -60,7 +53,6 @@ class LocalStorageService {
     #setData(data) {
         const dataString = JSON.stringify(data);
         localStorage.setItem(this.#localStorageKey, dataString);
-        this.#events.emit("new data set");
     };
 
     // ------------------------
