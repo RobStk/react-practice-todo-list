@@ -15,7 +15,7 @@ describe('OfflineBar', () => {
 
         render(
             <ThemeProvider theme={darkTheme}>
-                <OfflineBar onReconnect={testFunction} />
+                <OfflineBar onTryAgain={testFunction} />
             </ThemeProvider>
         )
 
