@@ -15,10 +15,12 @@ describe("Interface", () => {
         const getTasksIsImplemented = (tasksManager.getTasks !== undefined);
         const addTaskIsImplemented = (tasksManager.addTask !== undefined);
         const updateTaskIsImplemented = (tasksManager.updateTask !== undefined);
+        const synchronizeIsImplemented = (tasksManager.synchronize !== undefined);
 
         expect(getTasksIsImplemented).toBeTruthy();
         expect(addTaskIsImplemented).toBeTruthy();
         expect(updateTaskIsImplemented).toBeTruthy();
+        expect(synchronizeIsImplemented).toBeTruthy();
     });
 });
 
@@ -329,4 +331,13 @@ describe("deleteTask method", () => {
         expect.assertions(1);
         expect(testedFunction).not.toBeCalled()
     });
-})
+});
+
+describe("synchronize method", () => {
+    it("should call a synchronize method on StorageManager", () => {
+        const synchronizeMock = jest.spyOn(storageManager, "synchronize");
+        tasksManager.synchronize();
+        expect.assertions(1);
+        expect(synchronizeMock).toBeCalledTimes(1);
+    });
+});

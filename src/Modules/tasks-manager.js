@@ -11,6 +11,7 @@ class TasksManager {
     get addTask() { return this.#addTask }
     get updateTask() { return this.#updateTask }
     get deleteTask() { return this.#deleteTask }
+    get synchronize() { return this.#synchronize }
 
     /* ---------------------------------------------------- */
     /* Private properties                                   */
@@ -26,7 +27,7 @@ class TasksManager {
      */
     constructor(storageManager) {
         this.#storage = storageManager;
-        this.#storage.synchronize();
+        this.synchronize();
     }
 
     /* ---------------------------------------------------- */
@@ -85,6 +86,12 @@ class TasksManager {
             return false;
         }
         return true;
+    }
+
+    // ------------------------
+
+    #synchronize() {
+        this.#storage.synchronize();
     }
 
     // ------------------------

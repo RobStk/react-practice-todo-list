@@ -27,9 +27,13 @@ class ToDoList extends React.Component {
         /** @type {EventsManager} */
         this.dataEvents = props.dataEventsManager;
 
+        this.getTasks = this.getTasks.bind(this);
         this.updateTask = this.updateTask.bind(this);
         this.deleteTask = this.deleteTask.bind(this);
         this.addTask = this.addTask.bind(this);
+        this.setToOnline = this.setToOnline.bind(this);
+        this.setToOffline = this.setToOffline.bind(this);
+        this.forceUpdate = this.forceUpdate.bind(this);
 
         this.eventsManager = eventsManager;
         this.events = events;
@@ -41,9 +45,9 @@ class ToDoList extends React.Component {
     }
 
     componentDidMount() {
-        this.dataEvents.subscribe("new data set", this.getTasks.bind(this));
-        this.dataEvents.subscribe("remote connection success", this.setToOnline.bind(this));
-        this.dataEvents.subscribe("remote connection fail", this.setToOffline.bind(this));
+        this.dataEvents.subscribe("new data set", this.getTasks);
+        this.dataEvents.subscribe("remote connection success", this.setToOnline);
+        this.dataEvents.subscribe("remote connection fail", this.setToOffline);
         this.getTasks();
     }
 
@@ -54,7 +58,7 @@ class ToDoList extends React.Component {
             <>
                 <ThemeProvider theme={this.theme}>
                     <GlobalStyle backgroundColor={this.theme.colors.background.primary} />
-                    <OfflineBar display={offlineDisplay} />
+                    <OfflineBar display={offlineDisplay} onTryAgain={this.forceUpdate} />
                     <ToDoListStyle>
                         <HeaderStyle data-style="HeaderStyle">
                             <TasksAdder onTaskAdd={this.addTask} />
@@ -103,12 +107,22 @@ class ToDoList extends React.Component {
         this.getTasks();
     }
 
+    // ------------------------
+
     setToOffline() {
         this.online = false;
     }
 
+    // ------------------------
+
     setToOnline() {
         this.online = true;
+    }
+
+    // ------------------------
+
+    forceUpdate() {
+        this.tasksManager.synchronize();
     }
 
     // ------------------------
