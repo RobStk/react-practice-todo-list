@@ -76,6 +76,7 @@ class StorageManager {
         itemToAdd.creationDate = timeString;
         itemToAdd.lastUpdate = timeString;
         this.#localService.addItem(itemToAdd);
+        this.#events.emit("new data set");
         this.synchronize();
     };
 
@@ -87,6 +88,7 @@ class StorageManager {
     #replaceItem(itemToReplace) {
         itemToReplace.lastUpdate = this.#timeService.getFullTimeRaw();
         this.#localService.replaceItem(itemToReplace);
+        this.#events.emit("new data set");
         this.synchronize();
     };
 
@@ -98,6 +100,7 @@ class StorageManager {
     #deleteItem(itemToDelete) {
         itemToDelete.lastUpdate = this.#timeService.getFullTimeRaw();
         this.#localService.deleteItem(itemToDelete);
+        this.#events.emit("new data set");
         this.synchronize();
     };
 

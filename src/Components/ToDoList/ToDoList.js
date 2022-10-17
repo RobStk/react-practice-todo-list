@@ -8,7 +8,6 @@ import TasksListContainer from "../TasksListContainer/TasksListContainer";
 import TasksAdder from "../TasksAdder/TasksAdder";
 import Timer from "../Timer/Timer";
 import OfflineBar from "../OfflineBar/OfflineBar";
-import { eventsManager, events } from "../../utilities/events-manager";
 
 /**
  * @typedef {import('../../Modules/tasks-manager').default} TasksManager
@@ -35,8 +34,6 @@ class ToDoList extends React.Component {
         this.setToOffline = this.setToOffline.bind(this);
         this.forceUpdate = this.forceUpdate.bind(this);
 
-        this.eventsManager = eventsManager;
-        this.events = events;
         this.online = true;
 
         this.state = {
@@ -86,25 +83,22 @@ class ToDoList extends React.Component {
 
     // ------------------------
 
-    async addTask(taskData) {
+    addTask(taskData) {
         const newTask = {};
         newTask.content = taskData.content;
         this.tasksManager.addTask(newTask);
-        this.getTasks();
     }
 
     // ------------------------
 
-    async updateTask(updatedTask) {
+    updateTask(updatedTask) {
         this.tasksManager.updateTask(updatedTask);
-        this.getTasks();
     }
 
     // ------------------------
 
-    async deleteTask(task) {
+    deleteTask(task) {
         this.tasksManager.deleteTask(task);
-        this.getTasks();
     }
 
     // ------------------------
