@@ -16,7 +16,6 @@ class TasksAdder extends React.Component {
         }
     }
     render() {
-        //TODO Callbacki do poprawy
         return (
             <TaskAdderStyle
                 isFocus={this.state.isFocus}
@@ -31,8 +30,8 @@ class TasksAdder extends React.Component {
                         placeholder="Dodaj zadanie"
                         id="addTaskInput"
                         value={this.state.inputValue}
-                        onFocus={() => { this.activate() }}
-                        onBlur={() => { this.deactivate() }}
+                        onFocus={() => { this.handleFocus() }}
+                        onBlur={() => { this.handleBlur() }}
                         onChange={this.handleChange.bind(this)}
                         onKeyDown={this.handleKeyDown}
                     />
@@ -45,13 +44,13 @@ class TasksAdder extends React.Component {
     /* Methods                  */
     /* ------------------------ */
 
-    activate() {
+    handleFocus() {
         this.setState({ isFocus: true });
     }
 
     // ------------------------
 
-    deactivate() {
+    handleBlur() {
         this.setState({ isFocus: false });
     }
 
