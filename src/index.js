@@ -7,7 +7,7 @@ import LocalStorageService from './Modules/local-storage-service';
 import RemoteStorageService from './Modules/remote-storage-service';
 import StorageManager from './Modules/storage-manager';
 import TasksManager from "./Modules/tasks-manager";
-import TimeService from './Modules/time-service';
+import TimeService from './Modules/client-time-service';
 
 const dbPath = "http://localhost:5000/tasks";
 
@@ -26,5 +26,6 @@ root.render(<React.StrictMode>
     <ToDoList
         tasksManager={tasksManager}
         dataEventsManager={storageEventsManager}
+        timeProvider={timeService}
     />
 </React.StrictMode>);

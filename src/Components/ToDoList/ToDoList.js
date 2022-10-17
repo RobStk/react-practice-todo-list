@@ -62,7 +62,7 @@ class ToDoList extends React.Component {
                     <ToDoListStyle>
                         <HeaderStyle data-style="HeaderStyle">
                             <TasksAdder onTaskAdd={this.addTask} />
-                            <Timer />
+                            <Timer timeProvider={this.props.timeProvider} />
                         </HeaderStyle>
                         <TasksListContainer
                             tasksArr={tasks}

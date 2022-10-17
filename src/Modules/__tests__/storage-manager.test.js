@@ -2,7 +2,7 @@ import ArraySynchronizer from "../arrays-synchronizer";
 import LocalStorageService from "../local-storage-service";
 import RemoteStorageService from "../remote-storage-service";
 import StorageManager from "../storage-manager";
-import TimeService from "../time-service";
+import TimeService from "../client-time-service";
 import EventsManager from "../events-manager";
 
 const localDB = new LocalStorageService("test");
@@ -25,7 +25,7 @@ Object.defineProperty(remoteDB, "updateItem", { value: jest.fn() });
 Object.defineProperty(arraySynchronizer, "synchronize", { value: jest.fn() });
 Object.defineProperty(arraySynchronizer, "findChanged", { value: jest.fn() });
 
-Object.defineProperty(timeService, "getDateAndTimeString", { value: jest.fn() });
+Object.defineProperty(timeService, "getFullTimeRaw", { value: jest.fn() });
 
 Object.defineProperty(eventsManager, "emit", { value: jest.fn() });
 
@@ -101,8 +101,8 @@ describe("setData method", () => {
 });
 
 describe("addItem method", () => {
-    const date = "202210081145012";
-    const getDateAndTimeStringMock = jest.spyOn(timeService, "getDateAndTimeString");
+    const date = "20221008114501002";
+    const getFullTimeRawMock = jest.spyOn(timeService, "getFullTimeRaw");
 
     afterEach(() => {
         jest.clearAllMocks();
@@ -120,7 +120,7 @@ describe("addItem method", () => {
 
     it("should add creationDate property value to item", () => {
         const newItem = { content: "itemContent" };
-        getDateAndTimeStringMock.mockReturnValue(date);
+        getFullTimeRawMock.mockReturnValue(date);
 
         expect.assertions(4);
         expect(newItem).not.toHaveProperty("creationDate");
@@ -133,7 +133,7 @@ describe("addItem method", () => {
 
     it("should add lastUpdate property value to item", () => {
         const newItem = { content: "itemContent" };
-        getDateAndTimeStringMock.mockReturnValue(date);
+        getFullTimeRawMock.mockReturnValue(date);
 
         expect.assertions(4);
         expect(newItem).not.toHaveProperty("lastUpdate");
@@ -157,7 +157,7 @@ describe("addItem method", () => {
 
 describe("replaceItem method", () => {
     const date = "202210081145012";
-    const getDateAndTimeStringMock = jest.spyOn(timeService, "getDateAndTimeString");
+    const getFullTimeRawMock = jest.spyOn(timeService, "getFullTimeRaw");
 
     afterEach(() => {
         jest.clearAllMocks();
@@ -177,7 +177,7 @@ describe("replaceItem method", () => {
 
     it("should add lastUpdate property value to item", () => {
         const item = { id: 1, content: "item1" };
-        getDateAndTimeStringMock.mockReturnValue(date);
+        getFullTimeRawMock.mockReturnValue(date);
 
         expect.assertions(4);
         expect(item).not.toHaveProperty("lastUpdate");
@@ -201,7 +201,7 @@ describe("replaceItem method", () => {
 
 describe("deleteItem Method", () => {
     const date = "202210081145012";
-    const getDateAndTimeStringMock = jest.spyOn(timeService, "getDateAndTimeString");
+    const getFullTimeRawMock = jest.spyOn(timeService, "getFullTimeRaw");
 
     afterEach(() => {
         jest.clearAllMocks();
@@ -221,7 +221,7 @@ describe("deleteItem Method", () => {
 
     it("should add lastUpdate property value to item", () => {
         const item = { id: 1, content: "item1" };
-        getDateAndTimeStringMock.mockReturnValue(date);
+        getFullTimeRawMock.mockReturnValue(date);
 
         expect.assertions(4);
         expect(item).not.toHaveProperty("lastUpdate");

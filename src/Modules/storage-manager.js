@@ -2,7 +2,7 @@
  * @typedef {import('./local-storage-service').default} LocalStorageService
  * @typedef {import('./remote-storage-service').default} RemoteStorageService
  * @typedef {import('./arrays-synchronizer').default} ArraySynchronizer
- * @typedef {import('./time-service').default} TimeService
+ * @typedef {import('./client-time-service').default} TimeService
  * @typedef {import('./events-manager').default} EventsManager
  */
 class StorageManager {
@@ -72,7 +72,7 @@ class StorageManager {
      * @param {Object} itemToAdd 
      */
     #addItem(itemToAdd) {
-        const timeString = this.#timeService.getDateAndTimeString();
+        const timeString = this.#timeService.getFullTimeRaw();
         itemToAdd.creationDate = timeString;
         itemToAdd.lastUpdate = timeString;
         this.#localService.addItem(itemToAdd);
@@ -85,7 +85,7 @@ class StorageManager {
      * @param {Object} itemToReplace 
      */
     #replaceItem(itemToReplace) {
-        itemToReplace.lastUpdate = this.#timeService.getDateAndTimeString();
+        itemToReplace.lastUpdate = this.#timeService.getFullTimeRaw();
         this.#localService.replaceItem(itemToReplace);
         this.synchronize();
     };
@@ -96,7 +96,7 @@ class StorageManager {
      * @param {Object} itemToDelete 
      */
     #deleteItem(itemToDelete) {
-        itemToDelete.lastUpdate = this.#timeService.getDateAndTimeString();
+        itemToDelete.lastUpdate = this.#timeService.getFullTimeRaw();
         this.#localService.deleteItem(itemToDelete);
         this.synchronize();
     };

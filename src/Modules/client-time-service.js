@@ -1,10 +1,12 @@
-class DateTime {
+class ClientTimeService {
+    /* ------------------------ */
+    /* Methods                  */
+    /* ------------------------ */
+
     /**
-     * Returns current date and time accurate to milliseconds.
-     * @static
-     * @returns {string}
+     * @returns {string} Current time accurate to milliseconds with date.
      */
-    static getFullTimeRaw() {
+    getFullTimeRaw() {
         const fullDate = this.getDateRaw();
         const time = this.getTimeRaw();
         const fullTime = fullDate + time;
@@ -14,11 +16,9 @@ class DateTime {
     // ------------------------
 
     /**
-     * Returns current date in a strict string.
-     * @static
-     * @returns {string}
+     * @returns {string} Current date in a strict string.
      */
-    static getDateRaw() {
+    getDateRaw() {
         const date = new Date();
         const year = date.getFullYear();
         let month = date.getMonth() + 1;
@@ -32,11 +32,9 @@ class DateTime {
     // ------------------------
 
     /**
-     * Returns current date separated by dashes.
-     * @static
-     * @returns {string}
+     * @returns {string} Current date separated by dashes.
      */
-    static getDateDashed() {
+    getDateDashed() {
         const date = new Date();
         const year = date.getFullYear();
         let month = date.getMonth() + 1;
@@ -50,11 +48,9 @@ class DateTime {
     // ------------------------
 
     /**
-     * Returns current time accurate to milliseconds in a strict string.
-     * @static
-     * @returns {string}
+     * @returns {string} Current time accurate to milliseconds in a strict string.
      */
-    static getTimeRaw() {
+    getTimeRaw() {
         const date = new Date();
         let hour = date.getHours();
         if (hour < 10) hour = "0" + hour;
@@ -72,11 +68,9 @@ class DateTime {
     // ------------------------
 
     /**
-     * Returns current time accurate to seconds separated by colons.
-     * @static
-     * @returns {string}
+     * @returns {string} Current time accurate to seconds separated by colons.
      */
-    static getTimeWithColons() {
+    getTimeWithColons() {
         const date = new Date();
         let hour = date.getHours();
         if (hour < 10) hour = "0" + hour;
@@ -92,4 +86,4 @@ class DateTime {
     }
 }
 
-export default DateTime;
+export default ClientTimeService;

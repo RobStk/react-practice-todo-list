@@ -1,13 +1,12 @@
 import React from "react";
-import TimeManager from "../../utilities/time-manager";
 import TimerStyle from "./styles/TimerStyle";
 
 class Timer extends React.Component {
     constructor(props) {
         super(props);
-        const timer = new TimeManager();
-        const date = timer.getDateDashed();
-        const time = timer.getTimeWithColons();
+        this.timer = this.props.timeProvider;
+        const date = this.timer.getDateDashed();
+        const time = this.timer.getTimeWithColons();
         this.state = {
             date: date,
             time: time
@@ -31,9 +30,8 @@ class Timer extends React.Component {
     /* ------------------------ */
 
     updateTimer() {
-        const timer = new TimeManager();
-        const date = timer.getDateDashed();
-        const time = timer.getTimeWithColons();
+        const date = this.timer.getDateDashed();
+        const time = this.timer.getTimeWithColons();
         this.setState({
             date: date,
             time: time
