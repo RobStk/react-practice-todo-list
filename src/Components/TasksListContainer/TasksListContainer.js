@@ -42,7 +42,7 @@ class TasksListContainer extends React.Component {
         this.isFirstRender = false;
 
         return (
-            <>
+            <div>
                 <RowSectionStyle gap="4px" display={sortingDisplay}>
                     <SortDirectionButton
                         onClick={this.changeSorting}
@@ -68,7 +68,7 @@ class TasksListContainer extends React.Component {
                 <TasksRowsContainerStyle display={doneSectionDisplay}>
                     {doneTasksComponents}
                 </TasksRowsContainerStyle>
-            </>
+            </div>
         );
     }
 
