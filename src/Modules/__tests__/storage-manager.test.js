@@ -14,7 +14,7 @@ const storageManager = new StorageManager(localDB, remoteDB, arraySynchronizer, 
 
 Object.defineProperty(localDB, "getData", { value: jest.fn() });
 Object.defineProperty(localDB, "setData", { value: jest.fn() });
-Object.defineProperty(localDB, "replaceItem", { value: jest.fn() });
+Object.defineProperty(localDB, "updateItem", { value: jest.fn() });
 Object.defineProperty(localDB, "deleteItem", { value: jest.fn() });
 Object.defineProperty(localDB, "resetId", { value: jest.fn() });
 
@@ -35,14 +35,14 @@ describe("Interface", () => {
         const getDataIsImplemented = (storageManager.getData !== undefined);
         const setDataIsImplemented = (storageManager.setData !== undefined);
         const addItemIsImplemented = (storageManager.addItem !== undefined);
-        const replaceItemIsImplemented = (storageManager.replaceItem !== undefined);
+        const updateItemIsImplemented = (storageManager.updateItem !== undefined);
         const deleteItemIsImplemented = (storageManager.deleteItem !== undefined);
         const synchronizeIsImplemented = (storageManager.synchronize !== undefined);
 
         expect(getDataIsImplemented).toBeTruthy();
         expect(setDataIsImplemented).toBeTruthy();
         expect(addItemIsImplemented).toBeTruthy();
-        expect(replaceItemIsImplemented).toBeTruthy();
+        expect(updateItemIsImplemented).toBeTruthy();
         expect(deleteItemIsImplemented).toBeTruthy();
         expect(synchronizeIsImplemented).toBeTruthy();
     });
@@ -155,7 +155,7 @@ describe("addItem method", () => {
     });
 });
 
-describe("replaceItem method", () => {
+describe("updateItem method", () => {
     const date = "202210081145012";
     const getFullTimeRawMock = jest.spyOn(timeService, "getFullTimeRaw");
 
@@ -166,13 +166,13 @@ describe("replaceItem method", () => {
     });
 
     it("should call setData with the right args on localDB", () => {
-        const replaceItemMock = jest.spyOn(localDB, "replaceItem");
+        const updateItemMock = jest.spyOn(localDB, "updateItem");
         const item = { id: 1, content: "item1" };
 
-        storageManager.replaceItem(item);
+        storageManager.updateItem(item);
 
         expect.assertions(1);
-        expect(replaceItemMock).toBeCalledWith(item);
+        expect(updateItemMock).toBeCalledWith(item);
     });
 
     it("should add lastUpdate property value to item", () => {
@@ -181,7 +181,7 @@ describe("replaceItem method", () => {
 
         expect.assertions(4);
         expect(item).not.toHaveProperty("lastUpdate");
-        storageManager.replaceItem(item);
+        storageManager.updateItem(item);
         expect(item).toHaveProperty("lastUpdate");
         const propIsString = typeof item.lastUpdate === "string";
         expect(propIsString).toBeTruthy();
@@ -192,7 +192,7 @@ describe("replaceItem method", () => {
         const synchronizeMock = jest.spyOn(storageManager, "synchronize");
         const item = { id: 1, content: "content1", lastUpdate: "20221003" };
 
-        storageManager.replaceItem(item);
+        storageManager.updateItem(item);
 
         expect.assertions(1);
         expect(synchronizeMock).toBeCalled();

@@ -8,7 +8,7 @@ describe("Interface", () => {
         const getDataIsImplemented = (localService.getData !== undefined);
         const setDataIsImplemented = (localService.setData !== undefined);
         const addItemIsImplemented = (localService.addItem !== undefined);
-        const replaceItemIsImplemented = (localService.replaceItem !== undefined);
+        const updateItemIsImplemented = (localService.updateItem !== undefined);
         const deleteItemIsImplemented = (localService.deleteItem !== undefined);
         const getNewIdIsImplemented = (localService.getNewId !== undefined);
         const resetId = (localService.resetId !== undefined);
@@ -16,7 +16,7 @@ describe("Interface", () => {
         expect(getDataIsImplemented).toBeTruthy();
         expect(setDataIsImplemented).toBeTruthy();
         expect(addItemIsImplemented).toBeTruthy();
-        expect(replaceItemIsImplemented).toBeTruthy();
+        expect(updateItemIsImplemented).toBeTruthy();
         expect(deleteItemIsImplemented).toBeTruthy();
         expect(getNewIdIsImplemented).toBeTruthy();
         expect(resetId).toBeTruthy();
@@ -252,7 +252,7 @@ describe("addItem method", () => {
     });
 });
 
-describe("replaceItem method", () => {
+describe("updateItem method", () => {
     afterEach(() => {
         jest.clearAllMocks();
         jest.resetAllMocks();
@@ -279,7 +279,7 @@ describe("replaceItem method", () => {
 
         getDataMock.mockReturnValue(baseArray);
 
-        localService.replaceItem(newItem);
+        localService.updateItem(newItem);
 
         expect.assertions(4);
         expect(getDataMock).toBeCalledTimes(1);
@@ -312,7 +312,7 @@ describe("replaceItem method", () => {
         const setDataMock = jest.spyOn(localService, "setData");
         getDataMock.mockReturnValue(baseArray);
 
-        localService.replaceItem(newItem);
+        localService.updateItem(newItem);
 
         expect.assertions(3);
         expect(getDataMock).toBeCalledTimes(1);

@@ -3,7 +3,7 @@ import TasksManager from "../tasks-manager";
 
 const storageManager = new StorageManager();
 Object.defineProperty(storageManager, "getData", { value: jest.fn() });
-Object.defineProperty(storageManager, "replaceItem", { value: jest.fn() });
+Object.defineProperty(storageManager, "updateItem", { value: jest.fn() });
 Object.defineProperty(storageManager, "deleteItem", { value: jest.fn() });
 Object.defineProperty(storageManager, "addItem", { value: jest.fn() });
 Object.defineProperty(storageManager, "synchronize", { value: jest.fn() });
@@ -169,81 +169,81 @@ describe("updateTask method", () => {
         jest.restoreAllMocks();
     });
 
-    it("should call replaceItem method on StorageManager", () => {
-        const storageManagerReplaceItemMethod = jest.spyOn(storageManager, "replaceItem");
+    it("should call updateItem method on StorageManager", () => {
+        const updateItemMock = jest.spyOn(storageManager, "updateItem");
 
         const taskToUpdate = { content: "test content" };
 
         tasksManager.updateTask(taskToUpdate);
 
         expect.assertions(1);
-        expect(storageManagerReplaceItemMethod).toBeCalledWith(taskToUpdate);
+        expect(updateItemMock).toBeCalledWith(taskToUpdate);
     });
 
-    it("should not call replaceItem method on StorageManager if argument is a string", () => {
-        const storageManagerReplaceItemMethod = jest.spyOn(storageManager, "replaceItem");
+    it("should not call updateItem method on StorageManager if argument is a string", () => {
+        const updateItemMock = jest.spyOn(storageManager, "updateItem");
 
         const taskToUpdate = "test content";
 
         tasksManager.updateTask(taskToUpdate);
 
         expect.assertions(1);
-        expect(storageManagerReplaceItemMethod).not.toBeCalled();
+        expect(updateItemMock).not.toBeCalled();
     });
 
-    it("should not call replaceItem method on StorageManager if argument is array", () => {
-        const storageManagerReplaceItemMethod = jest.spyOn(storageManager, "replaceItem");
+    it("should not call updateItem method on StorageManager if argument is array", () => {
+        const updateItemMock = jest.spyOn(storageManager, "updateItem");
 
         const taskToUpdate = ["test content"];
 
         tasksManager.updateTask(taskToUpdate);
 
         expect.assertions(1);
-        expect(storageManagerReplaceItemMethod).not.toBeCalled();
+        expect(updateItemMock).not.toBeCalled();
     });
 
-    it("should not call replaceItem method on StorageManager if argument is number", () => {
-        const storageManagerReplaceItemMethod = jest.spyOn(storageManager, "replaceItem");
+    it("should not call updateItem method on StorageManager if argument is number", () => {
+        const updateItemMock = jest.spyOn(storageManager, "updateItem");
 
         const taskToUpdate = 1;
 
         tasksManager.updateTask(taskToUpdate);
 
         expect.assertions(1);
-        expect(storageManagerReplaceItemMethod).not.toBeCalled();
+        expect(updateItemMock).not.toBeCalled();
     });
 
-    it("should not call replaceItem method on StorageManager if argument is null", () => {
-        const storageManagerReplaceItemMethod = jest.spyOn(storageManager, "replaceItem");
+    it("should not call updateItem method on StorageManager if argument is null", () => {
+        const updateItemMock = jest.spyOn(storageManager, "updateItem");
 
         const taskToUpdate = null;
 
         tasksManager.updateTask(taskToUpdate);
 
         expect.assertions(1);
-        expect(storageManagerReplaceItemMethod).not.toBeCalled();
+        expect(updateItemMock).not.toBeCalled();
     });
 
-    it("should not call replaceItem method on StorageManager if argument is undefined", () => {
-        const storageManagerReplaceItemMethod = jest.spyOn(storageManager, "replaceItem");
+    it("should not call updateItem method on StorageManager if argument is undefined", () => {
+        const updateItemMock = jest.spyOn(storageManager, "updateItem");
 
         const taskToUpdate = undefined;
 
         tasksManager.updateTask(taskToUpdate);
 
         expect.assertions(1);
-        expect(storageManagerReplaceItemMethod).not.toBeCalled();
+        expect(updateItemMock).not.toBeCalled();
     });
 
-    it("should not call replaceItem method on StorageManager if argument is empty object", () => {
-        const storageManagerReplaceItemMethod = jest.spyOn(storageManager, "replaceItem");
+    it("should not call updateItem method on StorageManager if argument is empty object", () => {
+        const updateItemMock = jest.spyOn(storageManager, "updateItem");
 
         const taskToUpdate = {};
 
         tasksManager.updateTask(taskToUpdate);
 
         expect.assertions(1);
-        expect(storageManagerReplaceItemMethod).not.toBeCalled()
+        expect(updateItemMock).not.toBeCalled()
     });
 
 });

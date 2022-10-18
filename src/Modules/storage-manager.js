@@ -12,7 +12,7 @@ class StorageManager {
     get getData() { return this.#getData }
     get setData() { return this.#setData }
     get addItem() { return this.#addItem }
-    get replaceItem() { return this.#replaceItem }
+    get updateItem() { return this.#updateItem }
     get deleteItem() { return this.#deleteItem }
     get synchronize() { return this.#synchronize }
 
@@ -85,9 +85,9 @@ class StorageManager {
     /**
      * @param {Object} itemToReplace 
      */
-    #replaceItem(itemToReplace) {
+    #updateItem(itemToReplace) {
         itemToReplace.lastUpdate = this.#timeService.getFullTimeRaw();
-        this.#localService.replaceItem(itemToReplace);
+        this.#localService.updateItem(itemToReplace);
         this.#events.emit("new data set");
         this.synchronize();
     };

@@ -59,7 +59,7 @@ class TasksManager {
 
     #updateTask(taskToUpdate) {
         const isTaskCorrect = this.#checkTaskCorrectness(taskToUpdate);
-        if (isTaskCorrect) this.#storage.replaceItem(taskToUpdate);
+        if (isTaskCorrect) this.#storage.updateItem(taskToUpdate);
     }
 
     // ------------------------

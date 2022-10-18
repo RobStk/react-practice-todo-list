@@ -6,7 +6,7 @@ class LocalStorageService {
     get getData() { return this.#getData }
     get setData() { return this.#setData }
     get addItem() { return this.#addItem }
-    get replaceItem() { return this.#replaceItem }
+    get updateItem() { return this.#updateItem }
     get deleteItem() { return this.#deleteItem }
     get getNewId() { return this.#getNewId }
     get resetId() { return this.#resetId }
@@ -71,7 +71,7 @@ class LocalStorageService {
         });
 
         if (itemExist) {
-            this.#replaceItem(itemToAdd);
+            this.#updateItem(itemToAdd);
             return;
         };
 
@@ -84,7 +84,7 @@ class LocalStorageService {
     /**
      * @param {Object} itemToReplace 
      */
-    #replaceItem(itemToReplace) {
+    #updateItem(itemToReplace) {
         this.#setIds(itemToReplace);
         const id = itemToReplace.id;
         const data = this.getData();
@@ -104,7 +104,7 @@ class LocalStorageService {
      */
     #deleteItem(itemToDelete) {
         itemToDelete.deleted = true;
-        this.replaceItem(itemToDelete);
+        this.updateItem(itemToDelete);
     };
 
     // ------------------------
