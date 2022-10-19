@@ -26,5 +26,15 @@ const GlobalStyle = createGlobalStyle`
         border-radius: 3px;
     }
 
+    .rotating {
+    animation: rotating 2s 0s infinite linear;
+    }
+
+    @keyframes rotating {
+        100% {
+            transform: rotate(1turn);
+        }
+    }
+
 `
 export default GlobalStyle;

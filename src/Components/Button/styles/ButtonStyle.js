@@ -36,12 +36,12 @@ const ButtonStyle = styled.button`
     if (props.color) return props.color;
     }};
 
-    &:hover{
+    &:hover {
         background-color: ${(props) => props.hoverBackgroundColor ? props.hoverBackgroundColor : props.theme.colors.background.stage3};
         cursor: default;
     };
 
-    & .buttonTextValue{
+    & .buttonTextValue {
         display: ${(props) => props.textValueDisplay};
     };
 `

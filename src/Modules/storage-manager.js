@@ -111,6 +111,7 @@ class StorageManager {
      * based on the last modification date
      */
     async #synchronize() {
+        this.#events.emit("start remote connection");
         let serverResponded = true;
 
         const remoteData = await this.#remoteService.getData();
