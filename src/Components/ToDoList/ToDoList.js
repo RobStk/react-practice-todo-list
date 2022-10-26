@@ -60,14 +60,14 @@ class ToDoList extends React.Component {
             time: currentTime,
             dataLoading: false
         }
+    }
 
+    componentDidMount() {
         this.dataEvents.subscribe("new data set", this.getTasks);
         this.dataEvents.subscribe("start remote connection", this.setToLoading);
         this.dataEvents.subscribe("remote connection success", this.setToOnline);
         this.dataEvents.subscribe("remote connection fail", this.setToOffline);
-    }
 
-    componentDidMount() {
         setInterval(() => { this.updateTime() }, 1000);
         this.getTasks();
         this.forceUpdate();
